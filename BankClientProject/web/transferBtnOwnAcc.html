@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Система Интернет Банк-Клиент</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/mainstyle.css">
+    </head>
+    <body>          
+        <!-- Контейнер хедера -->
+        <header class="header_container">
+            <div class="logo_container">
+                
+            </div>
+
+            <div class="welcom_client_container">
+                <p>Добро пожаловать,<br>Белых Евгений Владимирович</p>
+                <a href="#">Выход</a>
+            </div>
+        </header>
+        
+        <!-- центральный контрейнер -->
+        <div class="center_container">       
+            <!-- Контейнер главного меню -->
+            <div class="main_menu_container">  
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <p> Переводы </p>
+                    </div>
+                    <ul>
+                        <li><a href="#">Между своими счетами</a></li>
+                        <li><a href="#">Другому клиенту банка</a></li>
+                        <li><a href="#">В другой банк</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <p> Оплата услуг </p>
+                    </div>
+                    <ul>
+                        <li><a href="#">Сотовая связь</a></li>
+                        <li><a href="#">Интернет</a></li>
+                        <li><a href="#">ЖКХ</a></li>
+                    </ul>           
+                </div>
+                
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <p> Операции со счетами </p>
+                    </div>
+                    <ul>
+                        <li><a href="#">Открыть вклад</a></li>
+                        <li><a href="#">Закрыть вклад</a></li>
+                        <li><a href="#">Блокировать карту</a></li>
+                        <li><a href="#">Выпустить виртуальную карту</a></li>
+                        <li><a href="#">История операций</a></li>
+                    </ul>              
+                </div>
+                
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <p> Мое меню </p>
+                    </div>
+                    <ul>
+                        <li><a href="#">Шаблоны</a></li>
+                        <li><a href="#">Сообщения от банка</a></li>
+                        <li><a href="#">Тарифы</a></li>
+                        <li><a href="#">Помощь</a></li>
+                    </ul>  
+                </div>
+            </div>
+
+            <!-- Контейнер основной информации о картах, вкладах клиента и т.д. -->
+            <div class="operations_container">  
+                <!--<div class="operations_inner_container">-->
+                    <form action="#" method="post">
+                        <table>
+                          <tr>
+                            <td class="login_column">
+                                <select name="SourceAccauntList">
+                                    <option>Счет 1</option>
+                                    <option>Счет 2</option>
+                                    <option>Счет 3</option>
+                                </select>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="login_column">
+                                <select name="DestinationAccauntList">
+                                    <option>Счет 1</option>
+                                    <option>Счет 2</option>
+                                    <option>Счет 3</option>
+                                </select>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="login_column">
+                              <input type="text" name="Amount" required placeholder="Сумма">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="login_column">
+                              <input type="submit" value="Перевести">
+                            </td>
+                          </tr>
+                        </table>
+                    </form>                    
+                <!--</div>-->
+            </div>
+
+            <div class="right_panel_container">
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <p> Курсы валют </p>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <td></td>
+                            <td>Покупка</td>
+                            <td>Продажа</td>
+                        </thead>
+                        <tr>
+                            <td>USD</td>
+                            <td>58.50</td>
+                            <td>60.20</td>
+                        </tr>
+                        <tr>
+                            <td>EUR</td>
+                            <td>63.40</td>
+                            <td>65.10</td>
+                        </tr>
+                    </table>                    
+                </div>
+                <div class="menu_item">
+                    <div class="menu_item_header">
+                        <p> Новости банка </p>
+                    </div>
+                    <p class="right_panel_text">
+                        Банк рад представить новую версию Интернет банк-клиента. Он обладает удобным интерфейсом и дает Вам широкие возможности.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Футер -->
+        <footer class="footer">
+            <p class="telephone">8 800 123 45 67</p>
+            <p>Генеральная лицензия Банка России №1234 от 01.01.2000</p>           
+        </footer>
+        
+    </body>
+</html>
