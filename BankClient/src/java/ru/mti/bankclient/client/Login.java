@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ru.mti.bankclient.client;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -17,62 +13,73 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 
 /**
- * Main entry point.
+ * Точка входа в приложение
  *
  * @author Белых Евгений
  */
-public class BankClientEntryPoint implements EntryPoint {
+public class Login implements EntryPoint {
     
     TextBox login;
     PasswordTextBox pass;
     
     /**
-     * Creates a new instance of BankClientEntryPoint
+     * Конструктор по умолчанию
      */
-    public BankClientEntryPoint() {
+    public Login() {
     }
 
     /**
-     * The entry point method, called automatically by loading a module that
-     * declares an implementing class as an entry-point
+     * Аналог метода main
      */
     public void onModuleLoad() {
         
+        //текстовое поле для ввода логина
         login = new TextBox();
-        login.setStyleName("login_column");
+        login.setStyleName("login_column"); //ставим стиль оформления
+        login.setTitle("Логин"); //ставим всплывающую подсказку
+        login.getElement().setAttribute("placeholder", "Логин"); //ставим надпись внутри поля
+        //поле для ввода пароля
         pass = new PasswordTextBox();
         pass.setStyleName("login_column");
+        pass.setTitle("Пароль");
+        pass.getElement().setAttribute("placeholder", "Пароль");
+        //кнопка входа
         Button confirmButton = new Button("Вход");
         confirmButton.setStyleName("login_confirm_button");
         
+        //вертикальная панель для компановки элементов
         VerticalPanel vPanel = new VerticalPanel();
         vPanel.add(login);
         vPanel.add(pass);
         vPanel.add(confirmButton);
-        vPanel.setSize("515px", "220px");
-        
+        vPanel.setSize("515px", "220px");       
         vPanel.setStyleName("login_form_container");
         
-        //обработчик для клика по кнопке 'Confirm'
+        //обработчик для клика по кнопке 'Вход'
         confirmButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 //confirmButton.setEnabled(false);
                 sendInfoToServer();
             }
         });
-        
+        //добавляем элементы на страницу
         RootPanel.get("login_frame").add(vPanel);
         
     }
     
-    public void sendInfoToServer() {
+    
+    /**
+     * Проверяет правильность ввода логина и пароля и отправляет данные на сервер
+     */
+    private void sendInfoToServer() {
         
         final String symbol = login.getText().toLowerCase().trim();
         login.setFocus(true);
 
         // проверяем ввод определенных символов в поле логина
         if (!symbol.matches("^[0-9a-z.@]{1,50}$")) {
-            Window.alert("Логин не может быть пустым и может состоять из латинских символов, цифр, а также символов '.' или '@'");
+            Window.alert("Логин не может быть пустым и может состоять из " +
+                    "латинских символов нижнего регистра, цифр, а также символов '.' или '@'");
             login.setFocus(true);
             login.selectAll();
             return;
