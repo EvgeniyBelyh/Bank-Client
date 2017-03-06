@@ -2,14 +2,19 @@
 package ru.mti.bankclient.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import ru.mti.bankclient.client.UserCheck.UserCheck;
+import ru.mti.bankclient.client.UserCheck.UserCheckAsync;
+
 
 
 /**
@@ -21,6 +26,7 @@ public class Login implements EntryPoint {
     
     TextBox login;
     PasswordTextBox pass;
+    UserCheckAsync userCheckService = GWT.create(UserCheck.class);
     
     /**
      * Конструктор по умолчанию
@@ -64,7 +70,6 @@ public class Login implements EntryPoint {
         });
         //добавляем элементы на страницу
         RootPanel.get("login_frame").add(vPanel);
-        
     }
     
     
@@ -92,6 +97,19 @@ public class Login implements EntryPoint {
             return;
         }
         
+        // Create an asynchronous callback to handle the result.
+        final AsyncCallback<String> callback = new AsyncCallback<String>() {
+            public void onSuccess(String result) {
+                Window.alert(result);
+            }
+            
+            public void onFailure(Throwable caught) {
+                Window.alert("Communication failed");
+            }
+        };
+
+        userCheckService.checkUser(login.getText(), pass.getText(), callback);
+
         
     }
 }
