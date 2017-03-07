@@ -12,8 +12,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import javax.ejb.EJB;
 import ru.mti.bankclient.client.UserCheck.UserCheck;
 import ru.mti.bankclient.client.UserCheck.UserCheckAsync;
+import ru.mti.bankclient.session.ClientFacade;
 
 
 
@@ -109,7 +111,9 @@ public class Login implements EntryPoint {
         };
         // отправляем логин и пароль на сервер
         userCheckService.checkUser(login.getText(), pass.getText(), callback);
-
+        
+        
+        
         
     }
 }
