@@ -97,17 +97,17 @@ public class Login implements EntryPoint {
             return;
         }
         
-        // Create an asynchronous callback to handle the result.
+        // обрабатываем полученный от сервера результат
         final AsyncCallback<String> callback = new AsyncCallback<String>() {
             public void onSuccess(String result) {
                 Window.alert(result);
             }
             
             public void onFailure(Throwable caught) {
-                Window.alert("Communication failed");
+                Window.alert("Ошибка связи с сервером");
             }
         };
-
+        // отправляем логин и пароль на сервер
         userCheckService.checkUser(login.getText(), pass.getText(), callback);
 
         
