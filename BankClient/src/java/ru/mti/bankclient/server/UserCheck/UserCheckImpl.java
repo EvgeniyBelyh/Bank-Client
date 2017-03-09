@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ru.mti.bankclient.server.UserCheck;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -12,9 +8,10 @@ import ru.mti.bankclient.client.UserCheck.UserCheck;
 import ru.mti.bankclient.entity.Client;
 import ru.mti.bankclient.session.ClientFacade;
 
+
 /**
  *
- * @author 1
+ * @author Белых Евгений
  */
 public class UserCheckImpl extends RemoteServiceServlet implements UserCheck {
     

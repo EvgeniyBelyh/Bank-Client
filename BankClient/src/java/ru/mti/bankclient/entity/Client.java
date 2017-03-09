@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ru.mti.bankclient.entity;
 
 import java.io.Serializable;
@@ -25,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author 1
+ * @author Белых Евгений
  */
 @Entity
 @Table(name = "client")
@@ -39,6 +35,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Client.findByBlocked", query = "SELECT c FROM Client c WHERE c.blocked = :blocked"),
     @NamedQuery(name = "Client.findByAdmin", query = "SELECT c FROM Client c WHERE c.admin = :admin")})
 public class Client implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
+    private List<BankMessage> bankMessageList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
+    private List<Account> accountList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -69,10 +70,6 @@ public class Client implements Serializable {
     @NotNull
     @Column(name = "admin")
     private boolean admin;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
-    private List<BankMessage> bankMessageList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
-    private List<Account> accountList;
 
     public Client() {
     }
@@ -138,24 +135,6 @@ public class Client implements Serializable {
         this.admin = admin;
     }
 
-    @XmlTransient
-    public List<BankMessage> getBankMessageList() {
-        return bankMessageList;
-    }
-
-    public void setBankMessageList(List<BankMessage> bankMessageList) {
-        this.bankMessageList = bankMessageList;
-    }
-
-    @XmlTransient
-    public List<Account> getAccountList() {
-        return accountList;
-    }
-
-    public void setAccountList(List<Account> accountList) {
-        this.accountList = accountList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -179,6 +158,24 @@ public class Client implements Serializable {
     @Override
     public String toString() {
         return "ru.mti.bankclient.entity.Client[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<BankMessage> getBankMessageList() {
+        return bankMessageList;
+    }
+
+    public void setBankMessageList(List<BankMessage> bankMessageList) {
+        this.bankMessageList = bankMessageList;
+    }
+
+    @XmlTransient
+    public List<Account> getAccountList() {
+        return accountList;
+    }
+
+    public void setAccountList(List<Account> accountList) {
+        this.accountList = accountList;
     }
     
 }
