@@ -3,7 +3,8 @@ package ru.mti.bankclient.session;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import ru.mti.bankclient.entity.Currency;
 
 /**
@@ -13,11 +14,13 @@ import ru.mti.bankclient.entity.Currency;
 @Stateless
 public class CurrencyFacade extends AbstractFacade<Currency> {
 
-    @PersistenceContext(unitName = "BankClientPU")
+    @PersistenceUnit(unitName = "BankClientPU")
+    private EntityManagerFactory factory;
     private EntityManager em;
 
     @Override
     protected EntityManager getEntityManager() {
+        em = factory.createEntityManager();
         return em;
     }
 

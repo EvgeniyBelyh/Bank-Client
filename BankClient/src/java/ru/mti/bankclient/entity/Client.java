@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Client.findByBlocked", query = "SELECT c FROM Client c WHERE c.blocked = :blocked"),
     @NamedQuery(name = "Client.findByAdmin", query = "SELECT c FROM Client c WHERE c.admin = :admin")})
 public class Client implements Serializable {
-
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
     private List<BankMessage> bankMessageList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
@@ -159,7 +159,7 @@ public class Client implements Serializable {
     public String toString() {
         return "ru.mti.bankclient.entity.Client[ id=" + id + " ]";
     }
-
+    
     @XmlTransient
     public List<BankMessage> getBankMessageList() {
         return bankMessageList;
