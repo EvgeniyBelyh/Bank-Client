@@ -106,6 +106,7 @@ public class Login implements EntryPoint {
             
             public void onFailure(Throwable caught) {
                 Window.alert("Ошибка связи с сервером");
+                caught.printStackTrace();
             }
         };
         // отправляем логин и пароль на сервер

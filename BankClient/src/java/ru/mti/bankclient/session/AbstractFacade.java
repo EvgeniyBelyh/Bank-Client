@@ -3,6 +3,7 @@ package ru.mti.bankclient.session;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 /**
  *
@@ -19,15 +20,31 @@ public abstract class AbstractFacade<T> {
     protected abstract EntityManager getEntityManager();
 
     public void create(T entity) {
-        getEntityManager().persist(entity);
+        EntityManager manager = getEntityManager();
+        EntityTransaction trans = manager.getTransaction();
+        trans.begin();
+        manager.persist(entity);
+        manager.flush();
+        trans.commit();
+        
     }
 
     public void edit(T entity) {
-        getEntityManager().merge(entity);
+        EntityManager manager = getEntityManager();
+        EntityTransaction trans = manager.getTransaction();
+        trans.begin();
+        manager.merge(entity);
+        manager.flush();
+        trans.commit();
     }
 
     public void remove(T entity) {
-        getEntityManager().remove(getEntityManager().merge(entity));
+        EntityManager manager = getEntityManager();
+        EntityTransaction trans = manager.getTransaction();
+        trans.begin();
+        manager.remove(manager.merge(entity));
+        manager.flush();
+        trans.commit();
     }
 
     public T find(Object id) {
