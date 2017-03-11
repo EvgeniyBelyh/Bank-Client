@@ -4,7 +4,7 @@ package ru.mti.bankclient.client;
 import java.io.Serializable;
 
 /**
- *
+ * Класс-обертка на стороне клиента для сущности Client
  * @author Белых Евгений
  */
 public class User implements Serializable {
