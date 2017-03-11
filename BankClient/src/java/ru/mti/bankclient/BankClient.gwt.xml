@@ -11,8 +11,9 @@
     <!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
     <inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
     <!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
-
+    
     <entry-point class="ru.mti.bankclient.client.Login"/>
-
+    <!--<inherits name="ru.mti.bankclient.entity.Client"/>-->
+    
     <!-- Do not define servlets here, use web.xml -->
 </module>

@@ -1,17 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ru.mti.bankclient.client.UserCheck;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import ru.mti.bankclient.client.User;
 
 /**
  *
- * @author 1
+ * @author Белых Евгений
  */
 public interface UserCheckAsync {
 
-    public void checkUser(String login, String pass, AsyncCallback<String> callback);
+    public void checkUser(String login, String pass, AsyncCallback<User> asyncCallback);
 }

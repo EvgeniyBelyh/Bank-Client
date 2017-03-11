@@ -5,6 +5,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 import ru.mti.bankclient.entity.Client;
@@ -31,14 +32,41 @@ public class ClientFacade extends AbstractFacade<Client> {
     }
     
     public Client findByLoginAndPassword(String login, String pass) {
+        getEntityManager();
+        Client client = null;
         EntityTransaction trans = em.getTransaction();
         Query query = em.createNamedQuery("Client.findByLoginAndPassword");
-        query.setParameter(":login", login);
-        query.setParameter(":password", pass);
+        query.setParameter("login", login);
+        query.setParameter("password", pass);
         trans.begin();
-        Client client = (Client) query.getSingleResult();
+        try {
+            client = (Client) query.getSingleResult();
+        } catch(NoResultException ex) {
+            System.out.println("Объект клиента не выбрался из базы по логину и паролю");
+        } catch(Exception ex) {
+            throw ex;
+        }              
         trans.commit();
         return client;
     }
+    
+    
+     public Client findByLogin(String login) {
+        getEntityManager();
+        Client client = null;
+        EntityTransaction trans = em.getTransaction();
+        Query query = em.createNamedQuery("Client.findByLogin");
+        query.setParameter("login", login);
+        trans.begin();
+        try {
+            client = (Client) query.getSingleResult();
+        } catch(NoResultException ex) {
+            System.out.println("Объект клиента не выбрался из базы по логину");
+        } catch(Exception ex) {
+            throw ex;
+        }              
+        trans.commit();
+        return client;
+    }   
     
 }

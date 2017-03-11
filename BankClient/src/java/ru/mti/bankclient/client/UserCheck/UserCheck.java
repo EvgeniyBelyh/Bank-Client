@@ -1,19 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ru.mti.bankclient.client.UserCheck;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import ru.mti.bankclient.client.User;
 
 /**
  *
- * @author 1
+ * @author Белых Евгений
  */
 @RemoteServiceRelativePath("usercheck/usercheck")
 public interface UserCheck extends RemoteService {
 
-    public String checkUser(String login, String pass);
+    public User checkUser(String login, String pass);
 }

@@ -16,8 +16,6 @@ import ru.mti.bankclient.client.UserCheck.UserCheck;
 import ru.mti.bankclient.client.UserCheck.UserCheckAsync;
 
 
-
-
 /**
  * Точка входа в приложение
  *
@@ -25,9 +23,9 @@ import ru.mti.bankclient.client.UserCheck.UserCheckAsync;
  */
 public class Login implements EntryPoint {
     
-    TextBox login;
-    PasswordTextBox pass;
-    UserCheckAsync userCheckService = GWT.create(UserCheck.class);
+    private TextBox login;
+    private PasswordTextBox pass;
+    private UserCheckAsync userCheckService = GWT.create(UserCheck.class);
     
     /**
      * Конструктор по умолчанию
@@ -40,7 +38,7 @@ public class Login implements EntryPoint {
      */
     public void onModuleLoad() {
         
-        //текстовое поле для ввода логина
+        //поле для ввода логина
         login = new TextBox();
         login.setStyleName("login_column"); //ставим стиль оформления
         login.setTitle("Логин"); //ставим всплывающую подсказку
@@ -65,7 +63,6 @@ public class Login implements EntryPoint {
         //обработчик для клика по кнопке 'Вход'
         confirmButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //confirmButton.setEnabled(false);
                 sendInfoToServer();
             }
         });
@@ -90,7 +87,7 @@ public class Login implements EntryPoint {
             login.selectAll();
             return;
         }
-        
+        // проверяем длину пароля
         if (pass.getText().length() < 8) {
             Window.alert("Пароль не может быть менее 8 символов");
             pass.setFocus(true);
@@ -99,21 +96,29 @@ public class Login implements EntryPoint {
         }
         
         // обрабатываем полученный от сервера результат
-        final AsyncCallback<String> callback = new AsyncCallback<String>() {
-            public void onSuccess(String result) {
-                Window.alert(result);
+        final AsyncCallback<User> callback = new AsyncCallback<User>() {
+            // при успешной отработке удаленного вызова
+            public void onSuccess(User result) {
+                //tryCount--;
+                if(result.isBlocked()) {
+                    Window.alert("Ваша учетная запись заблокирована! Обратитесь в банк за дополнительной информацией");
+                } else {
+                    if(result.getPassword().length() == 1) {
+                        Window.alert("Неверный логин или пароль. Количество попыток: " + result.getPassword());
+                    } else {
+                        Window.alert("Добро пожаловать " + result.getName());
+                    }
+                }
             }
-            
+            // в случае возникновения ошибки
             public void onFailure(Throwable caught) {
-                Window.alert("Ошибка связи с сервером");
+                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
                 caught.printStackTrace();
             }
         };
+
         // отправляем логин и пароль на сервер
         userCheckService.checkUser(login.getText(), pass.getText(), callback);
-        
-        
-        
-        
+   
     }
 }
