@@ -21,7 +21,7 @@ import ru.mti.bankclient.client.UserCheck.UserCheckAsync;
  *
  * @author Белых Евгений
  */
-public class Login implements EntryPoint {
+public class Login {
     
     private TextBox login;
     private PasswordTextBox pass;
@@ -107,6 +107,7 @@ public class Login implements EntryPoint {
                         Window.alert("Неверный логин или пароль. Количество попыток: " + result.getPassword());
                     } else {
                         Window.alert("Добро пожаловать " + result.getName());
+                       
                     }
                 }
             }
