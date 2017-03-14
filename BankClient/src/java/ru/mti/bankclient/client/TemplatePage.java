@@ -32,11 +32,15 @@ public class TemplatePage implements IsWidget
             createHeaderPanel(); // формируем хедер
             createFooterPanel(); // формируем футер
             
+            // ставим промежутки между блоками
+            leftBodyPanel.setSpacing(10);
+            rightBodyPanel.setSpacing(10);
+                    
             // расставляем готовые контейнеры по местам
-            dockPanel.addNorth(headerPanel, 10);
-            dockPanel.addSouth(footerPanel, 10);           
-            dockPanel.addWest(leftBodyPanel, 15);
-            dockPanel.addEast(rightBodyPanel, 15);            
+            dockPanel.addNorth(headerPanel, 8);
+            dockPanel.addSouth(footerPanel, 8);           
+            dockPanel.addWest(leftBodyPanel, 25);
+            dockPanel.addEast(rightBodyPanel, 25);            
             dockPanel.add(centerBodyPanel);
 	}
 	

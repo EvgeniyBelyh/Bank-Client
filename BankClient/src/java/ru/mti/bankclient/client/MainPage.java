@@ -39,7 +39,11 @@ public class MainPage extends TemplatePage {
         // добавляем панель приветствия в хедер
         this.headerPanel.add(welcomPanel);
         
-                
+        // добавляем блок меню переводов
+        this.leftBodyPanel.add(new TransferMenuBlock());
+         // добавляем блок меню переводов
+        this.leftBodyPanel.add(new ServicePayMenuBlock());       
+        
     }
     
 }

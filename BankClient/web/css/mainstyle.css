@@ -45,18 +45,23 @@ body {
 }
 
 .main_menu_container {
-    display: table-cell;
+    /*display: table-cell;*/
     width: 300px;
-    border: 1px solid red;
+    /*border: 1px solid red;*/
 }
 
 .menu_item {
     border: 1px solid #B7B7B7;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    width: 300px;
     /*margin-top: 10px;*/
 }
 
 .menu_item_header {
     background-color: #6451d5;
+    width: 300px;
     color: white;
 }
 
@@ -68,6 +73,7 @@ body {
 
 .menu_item ul {
     padding-left: 20px;
+    width: 300px;
 }
 
 .menu_item li {
@@ -81,6 +87,16 @@ body {
 }
 
 .menu_item li a:hover {
+    color: #6451d5;
+    text-decoration: underline;
+}
+
+.menu_item a {
+    color: #848484;
+    text-decoration: none;
+}
+
+.menu_item a:hover {
     color: #6451d5;
     text-decoration: underline;
 }
