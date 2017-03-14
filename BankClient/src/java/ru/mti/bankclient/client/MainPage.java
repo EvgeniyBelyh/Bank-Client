@@ -1,26 +1,45 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ru.mti.bankclient.client;
 
-import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+
 
 /**
- *
- * @author 1
+ * Главная страница программы
+ * @author Белых Евгений
  */
-public class MainPage extends TemplatePage implements EntryPoint {
+public class MainPage extends TemplatePage {
     
-
-    public void onModuleLoad() {
+    
+    public MainPage(User user) {
         
-        RootPanel.get("login_frame").add(new MainPage().asWidget());
+        super();
         
+        // собираем панель приветствия
+        VerticalPanel welcomPanel = new VerticalPanel();
+        welcomPanel.add(new HTML("<p>Добро пожаловать,<br>" + user.getName() + "</p>"));
+        welcomPanel.setStyleName("welcom_client_container");
+        
+        // делаем ссылку для выхода
+        Hyperlink exitLink = new Hyperlink();
+        exitLink.setText("Выход");
+        exitLink.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                // формируем окно ввода логина и пароля
+                RootLayoutPanel.get().add(new Login());
+            }
+        });
+        // добавляем ссылку
+        welcomPanel.add(exitLink);
+        // добавляем панель приветствия в хедер
+        this.headerPanel.add(welcomPanel);
+        
+                
     }
-    
     
 }

@@ -1,15 +1,14 @@
 
 package ru.mti.bankclient.client;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import ru.mti.bankclient.client.UserCheck.UserCheck;
@@ -21,22 +20,18 @@ import ru.mti.bankclient.client.UserCheck.UserCheckAsync;
  *
  * @author Белых Евгений
  */
-public class Login {
+public class Login extends TemplatePage {
     
     private TextBox login;
     private PasswordTextBox pass;
     private UserCheckAsync userCheckService = GWT.create(UserCheck.class);
     
     /**
-     * Конструктор по умолчанию
+     * Конструктор
      */
     public Login() {
-    }
-
-    /**
-     * Аналог метода main
-     */
-    public void onModuleLoad() {
+        
+        super();
         
         //поле для ввода логина
         login = new TextBox();
@@ -67,7 +62,7 @@ public class Login {
             }
         });
         //добавляем элементы на страницу
-        RootPanel.get("login_frame").add(vPanel);
+        this.centerBodyPanel.add(vPanel);
     }
     
     
@@ -99,15 +94,19 @@ public class Login {
         final AsyncCallback<User> callback = new AsyncCallback<User>() {
             // при успешной отработке удаленного вызова
             public void onSuccess(User result) {
-                //tryCount--;
+                
+                if(result == null) {
+                    Window.alert("Учетной записи с таким логином не сущесвует.");
+                    return;
+                }
+                
                 if(result.isBlocked()) {
                     Window.alert("Ваша учетная запись заблокирована! Обратитесь в банк за дополнительной информацией");
                 } else {
                     if(result.getPassword().length() == 1) {
                         Window.alert("Неверный логин или пароль. Количество попыток: " + result.getPassword());
                     } else {
-                        Window.alert("Добро пожаловать " + result.getName());
-                       
+                        openMainPage(result);
                     }
                 }
             }
@@ -122,4 +121,12 @@ public class Login {
         userCheckService.checkUser(login.getText(), pass.getText(), callback);
    
     }
+    
+    private void openMainPage(User user) {
+        // чистим центральный контейнер
+        this.centerBodyPanel.clear();
+        // открываем главную страницу
+        RootLayoutPanel.get().add(new MainPage(user));
+    }
+    
 }
