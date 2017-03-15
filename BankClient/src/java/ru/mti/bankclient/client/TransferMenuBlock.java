@@ -37,7 +37,9 @@ public class TransferMenuBlock extends VerticalPanel {
         this.setStyleName("main_menu_container");
     }
     
-
+     /**
+     * создает заголовок блока меню
+     */
     protected void createHeader(String headerText) {
         
         // форматируем заголовок
@@ -48,6 +50,9 @@ public class TransferMenuBlock extends VerticalPanel {
         this.add(header);
     }
     
+     /**
+     * создает тело блока меню
+     */
     protected void createBody() {
         
         // панель тела блока меню

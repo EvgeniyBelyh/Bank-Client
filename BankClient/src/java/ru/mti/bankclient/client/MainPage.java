@@ -15,10 +15,25 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class MainPage extends TemplatePage {
     
+    private User user;
+    
     
     public MainPage(User user) {
         
         super();
+        this.user = user;
+        
+        // создаем панель приветствия в хедере
+        createWelcomPanel();
+        // создаем меню
+        createMenuBlocks();
+        
+    }
+    
+    /**
+     * создает панель приветствия в хедере страницы
+     */
+    private void createWelcomPanel() {
         
         // собираем панель приветствия
         VerticalPanel welcomPanel = new VerticalPanel();
@@ -29,9 +44,12 @@ public class MainPage extends TemplatePage {
         Hyperlink exitLink = new Hyperlink();
         exitLink.setText("Выход");
         exitLink.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
+            public void onClick(ClickEvent event) {              
+                RootLayoutPanel rootPanel = RootLayoutPanel.get();
+                // очищаем страницу
+                rootPanel.clear();
                 // формируем окно ввода логина и пароля
-                RootLayoutPanel.get().add(new Login());
+                rootPanel.add(new Login());
             }
         });
         // добавляем ссылку
@@ -39,11 +57,18 @@ public class MainPage extends TemplatePage {
         // добавляем панель приветствия в хедер
         this.headerPanel.add(welcomPanel);
         
-        // добавляем блок меню переводов
-        this.leftBodyPanel.add(new TransferMenuBlock());
-         // добавляем блок меню переводов
-        this.leftBodyPanel.add(new ServicePayMenuBlock());       
-        
     }
     
+    /**
+     * создает блоки меню в левой и правой панелях страницы
+     */
+    private void createMenuBlocks() {
+        
+        // добавляем блок меню переводов
+        this.leftBodyPanel.add(new TransferMenuBlock());
+         // добавляем блок меню оплаты услуг
+        this.leftBodyPanel.add(new ServicePayMenuBlock());       
+        // добавляем блок меню операций со счетами
+        this.leftBodyPanel.add(new AccountOperationsMenuBlock()); 
+    }
 }

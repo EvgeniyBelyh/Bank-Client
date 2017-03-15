@@ -20,7 +20,9 @@ public class ServicePayMenuBlock extends TransferMenuBlock {
 
     }
     
-   
+    /**
+     * создает тело блока меню
+     */   
     @Override
     protected void createBody() {
         // панель тела блока меню
