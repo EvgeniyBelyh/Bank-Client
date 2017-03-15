@@ -122,11 +122,17 @@ public class Login extends TemplatePage {
    
     }
     
+    /**
+     * открывает главную страницу
+     * @param user - обертка с данными пользователя
+     */
     private void openMainPage(User user) {
-        // чистим центральный контейнер
-        this.centerBodyPanel.clear();
+        
+        RootLayoutPanel rootPanel = RootLayoutPanel.get();
+        // убираем все виджеты
+        rootPanel.clear();
         // открываем главную страницу
-        RootLayoutPanel.get().add(new MainPage(user));
+        rootPanel.add(new MainPage(user));
     }
     
 }

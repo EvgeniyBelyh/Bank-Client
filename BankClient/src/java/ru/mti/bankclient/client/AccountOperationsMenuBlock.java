@@ -30,7 +30,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
         openDeposit.setText("Открыть вклад");
         openDeposit.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных для оплаты услуг
+                //TODO открывать форму ввода данных
             }
         });
         // ссылка на страницу закрытия вклада
@@ -59,7 +59,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
         }); 
         // ссылка на страницу остории операций
         Hyperlink operationsHistory = new Hyperlink();
-        operationsHistory.setText("Блокировать карту");
+        operationsHistory.setText("История операций");
         operationsHistory.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 //TODO открывать форму ввода данных
