@@ -1,10 +1,10 @@
 
-package ru.mti.bankclient.server.UserCheck;
+package ru.mti.bankclient.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import javax.ejb.EJB;
 import ru.mti.bankclient.client.User;
-import ru.mti.bankclient.client.UserCheck.UserCheck;
+import ru.mti.bankclient.client.rpc.UserCheck;
 import ru.mti.bankclient.entity.Client;
 import ru.mti.bankclient.session.ClientFacade;
 

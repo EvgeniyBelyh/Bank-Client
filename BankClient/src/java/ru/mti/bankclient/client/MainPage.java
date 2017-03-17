@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class MainPage extends TemplatePage {
     
-    private User user;
+    public static User user;
     
     
     public MainPage(User user) {
@@ -65,7 +65,7 @@ public class MainPage extends TemplatePage {
     private void createMenuBlocks() {
         
         // добавляем блок меню переводов
-        this.leftBodyPanel.add(new TransferMenuBlock());
+        this.leftBodyPanel.add(new TransferMenuBlock(this));
          // добавляем блок меню оплаты услуг
         this.leftBodyPanel.add(new ServicePayMenuBlock());       
         // добавляем блок меню операций со счетами

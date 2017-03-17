@@ -14,5 +14,9 @@
     
     <entry-point class="ru.mti.bankclient.client.Main"/>
     
+    <source path='client'/>
+    <source path='shared'/>
+    <source path='entity'/>
+    
     <!-- Do not define servlets here, use web.xml -->
 </module>

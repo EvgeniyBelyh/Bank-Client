@@ -1,5 +1,5 @@
 
-package ru.mti.bankclient.client.UserCheck;
+package ru.mti.bankclient.client.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import ru.mti.bankclient.client.User;

@@ -11,8 +11,8 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import ru.mti.bankclient.client.UserCheck.UserCheck;
-import ru.mti.bankclient.client.UserCheck.UserCheckAsync;
+import ru.mti.bankclient.client.rpc.UserCheck;
+import ru.mti.bankclient.client.rpc.UserCheckAsync;
 
 
 /**

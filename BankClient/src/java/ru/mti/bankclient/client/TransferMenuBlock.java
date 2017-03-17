@@ -14,10 +14,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class TransferMenuBlock extends VerticalPanel {
     
+    private MainPage mainPage;
     
-    public TransferMenuBlock() {
+    public TransferMenuBlock(MainPage page) {
         
         super();
+        this.mainPage = page;
         
         createHeader("Переводы");
         createBody();
@@ -62,7 +64,7 @@ public class TransferMenuBlock extends VerticalPanel {
         ownAccount.setText("Между своими счетами");
         ownAccount.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных для перевода
+                createTransfersContent();
             }
         });
         // ссылка на страницу переводов между клиентами банка
@@ -90,5 +92,10 @@ public class TransferMenuBlock extends VerticalPanel {
         
         // добавляем тело на панель
         this.add(body);
+    }
+    
+    
+    public void createTransfersContent() {
+        this.mainPage.centerBodyPanel.add(new TransfersContent());
     }
 }
