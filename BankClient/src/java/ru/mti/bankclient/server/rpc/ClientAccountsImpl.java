@@ -20,10 +20,11 @@ public class ClientAccountsImpl extends RemoteServiceServlet implements ClientAc
     @EJB
     private ClientFacade clientFacade;
     
-    public List<Account> getAccountList(int clientId) {
+    public ArrayList<Account> getAccountList(int clientId) {
         
         Client client = clientFacade.find(clientId);
-        return client.getAccountList();
+        ArrayList list = new ArrayList(client.getAccountList());               
+        return list;
         
     }
 }
