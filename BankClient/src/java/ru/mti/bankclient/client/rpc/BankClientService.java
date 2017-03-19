@@ -11,7 +11,7 @@ import ru.mti.bankclient.shared.ClientDTO;
  *
  * @author Белых Евгений
  */
-@RemoteServiceRelativePath("usercheck/usercheck")
+@RemoteServiceRelativePath("usercheck")
 public interface BankClientService extends RemoteService {
 
     public ClientDTO checkUser(String login, String pass);

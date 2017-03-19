@@ -6,6 +6,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -33,14 +34,19 @@ public class TransfersContent extends VerticalPanel {
             // при успешной отработке удаленного вызова
             public void onSuccess(List<AccountDTO> result) {
                 for(AccountDTO acc : result) {
-                    locAccount.addItem(acc.getNumber(), acc.getId().toString());
-                    destAccount.addItem(acc.getNumber(), acc.getId().toString());
+                    locAccount.addItem(acc.getAccountTypeName() + " " 
+                            + acc.getNumber() + ", остаток " + acc.getBalance() 
+                            + " " + acc.getCurrencyName(), acc.getId().toString());
+
+                    destAccount.addItem(acc.getAccountTypeName() + " " 
+                            + acc.getNumber() + ", остаток " + acc.getBalance() 
+                            + " " + acc.getCurrencyName(), acc.getId().toString());
                 }
                 
             }
             // в случае возникновения ошибки
             public void onFailure(Throwable caught) {
-                Window.alert("Не могу выбрать счета для выпадающих списков");
+                Window.alert("Ошибка связи с сервером! Невозможно определить список счетов. Повторите попытку позднее");
                 caught.printStackTrace();
             }         
         };  
@@ -49,6 +55,10 @@ public class TransfersContent extends VerticalPanel {
         bankClientServiceAsync.getAccounts(1, callback);
         createHeader();
         createBody();
+        
+        locAccount.setStyleName("operation_fields");
+        destAccount.setStyleName("operation_fields");
+        this.setStyleName("operations_container");
     }
     
     /**
@@ -67,11 +77,28 @@ public class TransfersContent extends VerticalPanel {
     public void createBody() {
         
         TextBox sumField = new TextBox(); // сумма
+        sumField.setStyleName("operation_fields");
         Button confirmBtn = new Button("Перевести");
+        confirmBtn.setStyleName("confirm_button");
         
-        this.add(locAccount);
-        this.add(destAccount);
-        this.add(sumField);
-        this.add(confirmBtn);
+        HorizontalPanel hPanel = new HorizontalPanel();
+        VerticalPanel headers = new VerticalPanel();
+        VerticalPanel fields = new VerticalPanel();
+        fields.setSpacing(10);
+        
+        headers.add(new HTML("<h3>Счет списания</h3>"));
+        fields.add(locAccount);       
+        headers.add(new HTML("<h3>Счет зачисления</h3>"));
+        fields.add(destAccount);       
+        headers.add(new HTML("<h3>Сумма перевода</h3>"));
+        fields.add(sumField); 
+        headers.add(new HTML("<br>"));
+        headers.add(confirmBtn);
+        
+        hPanel.add(headers);
+        hPanel.add(fields);
+        
+        this.add(hPanel);
+
     }
 }

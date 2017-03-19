@@ -4,17 +4,9 @@
         <servlet-name>UserCheck</servlet-name>
         <servlet-class>ru.mti.bankclient.server.BankClientServiceImpl</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>ClientAccounts</servlet-name>
-        <servlet-class>ru.mti.bankclient.server.rpc.ClientAccountsImpl</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>UserCheck</servlet-name>
-        <url-pattern>/ru.mti.bankclient.BankClient/usercheck/usercheck</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ClientAccounts</servlet-name>
-        <url-pattern>/ru.mti.bankclient.BankClient/clientaccounts</url-pattern>
+        <url-pattern>/ru.mti.bankclient.BankClient/usercheck</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

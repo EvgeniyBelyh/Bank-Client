@@ -115,7 +115,12 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
         
         return accountDTO;
     }
-
+    
+    /**
+     * Выбирает счета клиента
+     * @param clientId - код клиента
+     * @return - список счетов клиента
+     */
     @Override
     public List<AccountDTO> getAccounts(int clientId) {
         

@@ -111,23 +111,18 @@ body {
 }
 
 .operations_container {
-    display: table-cell;
-    min-width: 300px;
-    /*padding: 20px 20px;*/
-    border: 1px solid blue;
-    /*margin: 0px;*/
-}
-
-.operations_inner_container {
-    /*padding: 0px;*/
-    /*padding-top: 40px;*/
-    border: 1px solid red;
-    /*margin: 0px;    */
+    padding: 0px 20px;
+    color: #848484;
+    font-weight: normal;
 }
 
 .operations_container h2 {
-    color: #848484;
-    font-weight: normal;
+    margin-left: 0px;
+    margin-bottom: 0px;
+}
+
+.operations_container h3 {
+
 }
 
 
@@ -199,11 +194,11 @@ input[type="submit"] {
     text-transform: uppercase;
     box-sizing: border-box;
     font-family: "Trebuchet MS";
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
     color: #ffffff;
     background-color: #382d78;
-    padding: 23px;
+    padding: 10px;
     border: none;
 }
 /*****************************************/  
@@ -224,14 +219,32 @@ input[type="submit"] {
 
 
 .login_footer {
-    /*position: absolute;
-    bottom: 0px;
-    padding: 0px;
-    margin: 0px;
-    padding-left: 20px;
-    margin-top: 20px;*/
     background-color: #D7D4D4;
     color: #848484;
     height: 100px;
     width: 100%;
+}
+
+
+.operation_fields {
+    border: 1px solid #b2b2b2;
+    padding: 10px 25px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0px;
+    font-size: 12px;
+}
+
+.confirm_button {
+    width: 100%;
+    margin: 0px;
+    text-transform: uppercase;
+    box-sizing: border-box;
+    font-family: "Trebuchet MS";
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #382d78;
+    padding: 15px;
+    border: none;
 }
