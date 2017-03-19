@@ -24,6 +24,13 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import ru.mti.bankclient.entity.AccountType;
+import ru.mti.bankclient.entity.Client;
+import ru.mti.bankclient.entity.Currency;
+import ru.mti.bankclient.entity.Operation;
+import ru.mti.bankclient.entity.Template;
+
 /**
  *
  * @author Белых Евгений
@@ -43,7 +50,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Account.findByBlocked", query = "SELECT a FROM Account a WHERE a.blocked = :blocked"),
     @NamedQuery(name = "Account.findByExpirationDate", query = "SELECT a FROM Account a WHERE a.expirationDate = :expirationDate"),
     @NamedQuery(name = "Account.findByCvv", query = "SELECT a FROM Account a WHERE a.cvv = :cvv")})
-public class Account implements Serializable {
+public class Account implements Serializable, IsSerializable {
 
     private static final long serialVersionUID = 1L;
     @Id

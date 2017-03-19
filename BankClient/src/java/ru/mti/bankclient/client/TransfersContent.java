@@ -1,6 +1,7 @@
 
 package ru.mti.bankclient.client;
 
+import ru.mti.bankclient.entity.Account;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import ru.mti.bankclient.client.rpc.ClientAccounts;
 import ru.mti.bankclient.client.rpc.ClientAccountsAsync;
-import ru.mti.bankclient.entity.Account;
 
 
 /**
@@ -34,8 +34,8 @@ public class TransfersContent extends VerticalPanel {
             // при успешной отработке удаленного вызова
             public void onSuccess(ArrayList<Account> result) {
                 for(Account acc : result) {
-                    locAccount.addItem(acc.getNumber(), acc.getId().toString());
-                    destAccount.addItem(acc.getNumber(), acc.getId().toString());
+                    locAccount.addItem(acc.getNumber());
+                    destAccount.addItem(acc.getNumber());
                 }
                 
             }

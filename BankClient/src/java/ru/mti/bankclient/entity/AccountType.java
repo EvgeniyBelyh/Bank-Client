@@ -1,7 +1,6 @@
 
 package ru.mti.bankclient.entity;
 
-import ru.mti.bankclient.entity.Account;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
