@@ -1,5 +1,5 @@
 
-package ru.mti.bankclient.entity;
+package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,13 +24,6 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import ru.mti.bankclient.entity.AccountType;
-import ru.mti.bankclient.entity.Client;
-import ru.mti.bankclient.entity.Currency;
-import ru.mti.bankclient.entity.Operation;
-import ru.mti.bankclient.entity.Template;
-
 /**
  *
  * @author Белых Евгений
@@ -39,18 +32,18 @@ import ru.mti.bankclient.entity.Template;
 @Table(name = "account")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a"),
-    @NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id = :id"),
-    @NamedQuery(name = "Account.findByNumber", query = "SELECT a FROM Account a WHERE a.number = :number"),
-    @NamedQuery(name = "Account.findByBalance", query = "SELECT a FROM Account a WHERE a.balance = :balance"),
-    @NamedQuery(name = "Account.findByOverlimit", query = "SELECT a FROM Account a WHERE a.overlimit = :overlimit"),
-    @NamedQuery(name = "Account.findByInterestRate", query = "SELECT a FROM Account a WHERE a.interestRate = :interestRate"),
-    @NamedQuery(name = "Account.findByLoanRate", query = "SELECT a FROM Account a WHERE a.loanRate = :loanRate"),
-    @NamedQuery(name = "Account.findByCardNumber", query = "SELECT a FROM Account a WHERE a.cardNumber = :cardNumber"),
-    @NamedQuery(name = "Account.findByBlocked", query = "SELECT a FROM Account a WHERE a.blocked = :blocked"),
-    @NamedQuery(name = "Account.findByExpirationDate", query = "SELECT a FROM Account a WHERE a.expirationDate = :expirationDate"),
-    @NamedQuery(name = "Account.findByCvv", query = "SELECT a FROM Account a WHERE a.cvv = :cvv")})
-public class Account implements Serializable, IsSerializable {
+    @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")
+    , @NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id = :id")
+    , @NamedQuery(name = "Account.findByNumber", query = "SELECT a FROM Account a WHERE a.number = :number")
+    , @NamedQuery(name = "Account.findByBalance", query = "SELECT a FROM Account a WHERE a.balance = :balance")
+    , @NamedQuery(name = "Account.findByOverlimit", query = "SELECT a FROM Account a WHERE a.overlimit = :overlimit")
+    , @NamedQuery(name = "Account.findByInterestRate", query = "SELECT a FROM Account a WHERE a.interestRate = :interestRate")
+    , @NamedQuery(name = "Account.findByLoanRate", query = "SELECT a FROM Account a WHERE a.loanRate = :loanRate")
+    , @NamedQuery(name = "Account.findByCardNumber", query = "SELECT a FROM Account a WHERE a.cardNumber = :cardNumber")
+    , @NamedQuery(name = "Account.findByBlocked", query = "SELECT a FROM Account a WHERE a.blocked = :blocked")
+    , @NamedQuery(name = "Account.findByExpirationDate", query = "SELECT a FROM Account a WHERE a.expirationDate = :expirationDate")
+    , @NamedQuery(name = "Account.findByCvv", query = "SELECT a FROM Account a WHERE a.cvv = :cvv")})
+public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -267,7 +260,7 @@ public class Account implements Serializable, IsSerializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.Account[ id=" + id + " ]";
+        return "ru.mti.bankclient.shared.Account[ id=" + id + " ]";
     }
     
 }

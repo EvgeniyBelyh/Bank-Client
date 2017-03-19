@@ -3,9 +3,8 @@ package ru.mti.bankclient.client.rpc;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import java.util.ArrayList;
 import java.util.List;
-import ru.mti.bankclient.entity.Account;
+import ru.mti.bankclient.shared.Account;
 
 /**
  * Интерфейс удаленного сервиса получения списка счетов клиента
@@ -14,5 +13,5 @@ import ru.mti.bankclient.entity.Account;
 @RemoteServiceRelativePath("clientaccounts")
 public interface ClientAccounts extends RemoteService {
 
-    public ArrayList<Account> getAccountList(int clientId);
+    public List<Account> getAccountList(int clientId);
 }

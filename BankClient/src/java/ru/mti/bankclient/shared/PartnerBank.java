@@ -1,5 +1,9 @@
-
-package ru.mti.bankclient.entity;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,19 +25,19 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Entity
 @Table(name = "partner_bank")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PartnerBank.findAll", query = "SELECT p FROM PartnerBank p"),
-    @NamedQuery(name = "PartnerBank.findById", query = "SELECT p FROM PartnerBank p WHERE p.id = :id"),
-    @NamedQuery(name = "PartnerBank.findByName", query = "SELECT p FROM PartnerBank p WHERE p.name = :name"),
-    @NamedQuery(name = "PartnerBank.findByInn", query = "SELECT p FROM PartnerBank p WHERE p.inn = :inn"),
-    @NamedQuery(name = "PartnerBank.findByKpp", query = "SELECT p FROM PartnerBank p WHERE p.kpp = :kpp"),
-    @NamedQuery(name = "PartnerBank.findByBik", query = "SELECT p FROM PartnerBank p WHERE p.bik = :bik"),
-    @NamedQuery(name = "PartnerBank.findByCorrAccount", query = "SELECT p FROM PartnerBank p WHERE p.corrAccount = :corrAccount")})
+    @NamedQuery(name = "PartnerBank.findAll", query = "SELECT p FROM PartnerBank p")
+    , @NamedQuery(name = "PartnerBank.findById", query = "SELECT p FROM PartnerBank p WHERE p.id = :id")
+    , @NamedQuery(name = "PartnerBank.findByName", query = "SELECT p FROM PartnerBank p WHERE p.name = :name")
+    , @NamedQuery(name = "PartnerBank.findByInn", query = "SELECT p FROM PartnerBank p WHERE p.inn = :inn")
+    , @NamedQuery(name = "PartnerBank.findByKpp", query = "SELECT p FROM PartnerBank p WHERE p.kpp = :kpp")
+    , @NamedQuery(name = "PartnerBank.findByBik", query = "SELECT p FROM PartnerBank p WHERE p.bik = :bik")
+    , @NamedQuery(name = "PartnerBank.findByCorrAccount", query = "SELECT p FROM PartnerBank p WHERE p.corrAccount = :corrAccount")})
 public class PartnerBank implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -187,7 +191,7 @@ public class PartnerBank implements Serializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.PartnerBank[ id=" + id + " ]";
+        return "ru.mti.bankclient.shared.PartnerBank[ id=" + id + " ]";
     }
     
 }

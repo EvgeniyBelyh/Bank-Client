@@ -1,5 +1,9 @@
-
-package ru.mti.bankclient.entity;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -19,15 +23,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Entity
 @Table(name = "bank_message")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "BankMessage.findAll", query = "SELECT b FROM BankMessage b"),
-    @NamedQuery(name = "BankMessage.findById", query = "SELECT b FROM BankMessage b WHERE b.id = :id"),
-    @NamedQuery(name = "BankMessage.findByText", query = "SELECT b FROM BankMessage b WHERE b.text = :text")})
+    @NamedQuery(name = "BankMessage.findAll", query = "SELECT b FROM BankMessage b")
+    , @NamedQuery(name = "BankMessage.findById", query = "SELECT b FROM BankMessage b WHERE b.id = :id")
+    , @NamedQuery(name = "BankMessage.findByText", query = "SELECT b FROM BankMessage b WHERE b.text = :text")})
 public class BankMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -103,7 +107,7 @@ public class BankMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.BankMessage[ id=" + id + " ]";
+        return "ru.mti.bankclient.shared.BankMessage[ id=" + id + " ]";
     }
     
 }

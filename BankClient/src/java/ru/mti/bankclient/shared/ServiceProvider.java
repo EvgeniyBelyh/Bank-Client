@@ -1,5 +1,9 @@
-
-package ru.mti.bankclient.entity;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,17 +26,17 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Entity
 @Table(name = "service_provider")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ServiceProvider.findAll", query = "SELECT s FROM ServiceProvider s"),
-    @NamedQuery(name = "ServiceProvider.findById", query = "SELECT s FROM ServiceProvider s WHERE s.id = :id"),
-    @NamedQuery(name = "ServiceProvider.findByName", query = "SELECT s FROM ServiceProvider s WHERE s.name = :name"),
-    @NamedQuery(name = "ServiceProvider.findByInn", query = "SELECT s FROM ServiceProvider s WHERE s.inn = :inn"),
-    @NamedQuery(name = "ServiceProvider.findByAccountNumber", query = "SELECT s FROM ServiceProvider s WHERE s.accountNumber = :accountNumber")})
+    @NamedQuery(name = "ServiceProvider.findAll", query = "SELECT s FROM ServiceProvider s")
+    , @NamedQuery(name = "ServiceProvider.findById", query = "SELECT s FROM ServiceProvider s WHERE s.id = :id")
+    , @NamedQuery(name = "ServiceProvider.findByName", query = "SELECT s FROM ServiceProvider s WHERE s.name = :name")
+    , @NamedQuery(name = "ServiceProvider.findByInn", query = "SELECT s FROM ServiceProvider s WHERE s.inn = :inn")
+    , @NamedQuery(name = "ServiceProvider.findByAccountNumber", query = "SELECT s FROM ServiceProvider s WHERE s.accountNumber = :accountNumber")})
 public class ServiceProvider implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -147,7 +151,7 @@ public class ServiceProvider implements Serializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.ServiceProvider[ id=" + id + " ]";
+        return "ru.mti.bankclient.shared.ServiceProvider[ id=" + id + " ]";
     }
     
 }

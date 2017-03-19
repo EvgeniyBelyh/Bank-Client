@@ -1,5 +1,9 @@
-
-package ru.mti.bankclient.entity;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,16 +25,17 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Entity
-@Table(name = "account_type")
+@Table(name = "currency")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AccountType.findAll", query = "SELECT a FROM AccountType a"),
-    @NamedQuery(name = "AccountType.findById", query = "SELECT a FROM AccountType a WHERE a.id = :id"),
-    @NamedQuery(name = "AccountType.findByName", query = "SELECT a FROM AccountType a WHERE a.name = :name")})
-public class AccountType implements Serializable {
+    @NamedQuery(name = "Currency.findAll", query = "SELECT c FROM Currency c")
+    , @NamedQuery(name = "Currency.findById", query = "SELECT c FROM Currency c WHERE c.id = :id")
+    , @NamedQuery(name = "Currency.findByName", query = "SELECT c FROM Currency c WHERE c.name = :name")
+    , @NamedQuery(name = "Currency.findByCode", query = "SELECT c FROM Currency c WHERE c.code = :code")})
+public class Currency implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,19 +48,25 @@ public class AccountType implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "accountTypeId")
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 3)
+    @Column(name = "code")
+    private String code;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "currencyId")
     private List<Account> accountList;
 
-    public AccountType() {
+    public Currency() {
     }
 
-    public AccountType(Integer id) {
+    public Currency(Integer id) {
         this.id = id;
     }
 
-    public AccountType(Integer id, String name) {
+    public Currency(Integer id, String name, String code) {
         this.id = id;
         this.name = name;
+        this.code = code;
     }
 
     public Integer getId() {
@@ -72,6 +83,14 @@ public class AccountType implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @XmlTransient
@@ -93,10 +112,10 @@ public class AccountType implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AccountType)) {
+        if (!(object instanceof Currency)) {
             return false;
         }
-        AccountType other = (AccountType) object;
+        Currency other = (Currency) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -105,7 +124,7 @@ public class AccountType implements Serializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.AccountType[ id=" + id + " ]";
+        return "ru.mti.bankclient.shared.Currency[ id=" + id + " ]";
     }
     
 }

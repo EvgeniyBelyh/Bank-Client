@@ -1,7 +1,7 @@
 
 package ru.mti.bankclient.client;
 
-import ru.mti.bankclient.entity.Account;
+import ru.mti.bankclient.shared.Account;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import java.util.ArrayList;
 import java.util.List;
 import ru.mti.bankclient.client.rpc.ClientAccounts;
 import ru.mti.bankclient.client.rpc.ClientAccountsAsync;
@@ -23,19 +22,19 @@ import ru.mti.bankclient.client.rpc.ClientAccountsAsync;
 public class TransfersContent extends VerticalPanel {
     
     private ClientAccountsAsync clientAccountsService = GWT.create(ClientAccounts.class);
-    final AsyncCallback<ArrayList<Account>> callback;
+    final AsyncCallback<List<Account>> callback;
     private ListBox locAccount = new ListBox(); // список счетов списания
     private ListBox destAccount = new ListBox(); // список счетов зачисления
     
     
     public TransfersContent() {
         
-        this.callback = new AsyncCallback<ArrayList<Account>>() {
+        this.callback = new AsyncCallback<List<Account>>() {
             // при успешной отработке удаленного вызова
-            public void onSuccess(ArrayList<Account> result) {
+            public void onSuccess(List<Account> result) {
                 for(Account acc : result) {
-                    locAccount.addItem(acc.getNumber());
-                    destAccount.addItem(acc.getNumber());
+                    locAccount.addItem(acc.getNumber(), acc.getId().toString());
+                    destAccount.addItem(acc.getNumber(), acc.getId().toString());
                 }
                 
             }

@@ -1,5 +1,9 @@
-
-package ru.mti.bankclient.entity;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,25 +23,24 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import ru.mti.bankclient.entity.PartnerBank;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Entity
 @Table(name = "operation")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Operation.findAll", query = "SELECT o FROM Operation o"),
-    @NamedQuery(name = "Operation.findById", query = "SELECT o FROM Operation o WHERE o.id = :id"),
-    @NamedQuery(name = "Operation.findByCreateDate", query = "SELECT o FROM Operation o WHERE o.createDate = :createDate"),
-    @NamedQuery(name = "Operation.findByDescription", query = "SELECT o FROM Operation o WHERE o.description = :description"),
-    @NamedQuery(name = "Operation.findByDestinationAccount", query = "SELECT o FROM Operation o WHERE o.destinationAccount = :destinationAccount"),
-    @NamedQuery(name = "Operation.findByNumber", query = "SELECT o FROM Operation o WHERE o.number = :number"),
-    @NamedQuery(name = "Operation.findByExecutionDate", query = "SELECT o FROM Operation o WHERE o.executionDate = :executionDate"),
-    @NamedQuery(name = "Operation.findByAmount", query = "SELECT o FROM Operation o WHERE o.amount = :amount"),
-    @NamedQuery(name = "Operation.findByComment", query = "SELECT o FROM Operation o WHERE o.comment = :comment")})
+    @NamedQuery(name = "Operation.findAll", query = "SELECT o FROM Operation o")
+    , @NamedQuery(name = "Operation.findById", query = "SELECT o FROM Operation o WHERE o.id = :id")
+    , @NamedQuery(name = "Operation.findByCreateDate", query = "SELECT o FROM Operation o WHERE o.createDate = :createDate")
+    , @NamedQuery(name = "Operation.findByDescription", query = "SELECT o FROM Operation o WHERE o.description = :description")
+    , @NamedQuery(name = "Operation.findByDestinationAccount", query = "SELECT o FROM Operation o WHERE o.destinationAccount = :destinationAccount")
+    , @NamedQuery(name = "Operation.findByNumber", query = "SELECT o FROM Operation o WHERE o.number = :number")
+    , @NamedQuery(name = "Operation.findByExecutionDate", query = "SELECT o FROM Operation o WHERE o.executionDate = :executionDate")
+    , @NamedQuery(name = "Operation.findByAmount", query = "SELECT o FROM Operation o WHERE o.amount = :amount")
+    , @NamedQuery(name = "Operation.findByComment", query = "SELECT o FROM Operation o WHERE o.comment = :comment")})
 public class Operation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -219,7 +222,7 @@ public class Operation implements Serializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.Operation[ id=" + id + " ]";
+        return "ru.mti.bankclient.shared.Operation[ id=" + id + " ]";
     }
     
 }

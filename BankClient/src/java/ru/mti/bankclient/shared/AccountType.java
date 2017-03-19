@@ -1,7 +1,10 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.mti.bankclient.shared;
 
-package ru.mti.bankclient.entity;
-
-import ru.mti.bankclient.entity.Operation;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -22,16 +25,16 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Entity
-@Table(name = "operation_type")
+@Table(name = "account_type")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "OperationType.findAll", query = "SELECT o FROM OperationType o"),
-    @NamedQuery(name = "OperationType.findById", query = "SELECT o FROM OperationType o WHERE o.id = :id"),
-    @NamedQuery(name = "OperationType.findByName", query = "SELECT o FROM OperationType o WHERE o.name = :name")})
-public class OperationType implements Serializable {
+    @NamedQuery(name = "AccountType.findAll", query = "SELECT a FROM AccountType a")
+    , @NamedQuery(name = "AccountType.findById", query = "SELECT a FROM AccountType a WHERE a.id = :id")
+    , @NamedQuery(name = "AccountType.findByName", query = "SELECT a FROM AccountType a WHERE a.name = :name")})
+public class AccountType implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,19 +47,17 @@ public class OperationType implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationTypeId")
-    private List<Template> templateList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationTypeId")
-    private List<Operation> operationList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "accountTypeId")
+    private List<Account> accountList;
 
-    public OperationType() {
+    public AccountType() {
     }
 
-    public OperationType(Integer id) {
+    public AccountType(Integer id) {
         this.id = id;
     }
 
-    public OperationType(Integer id, String name) {
+    public AccountType(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -78,21 +79,12 @@ public class OperationType implements Serializable {
     }
 
     @XmlTransient
-    public List<Template> getTemplateList() {
-        return templateList;
+    public List<Account> getAccountList() {
+        return accountList;
     }
 
-    public void setTemplateList(List<Template> templateList) {
-        this.templateList = templateList;
-    }
-
-    @XmlTransient
-    public List<Operation> getOperationList() {
-        return operationList;
-    }
-
-    public void setOperationList(List<Operation> operationList) {
-        this.operationList = operationList;
+    public void setAccountList(List<Account> accountList) {
+        this.accountList = accountList;
     }
 
     @Override
@@ -105,10 +97,10 @@ public class OperationType implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof OperationType)) {
+        if (!(object instanceof AccountType)) {
             return false;
         }
-        OperationType other = (OperationType) object;
+        AccountType other = (AccountType) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -117,7 +109,7 @@ public class OperationType implements Serializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.OperationType[ id=" + id + " ]";
+        return "ru.mti.bankclient.shared.AccountType[ id=" + id + " ]";
     }
     
 }

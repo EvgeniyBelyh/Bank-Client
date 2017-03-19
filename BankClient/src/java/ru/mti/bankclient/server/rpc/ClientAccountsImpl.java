@@ -3,12 +3,13 @@ package ru.mti.bankclient.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.util.ArrayList;
+
 import java.util.List;
 import javax.ejb.EJB;
 
 import ru.mti.bankclient.client.rpc.ClientAccounts;
-import ru.mti.bankclient.entity.Account;
-import ru.mti.bankclient.entity.Client;
+import ru.mti.bankclient.shared.Account;
+import ru.mti.bankclient.shared.Client;
 import ru.mti.bankclient.session.ClientFacade;
 
 /**
@@ -20,10 +21,10 @@ public class ClientAccountsImpl extends RemoteServiceServlet implements ClientAc
     @EJB
     private ClientFacade clientFacade;
     
-    public ArrayList<Account> getAccountList(int clientId) {
+    public List<Account> getAccountList(int clientId) {
         
         Client client = clientFacade.find(clientId);
-        ArrayList list = new ArrayList(client.getAccountList());               
+        List list = new ArrayList(client.getAccountList());               
         return list;
         
     }

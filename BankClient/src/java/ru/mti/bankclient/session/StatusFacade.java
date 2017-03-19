@@ -5,7 +5,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
-import ru.mti.bankclient.entity.Status;
+import ru.mti.bankclient.shared.Status;
 
 /**
  * 

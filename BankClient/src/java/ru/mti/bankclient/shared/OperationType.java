@@ -1,7 +1,10 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.mti.bankclient.shared;
 
-package ru.mti.bankclient.entity;
-
-import ru.mti.bankclient.entity.Operation;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -22,16 +25,16 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Entity
-@Table(name = "status")
+@Table(name = "operation_type")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Status.findAll", query = "SELECT s FROM Status s"),
-    @NamedQuery(name = "Status.findById", query = "SELECT s FROM Status s WHERE s.id = :id"),
-    @NamedQuery(name = "Status.findByName", query = "SELECT s FROM Status s WHERE s.name = :name")})
-public class Status implements Serializable {
+    @NamedQuery(name = "OperationType.findAll", query = "SELECT o FROM OperationType o")
+    , @NamedQuery(name = "OperationType.findById", query = "SELECT o FROM OperationType o WHERE o.id = :id")
+    , @NamedQuery(name = "OperationType.findByName", query = "SELECT o FROM OperationType o WHERE o.name = :name")})
+public class OperationType implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,17 +47,19 @@ public class Status implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "statusId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationTypeId")
+    private List<Template> templateList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationTypeId")
     private List<Operation> operationList;
 
-    public Status() {
+    public OperationType() {
     }
 
-    public Status(Integer id) {
+    public OperationType(Integer id) {
         this.id = id;
     }
 
-    public Status(Integer id, String name) {
+    public OperationType(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -76,6 +81,15 @@ public class Status implements Serializable {
     }
 
     @XmlTransient
+    public List<Template> getTemplateList() {
+        return templateList;
+    }
+
+    public void setTemplateList(List<Template> templateList) {
+        this.templateList = templateList;
+    }
+
+    @XmlTransient
     public List<Operation> getOperationList() {
         return operationList;
     }
@@ -94,10 +108,10 @@ public class Status implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Status)) {
+        if (!(object instanceof OperationType)) {
             return false;
         }
-        Status other = (Status) object;
+        OperationType other = (OperationType) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -106,7 +120,7 @@ public class Status implements Serializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.Status[ id=" + id + " ]";
+        return "ru.mti.bankclient.shared.OperationType[ id=" + id + " ]";
     }
     
 }

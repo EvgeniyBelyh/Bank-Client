@@ -1,5 +1,9 @@
-
-package ru.mti.bankclient.entity;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,30 +22,23 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import ru.mti.bankclient.entity.BankMessage;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Entity
 @Table(name = "client")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Client.findAll", query = "SELECT c FROM Client c"),
-    @NamedQuery(name = "Client.findById", query = "SELECT c FROM Client c WHERE c.id = :id"),
-    @NamedQuery(name = "Client.findByName", query = "SELECT c FROM Client c WHERE c.name = :name"),
-    @NamedQuery(name = "Client.findByLogin", query = "SELECT c FROM Client c WHERE c.login = :login"),
-    @NamedQuery(name = "Client.findByPassword", query = "SELECT c FROM Client c WHERE c.password = :password"),
-    @NamedQuery(name = "Client.findByLoginAndPassword", query = "SELECT c FROM Client c WHERE c.login = :login AND c.password = :password"),
-    @NamedQuery(name = "Client.findByBlocked", query = "SELECT c FROM Client c WHERE c.blocked = :blocked"),
-    @NamedQuery(name = "Client.findByAdmin", query = "SELECT c FROM Client c WHERE c.admin = :admin")})
+    @NamedQuery(name = "Client.findAll", query = "SELECT c FROM Client c")
+    , @NamedQuery(name = "Client.findById", query = "SELECT c FROM Client c WHERE c.id = :id")
+    , @NamedQuery(name = "Client.findByName", query = "SELECT c FROM Client c WHERE c.name = :name")
+    , @NamedQuery(name = "Client.findByLogin", query = "SELECT c FROM Client c WHERE c.login = :login")
+    , @NamedQuery(name = "Client.findByPassword", query = "SELECT c FROM Client c WHERE c.password = :password")
+    , @NamedQuery(name = "Client.findByBlocked", query = "SELECT c FROM Client c WHERE c.blocked = :blocked")
+    , @NamedQuery(name = "Client.findByAdmin", query = "SELECT c FROM Client c WHERE c.admin = :admin")})
 public class Client implements Serializable {
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
-    private List<BankMessage> bankMessageList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
-    private List<Account> accountList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -72,6 +69,10 @@ public class Client implements Serializable {
     @NotNull
     @Column(name = "admin")
     private boolean admin;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
+    private List<BankMessage> bankMessageList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clientId")
+    private List<Account> accountList;
 
     public Client() {
     }
@@ -137,6 +138,24 @@ public class Client implements Serializable {
         this.admin = admin;
     }
 
+    @XmlTransient
+    public List<BankMessage> getBankMessageList() {
+        return bankMessageList;
+    }
+
+    public void setBankMessageList(List<BankMessage> bankMessageList) {
+        this.bankMessageList = bankMessageList;
+    }
+
+    @XmlTransient
+    public List<Account> getAccountList() {
+        return accountList;
+    }
+
+    public void setAccountList(List<Account> accountList) {
+        this.accountList = accountList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -159,25 +178,7 @@ public class Client implements Serializable {
 
     @Override
     public String toString() {
-        return "ru.mti.bankclient.entity.Client[ id=" + id + " ]";
-    }
-    
-    @XmlTransient
-    public List<BankMessage> getBankMessageList() {
-        return bankMessageList;
-    }
-
-    public void setBankMessageList(List<BankMessage> bankMessageList) {
-        this.bankMessageList = bankMessageList;
-    }
-
-    @XmlTransient
-    public List<Account> getAccountList() {
-        return accountList;
-    }
-
-    public void setAccountList(List<Account> accountList) {
-        this.accountList = accountList;
+        return "ru.mti.bankclient.shared.Client[ id=" + id + " ]";
     }
     
 }

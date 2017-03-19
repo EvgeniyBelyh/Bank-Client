@@ -8,7 +8,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
-import ru.mti.bankclient.entity.Client;
+import ru.mti.bankclient.shared.Client;
 
 /**
  *
