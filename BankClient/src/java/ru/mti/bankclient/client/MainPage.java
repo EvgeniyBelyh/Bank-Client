@@ -1,6 +1,7 @@
 
 package ru.mti.bankclient.client;
 
+import ru.mti.bankclient.shared.ClientDTO;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -15,10 +16,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class MainPage extends TemplatePage {
     
-    public static User user;
+    public static ClientDTO user;
     
     
-    public MainPage(User user) {
+    public MainPage(ClientDTO user) {
         
         super();
         this.user = user;

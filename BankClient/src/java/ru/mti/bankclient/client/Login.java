@@ -1,6 +1,7 @@
 
 package ru.mti.bankclient.client;
 
+import ru.mti.bankclient.shared.ClientDTO;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -11,8 +12,8 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import ru.mti.bankclient.client.rpc.UserCheck;
-import ru.mti.bankclient.client.rpc.UserCheckAsync;
+import ru.mti.bankclient.client.rpc.BankClientServiceAsync;
+import ru.mti.bankclient.client.rpc.BankClientService;
 
 
 /**
@@ -24,7 +25,7 @@ public class Login extends TemplatePage {
     
     private TextBox login;
     private PasswordTextBox pass;
-    private UserCheckAsync userCheckService = GWT.create(UserCheck.class);
+    private BankClientServiceAsync userCheckService = GWT.create(BankClientService.class);
     
     /**
      * Конструктор
@@ -91,9 +92,9 @@ public class Login extends TemplatePage {
         }
         
         // обрабатываем полученный от сервера результат
-        final AsyncCallback<User> callback = new AsyncCallback<User>() {
+        final AsyncCallback<ClientDTO> callback = new AsyncCallback<ClientDTO>() {
             // при успешной отработке удаленного вызова
-            public void onSuccess(User result) {
+            public void onSuccess(ClientDTO result) {
                 
                 if(result == null) {
                     Window.alert("Учетной записи с таким логином не сущесвует.");
@@ -126,7 +127,7 @@ public class Login extends TemplatePage {
      * открывает главную страницу
      * @param user - обертка с данными пользователя
      */
-    private void openMainPage(User user) {
+    private void openMainPage(ClientDTO user) {
         
         RootLayoutPanel rootPanel = RootLayoutPanel.get();
         // убираем все виджеты

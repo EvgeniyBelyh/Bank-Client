@@ -1,13 +1,15 @@
 
-package ru.mti.bankclient.client;
+package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Класс-обертка на стороне клиента для сущности Client
  * @author Белых Евгений
  */
-public class User implements Serializable {
+public class ClientDTO implements Serializable {
     
     private Integer id;
     private String name;
@@ -15,20 +17,23 @@ public class User implements Serializable {
     private String password;
     private boolean blocked;
     private boolean admin;
+    private List<AccountDTO> accountList = new ArrayList();
+
     
-    public User() {
+    public ClientDTO() {
         
     }
 
-    public User(Integer id, String name, String login, String password, boolean blocked, boolean admin) {
+    public ClientDTO(Integer id, String name, String login, String password, boolean blocked, boolean admin, List<AccountDTO> accountList) {
         this.id = id;
         this.name = name;
         this.login = login;
         this.password = password;
         this.blocked = blocked;
         this.admin = admin;
+        this.accountList = accountList;
     }
-    
+
     public Integer getId() {
         return id;
     }
@@ -77,5 +82,11 @@ public class User implements Serializable {
         this.admin = admin;
     }
     
-    
+    public List<AccountDTO> getAccountList() {
+        return accountList;
+    }
+
+    public void setAccountList(List<AccountDTO> accountList) {
+        this.accountList = accountList;
+    }
 }

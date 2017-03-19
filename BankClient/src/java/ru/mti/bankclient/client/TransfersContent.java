@@ -1,7 +1,6 @@
 
 package ru.mti.bankclient.client;
 
-import ru.mti.bankclient.shared.Account;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -11,8 +10,9 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.List;
-import ru.mti.bankclient.client.rpc.ClientAccounts;
-import ru.mti.bankclient.client.rpc.ClientAccountsAsync;
+import ru.mti.bankclient.client.rpc.BankClientService;
+import ru.mti.bankclient.client.rpc.BankClientServiceAsync;
+import ru.mti.bankclient.shared.AccountDTO;
 
 
 /**
@@ -21,18 +21,18 @@ import ru.mti.bankclient.client.rpc.ClientAccountsAsync;
  */
 public class TransfersContent extends VerticalPanel {
     
-    private ClientAccountsAsync clientAccountsService = GWT.create(ClientAccounts.class);
-    final AsyncCallback<List<Account>> callback;
+    private BankClientServiceAsync bankClientServiceAsync = GWT.create(BankClientService.class);
+    final AsyncCallback<List<AccountDTO>> callback;
     private ListBox locAccount = new ListBox(); // список счетов списания
     private ListBox destAccount = new ListBox(); // список счетов зачисления
     
     
     public TransfersContent() {
         
-        this.callback = new AsyncCallback<List<Account>>() {
+        this.callback = new AsyncCallback<List<AccountDTO>>() {
             // при успешной отработке удаленного вызова
-            public void onSuccess(List<Account> result) {
-                for(Account acc : result) {
+            public void onSuccess(List<AccountDTO> result) {
+                for(AccountDTO acc : result) {
                     locAccount.addItem(acc.getNumber(), acc.getId().toString());
                     destAccount.addItem(acc.getNumber(), acc.getId().toString());
                 }
@@ -46,7 +46,7 @@ public class TransfersContent extends VerticalPanel {
         };  
         
         // отправляем запрос на сервер
-        clientAccountsService.getAccountList(1, callback);
+        bankClientServiceAsync.getAccounts(1, callback);
         createHeader();
         createBody();
     }
