@@ -176,8 +176,8 @@ body {
     padding-bottom: 20px;
 }
 
- 
-input[type="text"], input[type="password"], select {
+
+.login_textbox {
     border: 2px solid #b2b2b2;
     padding: 15px 25px;
     padding-bottom: 16px;
@@ -188,19 +188,6 @@ input[type="text"], input[type="password"], select {
 }
 
 
-input[type="submit"] {
-    width: 100%;
-    margin: 0px;
-    text-transform: uppercase;
-    box-sizing: border-box;
-    font-family: "Trebuchet MS";
-    font-size: 15px;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #382d78;
-    padding: 10px;
-    border: none;
-}
 /*****************************************/  
 
 .login_confirm_button {
@@ -236,6 +223,7 @@ input[type="submit"] {
 }
 
 .confirm_button {
+    /*
     width: 100%;
     margin: 0px;
     text-transform: uppercase;
@@ -244,7 +232,14 @@ input[type="submit"] {
     font-size: 14px;
     font-weight: bold;
     color: #ffffff;
-    background-color: #382d78;
+    background-color: #6451d5;
     padding: 15px;
     border: none;
+    */
+    margin-left: 10px;
+    width: 100px;
+}
+
+.button_panel {
+    float: right;
 }

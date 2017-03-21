@@ -19,10 +19,9 @@ public class MainPage extends TemplatePage {
     public static ClientDTO user;
     
     
-    public MainPage(ClientDTO user) {
+    public MainPage() {
         
         super();
-        this.user = user;
         
         // создаем панель приветствия в хедере
         createWelcomPanel();

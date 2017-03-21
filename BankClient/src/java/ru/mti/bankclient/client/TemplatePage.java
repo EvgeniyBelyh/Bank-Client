@@ -4,12 +4,9 @@ package ru.mti.bankclient.client;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,7 +23,9 @@ public class TemplatePage implements IsWidget
         protected HorizontalPanel headerPanel; // контейнер для хедера
         protected HorizontalPanel footerPanel; // контейнер для футера
         
-        protected CustomScrollPanel scrollPanel = new CustomScrollPanel();
+        protected CustomScrollPanel leftScrollPanel = new CustomScrollPanel(); // полоса прокрутки левой панели
+        protected CustomScrollPanel centerScrollPanel = new CustomScrollPanel(); // полоса прокрутки центра
+        protected CustomScrollPanel rightScrollPanel = new CustomScrollPanel(); // полоса прокрутки правой панели
         protected VerticalPanel leftBodyPanel = new VerticalPanel(); // контейнер для левой панели с меню
         protected VerticalPanel centerBodyPanel = new VerticalPanel(); // контейнер для центра
         protected VerticalPanel rightBodyPanel = new VerticalPanel(); // контейнер для правой панели
@@ -41,14 +40,17 @@ public class TemplatePage implements IsWidget
             leftBodyPanel.setSpacing(10);
             rightBodyPanel.setSpacing(10);
             
-            scrollPanel.add(leftBodyPanel);
+            // добавляем панели с элементами в панель с полосой прокрутки
+            leftScrollPanel.add(leftBodyPanel);
+            centerScrollPanel.add(centerBodyPanel);
+            rightScrollPanel.add(rightBodyPanel);
             
             // расставляем готовые контейнеры по местам
             dockPanel.addNorth(headerPanel, 8);
             dockPanel.addSouth(footerPanel, 8);           
-            dockPanel.addWest(scrollPanel, 25);
-            dockPanel.addEast(rightBodyPanel, 25);            
-            dockPanel.add(centerBodyPanel);
+            dockPanel.addWest(leftScrollPanel, 25);
+            dockPanel.addEast(rightScrollPanel, 25);            
+            dockPanel.add(centerScrollPanel);
             
             
             

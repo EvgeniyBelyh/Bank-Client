@@ -2,9 +2,12 @@
 package ru.mti.bankclient.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -26,7 +29,9 @@ public class TransfersContent extends VerticalPanel {
     final AsyncCallback<List<AccountDTO>> callback;
     private ListBox locAccount = new ListBox(); // список счетов списания
     private ListBox destAccount = new ListBox(); // список счетов зачисления
-    
+    private TextBox sumField = new TextBox(); // сумма
+    private Button confirmBtn = new Button("Перевести");
+    private Button cancelBtn = new Button("Отмена");
     
     public TransfersContent() {
         
@@ -52,12 +57,15 @@ public class TransfersContent extends VerticalPanel {
         };  
         
         // отправляем запрос на сервер
-        bankClientServiceAsync.getAccounts(1, callback);
+        bankClientServiceAsync.getAccounts(MainPage.user.getId(), callback);
         createHeader();
         createBody();
         
         locAccount.setStyleName("operation_fields");
         destAccount.setStyleName("operation_fields");
+        sumField.setStyleName("operation_fields");
+        //confirmBtn.setStyleName("confirm_button");
+        //cancelBtn.setStyleName("confirm_button");
         this.setStyleName("operations_container");
     }
     
@@ -76,12 +84,8 @@ public class TransfersContent extends VerticalPanel {
      */
     public void createBody() {
         
-        TextBox sumField = new TextBox(); // сумма
-        sumField.setStyleName("operation_fields");
-        Button confirmBtn = new Button("Перевести");
-        confirmBtn.setStyleName("confirm_button");
-        
         HorizontalPanel hPanel = new HorizontalPanel();
+        HorizontalPanel buttonPanel = new HorizontalPanel();
         VerticalPanel headers = new VerticalPanel();
         VerticalPanel fields = new VerticalPanel();
         fields.setSpacing(10);
@@ -93,7 +97,16 @@ public class TransfersContent extends VerticalPanel {
         headers.add(new HTML("<h3>Сумма перевода</h3>"));
         fields.add(sumField); 
         headers.add(new HTML("<br>"));
-        headers.add(confirmBtn);
+        
+        confirmBtn.setStyleName("confirm_button");
+        cancelBtn.setStyleName("confirm_button");
+        buttonPanel.setStyleName("button_panel");
+        buttonPanel.add(confirmBtn);
+        buttonPanel.add(cancelBtn);
+        
+        fields.add(buttonPanel);
+        
+        //headers.add(confirmBtn);
         
         hPanel.add(headers);
         hPanel.add(fields);

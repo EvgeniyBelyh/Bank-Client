@@ -36,12 +36,12 @@ public class Login extends TemplatePage {
         
         //поле для ввода логина
         login = new TextBox();
-        login.setStyleName("login_column"); //ставим стиль оформления
+        login.setStyleName("login_textbox"); //ставим стиль оформления
         login.setTitle("Логин"); //ставим всплывающую подсказку
         login.getElement().setAttribute("placeholder", "Логин"); //ставим надпись внутри поля
         //поле для ввода пароля
         pass = new PasswordTextBox();
-        pass.setStyleName("login_column");
+        pass.setStyleName("login_textbox");
         pass.setTitle("Пароль");
         pass.getElement().setAttribute("placeholder", "Пароль");
         //кнопка входа
@@ -132,8 +132,11 @@ public class Login extends TemplatePage {
         RootLayoutPanel rootPanel = RootLayoutPanel.get();
         // убираем все виджеты
         rootPanel.clear();
+        
+        MainPage.user = user;
+        
         // открываем главную страницу
-        rootPanel.add(new MainPage(user));
+        rootPanel.add(new MainPage());
     }
     
 }

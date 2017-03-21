@@ -96,6 +96,9 @@ public class TransferMenuBlock extends VerticalPanel {
     
     
     public void createTransfersContent() {
+        // убираем содержимое центральной панели
+        this.mainPage.centerBodyPanel.clear();
+        // добавляем панель с формами для перевода
         this.mainPage.centerBodyPanel.add(new TransfersContent());
     }
 }
