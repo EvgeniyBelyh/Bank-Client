@@ -3,6 +3,8 @@ package ru.mti.bankclient.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -11,6 +13,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.List;
@@ -100,6 +103,27 @@ public class TransfersContent extends VerticalPanel {
         
         confirmBtn.setStyleName("confirm_button");
         cancelBtn.setStyleName("confirm_button");
+        
+        // обрабатываем нажатие кнопки Отмена
+        cancelBtn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                RootLayoutPanel rootPanel = RootLayoutPanel.get();
+                // убираем все виджеты
+                rootPanel.clear();
+                // открываем главную страницу
+                rootPanel.add(new MainPage());
+            }         
+        });
+
+        // обрабатываем нажатие кнопки Перевести
+        confirmBtn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                confirmButtonHandler();
+            }         
+        });
+        
         buttonPanel.setStyleName("button_panel");
         buttonPanel.add(confirmBtn);
         buttonPanel.add(cancelBtn);
@@ -114,4 +138,12 @@ public class TransfersContent extends VerticalPanel {
         this.add(hPanel);
 
     }
+    
+    /**
+     * обработчик нажатия клавиши Перевести
+     */
+    private void confirmButtonHandler() {
+        Window.alert("Функция в разработке");
+    }
+    
 }

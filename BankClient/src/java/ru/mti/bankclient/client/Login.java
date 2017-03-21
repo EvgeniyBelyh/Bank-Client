@@ -58,6 +58,7 @@ public class Login extends TemplatePage {
         
         //обработчик для клика по кнопке 'Вход'
         confirmButton.addClickHandler(new ClickHandler() {
+            @Override
             public void onClick(ClickEvent event) {
                 sendInfoToServer();
             }
@@ -94,6 +95,7 @@ public class Login extends TemplatePage {
         // обрабатываем полученный от сервера результат
         final AsyncCallback<ClientDTO> callback = new AsyncCallback<ClientDTO>() {
             // при успешной отработке удаленного вызова
+            @Override
             public void onSuccess(ClientDTO result) {
                 
                 if(result == null) {
@@ -112,6 +114,7 @@ public class Login extends TemplatePage {
                 }
             }
             // в случае возникновения ошибки
+            @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
                 caught.printStackTrace();

@@ -44,6 +44,7 @@ public class MainPage extends TemplatePage {
         Hyperlink exitLink = new Hyperlink();
         exitLink.setText("Выход");
         exitLink.addClickHandler(new ClickHandler() {
+            @Override
             public void onClick(ClickEvent event) {              
                 RootLayoutPanel rootPanel = RootLayoutPanel.get();
                 // очищаем страницу
