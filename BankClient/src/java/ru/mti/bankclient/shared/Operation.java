@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
@@ -25,8 +21,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author Жека
+ * Сущность - Операция
+ * @author Белых Евгений
  */
 @Entity
 @Table(name = "operation")
@@ -103,7 +99,22 @@ public class Operation implements Serializable {
         this.destinationAccount = destinationAccount;
         this.amount = amount;
     }
-
+    
+    public Operation(OperationDTO operationDTO) {
+        this.id = operationDTO.getId();
+        this.createDate = operationDTO.getCreateDate();
+        this.description = operationDTO.getDescription();
+        this.destinationAccount = operationDTO.getDestinationAccount();
+        this.number = operationDTO.getNumber();
+        this.executionDate = operationDTO.getExecutionDate();
+        this.amount = operationDTO.getAmount();
+        this.comment = operationDTO.getComment();
+        this.accountId = new Account(operationDTO.getAccountId());
+        this.operationTypeId = new OperationType(operationDTO.getOperationTypeId());
+        this.partnerBankId = new PartnerBank(operationDTO.getPartnerBankId());
+        this.statusId = new Status(operationDTO.getStatusId());
+    }
+    
     public Integer getId() {
         return id;
     }
