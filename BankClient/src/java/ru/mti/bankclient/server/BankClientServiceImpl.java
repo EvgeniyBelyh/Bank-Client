@@ -11,6 +11,10 @@ import ru.mti.bankclient.session.ClientFacade;
 import ru.mti.bankclient.client.rpc.BankClientService;
 import ru.mti.bankclient.shared.Account;
 import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.Operation;
+import ru.mti.bankclient.shared.OperationDTO;
+import ru.mti.bankclient.shared.PartnerBank;
+import ru.mti.bankclient.shared.PartnerBankDTO;
 
 
 /**
@@ -112,6 +116,12 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
         accountDTO.setCardNumber(account.getCardNumber());
         accountDTO.setExpirationDate(account.getExpirationDate());
         accountDTO.setCvv(account.getCvv());
+
+        if(account.getOperationList() != null) {
+            for(Operation oper : account.getOperationList()) {
+                 accountDTO.getOperationList().add(createOperationDTO(oper));
+            }
+        }
         
         return accountDTO;
     }
@@ -130,4 +140,38 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
         return list;
         
     }
+    
+    /**
+     * Создает DTO для сущности PartnerDTO
+     * @param partnerBank - объект банка-корреспондента
+     * @return DTO
+     */
+    private PartnerBankDTO createPartnerBankDTO(PartnerBank partnerBank) {
+        
+        PartnerBankDTO partnerBankDTO = new PartnerBankDTO(partnerBank.getId(), 
+                partnerBank.getName(), partnerBank.getInn(), partnerBank.getKpp(), 
+                partnerBank.getBik(), partnerBank.getCorrAccount());
+        
+        return partnerBankDTO;
+    }
+    
+     /**
+     * Создает DTO для сущности PartnerDTO
+     * @param operation - объект операции
+     * @return DTO
+     */
+    private OperationDTO createOperationDTO(Operation operation) {
+        
+        OperationDTO operationDTO = new OperationDTO(operation.getId(), 
+                operation.getCreateDate(), operation.getDescription(), 
+                operation.getDestinationAccount(), operation.getNumber(), 
+                operation.getExecutionDate(), operation.getAmount(), 
+                operation.getComment(), operation.getAccountId().getId(), 
+                operation.getOperationTypeId().getId(), operation.getOperationTypeId().getName(), 
+                createPartnerBankDTO(operation.getPartnerBankId()), 
+                operation.getStatusId().getId(), operation.getStatusId().getName());
+        
+        return operationDTO;
+    } 
+    
 }

@@ -25,7 +25,7 @@ public class AccountDTO implements Serializable {
     private Date expirationDate;
     private String cvv;
     //private List<Template> templateList;
-    //private List<Operation> operationList;
+    private List<OperationDTO> operationList;
     private int accountTypeId;
     private String accountTypeName;
     private int clientId;
@@ -233,6 +233,14 @@ public class AccountDTO implements Serializable {
 
     public void setCurrencyName(String currencyName) {
         this.currencyName = currencyName;
+    }
+
+    public List<OperationDTO> getOperationList() {
+        return operationList;
+    }
+
+    public void setOperationList(List<OperationDTO> operationList) {
+        this.operationList = operationList;
     }
     
 }
