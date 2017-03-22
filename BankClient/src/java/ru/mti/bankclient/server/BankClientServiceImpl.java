@@ -9,6 +9,7 @@ import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.Client;
 import ru.mti.bankclient.session.ClientFacade;
 import ru.mti.bankclient.client.rpc.BankClientService;
+import ru.mti.bankclient.session.OperationFacade;
 import ru.mti.bankclient.shared.Account;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.Operation;
@@ -25,6 +26,9 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
     
     @EJB
     private ClientFacade clientFacade;
+    @EJB
+    private OperationFacade operationFacade;
+    
     private static byte tryCount = 5;
     
     /**
@@ -173,5 +177,14 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
         
         return operationDTO;
     } 
+    
+    /**
+     * Сохраняет операцию в базу данных
+     * @param operationDTO - DTO операции
+     */
+    @Override
+    public void saveOperation(OperationDTO operationDTO) {
+        operationFacade.create(new Operation(operationDTO));
+    }
     
 }
