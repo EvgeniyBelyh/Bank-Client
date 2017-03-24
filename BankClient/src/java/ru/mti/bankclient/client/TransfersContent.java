@@ -80,8 +80,6 @@ public class TransfersContent extends VerticalPanel {
         locAccount.setStyleName("operation_fields");
         destAccount.setStyleName("operation_fields");
         sumField.setStyleName("operation_fields");
-        //confirmBtn.setStyleName("confirm_button");
-        //cancelBtn.setStyleName("confirm_button");
         this.setStyleName("operations_container");
     }
     
@@ -137,13 +135,13 @@ public class TransfersContent extends VerticalPanel {
             }         
         });
         
+        // добавляем кнопки и стиль к панели кнопок
         buttonPanel.setStyleName("button_panel");
         buttonPanel.add(confirmBtn);
         buttonPanel.add(cancelBtn);
         
         fields.add(buttonPanel);
         
-        //headers.add(confirmBtn);
         
         hPanel.add(headers);
         hPanel.add(fields);
@@ -177,13 +175,22 @@ public class TransfersContent extends VerticalPanel {
             return;
         }
         
+        // выбираем объект счета списания
+        AccountDTO account = accountList.get(locAccountValue);
+        // проверяем остаток на счете
+        if(account.getBalance() < summ) {
+            Window.alert("Недостаточно средств для перевода");
+            locAccount.setFocus(true);
+            return;
+        }
+        
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
         operationDTO.setAccountId(locAccountValue);
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
         operationDTO.setDescription("Перевод между собственными счетами клиента " + MainPage.user.getName());
-        operationDTO.setDestinationAccount(accountList.get(locAccountValue).getNumber());
+        operationDTO.setDestinationAccount(account.getNumber());
         operationDTO.setOperationTypeId(1);
         operationDTO.setStatusId(1);
         operationDTO.setPartnerBankId(new PartnerBankDTO(1));             
