@@ -1,6 +1,7 @@
 
 package ru.mti.bankclient.server;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import ru.mti.bankclient.session.OperationFacade;
@@ -23,15 +24,27 @@ public class BankSystem {
      * Исполняет операции в статусе NEW(1)
      */
     public void executeOperations() {
-        // выбираем все новые операции из базы данных
-        List<Operation> operationList = operationFacade.findByStatus(Statuses.NEW.getId());
         
+        System.out.println("**********************************************");
+        
+        // выбираем все новые операции из базы данных
+        List<Operation> operationList = operationFacade.findByStatus(new Status(1));
+        
+        //Operation operation = operationFacade.findByStatus(new Status(1));
+        
+        //System.out.println(operation.toString());
+        
+        //System.out.println("**********************************************");
+        
+        System.out.println("Выбрали из базы все операции со статусом 1 " + operationList.isEmpty());
+ /*       
         for(Operation operation : operationList) {
             operation.setNumber(getOperationNumber());
             operation.setExecutionDate(new Date(System.currentTimeMillis()));
             operation.setStatusId(new Status(Statuses.EXECUTED.getId()));
             operationFacade.edit(operation);
         }
+*/
     }
     
     /**

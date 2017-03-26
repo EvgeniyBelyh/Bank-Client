@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Operation.findByNumber", query = "SELECT o FROM Operation o WHERE o.number = :number")
     , @NamedQuery(name = "Operation.findByExecutionDate", query = "SELECT o FROM Operation o WHERE o.executionDate = :executionDate")
     , @NamedQuery(name = "Operation.findByAmount", query = "SELECT o FROM Operation o WHERE o.amount = :amount")
+    , @NamedQuery(name = "Operation.findByStatus", query = "SELECT o FROM Operation o WHERE o.statusId = :statusId")        
     , @NamedQuery(name = "Operation.findByComment", query = "SELECT o FROM Operation o WHERE o.comment = :comment")})
 public class Operation implements Serializable {
 

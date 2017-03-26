@@ -174,26 +174,7 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
                 operation.getOperationTypeId().getId(), operation.getOperationTypeId().getName(), 
                 createPartnerBankDTO(operation.getPartnerBankId()), 
                 operation.getStatusId().getId(), operation.getStatusId().getName());
-        
-/* 
-        OperationDTO operationDTO = new OperationDTO();
-        operationDTO.setId(operation.getId());
-        operationDTO.setCreateDate(operation.getCreateDate());
-        operationDTO.setAccountId(operation.getAccountId().getId());
-        operationDTO.setOperationTypeId(operation.getOperationTypeId().getId());
-        operationDTO.setOperationTypeName(operation.getOperationTypeId().getName());
-        operationDTO.setDescription(operation.getDescription());
-        operationDTO.setDestinationAccount(operation.getDestinationAccount());
-        operationDTO.setPartnerBankId(createPartnerBankDTO(operation.getPartnerBankId()));
-        operationDTO.setNumber(operation.getNumber());
-        operationDTO.setExecutionDate(operation.getExecutionDate());
-        operationDTO.setAmount(operation.getAmount());
-        operationDTO.setStatusId(operation.getStatusId().getId());
-        operationDTO.setStatusName(operation.getStatusId().getName());
-        operationDTO.setComment(operation.getComment());
-*/        
-                
- 
+     
         return operationDTO;
     } 
     

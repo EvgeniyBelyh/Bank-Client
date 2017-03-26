@@ -2,6 +2,7 @@
 package ru.mti.bankclient.session;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -10,7 +11,9 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import ru.mti.bankclient.shared.Operation;
+import ru.mti.bankclient.shared.Status;
 
 /**
  *
@@ -34,19 +37,25 @@ public class OperationFacade extends AbstractFacade<Operation> {
     }
     
     
-    public List<Operation> findByStatus(int statusId) {
+    public List<Operation> findByStatus(Status statusId) {
         getEntityManager();
         List<Operation> operationList = new ArrayList();
+        
         EntityTransaction trans = em.getTransaction();
-        Query query = em.createNativeQuery("SELECT * FROM Operation WHERE status_id = 1", Operation.class);
-        query.setParameter("status_id", statusId);
+        Query query = em.createNamedQuery("Operation.findByStatus");
+        query.setParameter("statusId", statusId);
         trans.begin();
         try {
-            operationList = query.getResultList();
+            List tempList = query.getResultList();
+            Iterator iterator = tempList.iterator();
+            while(iterator.hasNext()) {
+                Operation oper = (Operation) iterator.next();
+                operationList.add(oper);
+            }
         } catch(NoResultException ex) {
             System.out.println("Объект операции не выбрался из базы по статусу");
-        } catch(Exception ex) {
-            throw ex;
+//        } catch(Exception ex) {
+//            throw ex;
         }              
         trans.commit();
         return operationList;
