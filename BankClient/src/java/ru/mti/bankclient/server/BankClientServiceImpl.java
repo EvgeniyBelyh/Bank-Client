@@ -120,10 +120,10 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
         accountDTO.setCardNumber(account.getCardNumber());
         accountDTO.setExpirationDate(account.getExpirationDate());
         accountDTO.setCvv(account.getCvv());
-
+        
         if(account.getOperationList() != null) {
             for(Operation oper : account.getOperationList()) {
-                 accountDTO.getOperationList().add(createOperationDTO(oper));
+                accountDTO.getOperationList().add(createOperationDTO(oper));
             }
         }
         
@@ -165,7 +165,7 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
      * @return DTO
      */
     private OperationDTO createOperationDTO(Operation operation) {
-        
+       
         OperationDTO operationDTO = new OperationDTO(operation.getId(), 
                 operation.getCreateDate(), operation.getDescription(), 
                 operation.getDestinationAccount(), operation.getNumber(), 
@@ -175,6 +175,25 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
                 createPartnerBankDTO(operation.getPartnerBankId()), 
                 operation.getStatusId().getId(), operation.getStatusId().getName());
         
+/* 
+        OperationDTO operationDTO = new OperationDTO();
+        operationDTO.setId(operation.getId());
+        operationDTO.setCreateDate(operation.getCreateDate());
+        operationDTO.setAccountId(operation.getAccountId().getId());
+        operationDTO.setOperationTypeId(operation.getOperationTypeId().getId());
+        operationDTO.setOperationTypeName(operation.getOperationTypeId().getName());
+        operationDTO.setDescription(operation.getDescription());
+        operationDTO.setDestinationAccount(operation.getDestinationAccount());
+        operationDTO.setPartnerBankId(createPartnerBankDTO(operation.getPartnerBankId()));
+        operationDTO.setNumber(operation.getNumber());
+        operationDTO.setExecutionDate(operation.getExecutionDate());
+        operationDTO.setAmount(operation.getAmount());
+        operationDTO.setStatusId(operation.getStatusId().getId());
+        operationDTO.setStatusName(operation.getStatusId().getName());
+        operationDTO.setComment(operation.getComment());
+*/        
+                
+ 
         return operationDTO;
     } 
     
@@ -185,6 +204,13 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
     @Override
     public void saveOperation(OperationDTO operationDTO) {
         operationFacade.create(new Operation(operationDTO));
+    }
+
+    @Override
+    public void executeOperation() {
+        
+        BankSystem bankSystem = new BankSystem();
+        bankSystem.executeOperations();
     }
     
 }

@@ -18,6 +18,6 @@
     
     <source path='client'/>
     <source path='shared'/>
-
+    
     <!-- Do not define servlets here, use web.xml -->
 </module>

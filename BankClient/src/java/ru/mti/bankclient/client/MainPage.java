@@ -16,7 +16,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class MainPage extends TemplatePage {
     
-    public static ClientDTO user;
+    public static ClientDTO user; // Объект клиента
+    public static int CURRENT_BANK = 1; // Код банка в справочнике банков
     
     
     public MainPage() {

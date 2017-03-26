@@ -2,11 +2,12 @@
 package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * 
+ * DTO для сущности Account (счет)
  * @author Белых Евгений
  */
 
@@ -25,7 +26,7 @@ public class AccountDTO implements Serializable {
     private Date expirationDate;
     private String cvv;
     //private List<Template> templateList;
-    private List<OperationDTO> operationList;
+    private List<OperationDTO> operationList = new ArrayList();
     private int accountTypeId;
     private String accountTypeName;
     private int clientId;

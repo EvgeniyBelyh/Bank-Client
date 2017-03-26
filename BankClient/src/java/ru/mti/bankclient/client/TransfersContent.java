@@ -18,8 +18,11 @@ import java.util.List;
 import ru.mti.bankclient.client.rpc.BankClientService;
 import ru.mti.bankclient.client.rpc.BankClientServiceAsync;
 import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.AccountTypes;
+import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.OperationDTO;
 import ru.mti.bankclient.shared.PartnerBankDTO;
+import ru.mti.bankclient.shared.Statuses;
 
 
 /**
@@ -36,7 +39,7 @@ public class TransfersContent extends VerticalPanel {
     private Button confirmBtn = new Button("Перевести");
     private Button cancelBtn = new Button("Отмена");
     private List<AccountDTO> accountList;
-
+    private Button execBtn = new Button("Исполнить");
     
     public TransfersContent() {
         
@@ -45,7 +48,7 @@ public class TransfersContent extends VerticalPanel {
             public void onSuccess(List<AccountDTO> result) {
                 for(AccountDTO acc : result) {
                     // пропускаем счета кредитных карт для списка счетов списания
-                    if(acc.getAccountTypeId() == 1) {
+                    if(acc.getAccountTypeId() == AccountTypes.CREDIT_CARD.getId()) {
                         destAccount.addItem(acc.getAccountTypeName() + " " 
                             + acc.getNumber() + ", остаток " + acc.getBalance() 
                             + " " + acc.getCurrencyName(), acc.getId().toString());
@@ -115,6 +118,21 @@ public class TransfersContent extends VerticalPanel {
         confirmBtn.setStyleName("confirm_button");
         cancelBtn.setStyleName("confirm_button");
         
+        
+        final AsyncCallback operationExecuteCallback = new AsyncCallback() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка исполнения операций в АБС");
+            }
+
+            @Override
+            public void onSuccess(Object result) {
+                Window.alert("Операция исполнена успешно");
+            }
+        };
+        
+        
+        
         // обрабатываем нажатие кнопки Отмена
         cancelBtn.addClickHandler(new ClickHandler() {
             @Override
@@ -134,14 +152,22 @@ public class TransfersContent extends VerticalPanel {
                 confirmButtonHandler();
             }         
         });
+
+        // обрабатываем нажатие кнопки Перевести
+        execBtn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                bankClientServiceAsync.executeOperation(operationExecuteCallback);               
+            }         
+        });
         
         // добавляем кнопки и стиль к панели кнопок
         buttonPanel.setStyleName("button_panel");
         buttonPanel.add(confirmBtn);
         buttonPanel.add(cancelBtn);
+        buttonPanel.add(execBtn);
         
         fields.add(buttonPanel);
-        
         
         hPanel.add(headers);
         hPanel.add(fields);
@@ -191,9 +217,9 @@ public class TransfersContent extends VerticalPanel {
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
         operationDTO.setDescription("Перевод между собственными счетами клиента " + MainPage.user.getName());
         operationDTO.setDestinationAccount(account.getNumber());
-        operationDTO.setOperationTypeId(1);
-        operationDTO.setStatusId(1);
-        operationDTO.setPartnerBankId(new PartnerBankDTO(1));             
+        operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
+        operationDTO.setStatusId(Statuses.NEW.getId());
+        operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));             
         
         AsyncCallback<Void> operationCallback = new AsyncCallback<Void>() {
             @Override

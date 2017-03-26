@@ -18,4 +18,6 @@ public interface BankClientServiceAsync {
     public void getAccounts(int clientId, AsyncCallback<List<AccountDTO>> asyncCallback);
     
     public void saveOperation(OperationDTO operationDTO, AsyncCallback<Void> asyncCallback);
+    
+    public void executeOperation(AsyncCallback asyncCallback);
 }

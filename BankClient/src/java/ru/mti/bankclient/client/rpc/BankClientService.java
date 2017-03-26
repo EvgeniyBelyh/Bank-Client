@@ -20,4 +20,6 @@ public interface BankClientService extends RemoteService {
     public List<AccountDTO> getAccounts(int clientId);
     
     public void saveOperation(OperationDTO operationDTO);
+    
+    public void executeOperation();
 }
