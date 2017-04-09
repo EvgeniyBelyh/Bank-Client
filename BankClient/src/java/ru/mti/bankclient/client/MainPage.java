@@ -88,9 +88,7 @@ public class MainPage extends TemplatePage {
         HTML cardHeader = new HTML("<h2>Карты</h2>");
         cardHeader.setStyleName("operations_container h2");
         this.centerBodyPanel.add(cardHeader);
-        
-        
-        
+                
         // добавляем таблицу с информацие о картах
         FlexTable cardsTable = new FlexTable();
         cardsTable.addStyleName("simple-little-table");
@@ -106,10 +104,8 @@ public class MainPage extends TemplatePage {
         
         int i = 1; // индекс строки в таблице
         
-        List<AccountDTO> accountList = user.getAccountList();
-        
         // выбираем только карточные счета
-        for (AccountDTO account : accountList) {
+        for (AccountDTO account : user.getAccountList()) {
 
             if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
                 // тип счета и валюта счета
@@ -152,7 +148,7 @@ public class MainPage extends TemplatePage {
         i = 1; // обновляем значение индекса строки таблицы
         
         // выбираем только депозитные счета
-        for (AccountDTO account : accountList) {
+        for (AccountDTO account : user.getAccountList()) {
             
             if (account.getAccountTypeId() == AccountTypes.DEPOSIT.getId()) {
                 // тип счета и валюта счета
