@@ -13,7 +13,7 @@ public class Main implements EntryPoint {
     @Override
     public void onModuleLoad() {
         
-        RootLayoutPanel.get().add(new Login().asWidget());
+        RootLayoutPanel.get().add(new MainPage().asWidget());
                 
     }
         

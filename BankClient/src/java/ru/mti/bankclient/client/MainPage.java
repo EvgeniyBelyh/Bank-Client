@@ -1,5 +1,6 @@
 package ru.mti.bankclient.client;
 
+import com.google.gwt.core.client.GWT;
 import ru.mti.bankclient.shared.ClientDTO;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,7 +11,13 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import ru.mti.bankclient.client.rpc.BankClientService;
+import ru.mti.bankclient.client.rpc.BankClientServiceAsync;
 import ru.mti.bankclient.client.rpc.LoginService;
+import ru.mti.bankclient.client.rpc.LoginServiceAsync;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.AccountTypes;
 
@@ -21,15 +28,52 @@ import ru.mti.bankclient.shared.AccountTypes;
  */
 public class MainPage extends TemplatePage {
 
-    //public static ClientDTO user; // Объект клиента
-    private ClientDTO user;
+    private ClientDTO user = null;
     public static int CURRENT_BANK = 1; // Код банка в справочнике банков
-    
+    private AsyncCallback<ClientDTO> clientCallback;
+    private List<AccountDTO> accountList;
+    private BankClientServiceAsync bankClientServiceAsync = GWT.create(BankClientService.class);
+    private LoginServiceAsync loginServiceAsync = GWT.create(LoginService.class);
+    AsyncCallback<List<AccountDTO>> accountCallback;
 
     public MainPage() {
 
         super();
         
+        this.clientCallback = new AsyncCallback<ClientDTO>() {
+            @Override
+            public void onSuccess(ClientDTO result) {
+                if (result == null) {
+                    Window.alert("Учетной записи с таким логином не сущесвует.");
+                    return;
+                }
+
+                if (result.isBlocked()) {
+                    Window.alert("Ваша учетная запись заблокирована! Обратитесь в банк за дополнительной информацией");
+                } else if (result.getPassword().length() == 1) {
+                    Window.alert("Неверный логин или пароль. Количество попыток: " + result.getPassword());
+                } else {
+                    user = result;
+                    centerBodyPanel.clear();
+                    createWelcomePanel();
+                    createMenuBlocks();
+                    createCenterPanel();
+                }
+            }
+
+            // в случае возникновения ошибки
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                caught.printStackTrace();
+            }
+
+        };
+
+        if (this.user == null) {
+            this.centerBodyPanel.add(new LoginPanel(this.clientCallback));
+        }
+        /*
         LoginService.Util.getInstance().loginFromSessionServer(new AsyncCallback<ClientDTO>() {
             @Override
             public void onSuccess(ClientDTO result) {
@@ -58,13 +102,13 @@ public class MainPage extends TemplatePage {
         createMenuBlocks();
         // создаем отображение центральной панели
         createCenterPanel();
+         */
     }
-    
-    
+
     public MainPage(ClientDTO user) {
-        
+
         super();
-        
+
         this.user = user;
 
         // создаем панель приветствия в хедере
@@ -72,10 +116,9 @@ public class MainPage extends TemplatePage {
         // создаем меню
         createMenuBlocks();
         // создаем отображение центральной панели
-        createCenterPanel();       
+        createCenterPanel();
     }
-    
-    
+
     /**
      * создает панель приветствия в хедере страницы
      */
@@ -92,11 +135,27 @@ public class MainPage extends TemplatePage {
         exitLink.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+
+                LoginService.Util.getInstance().logout(new AsyncCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+
+                    }
+                    // в случае возникновения ошибки
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                        caught.printStackTrace();
+                    }
+
+                });
+
                 RootLayoutPanel rootPanel = RootLayoutPanel.get();
                 // очищаем страницу
                 rootPanel.clear();
                 // формируем окно ввода логина и пароля
-                rootPanel.add(new Login());
+                rootPanel.add(new MainPage().asWidget());
+
             }
         });
         // добавляем ссылку
@@ -125,7 +184,33 @@ public class MainPage extends TemplatePage {
      * создает центральную панель главной страницы
      */
     private void createCenterPanel() {
-
+        
+        //this.bankClientServiceAsync.getAccounts(user.getId(), this.accountCallback);
+        /*
+        this.accountCallback = new AsyncCallback<List<AccountDTO>>() {
+            // при успешной отработке удаленного вызова
+            public void onSuccess(List<AccountDTO> result) {               
+                accountList = result;                
+            }
+            // в случае возникновения ошибки
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка связи с сервером! Невозможно определить список счетов. Повторите попытку позднее");
+                caught.printStackTrace();
+            }         
+        };  
+        */
+        //LoginService.Util.getInstance().getAccounts(user.getId(), accountCallback);
+        
+        System.out.println("Выводим список клиентских счетов");
+        System.out.println("User ID = " + user.getId() + " User Name = " + user.getName());
+        
+        //loginServiceAsync.getAccounts(user.getId(), this.accountCallback);
+        
+        
+        for(AccountDTO account: user.getAccountList()) {
+            System.out.println(account.getAccountTypeName() + " " + account.getNumber());
+        }
+        
         // создаем заголовок 
         HTML cardHeader = new HTML("<h2>Карты</h2>");
         cardHeader.setStyleName("operations_container h2");
