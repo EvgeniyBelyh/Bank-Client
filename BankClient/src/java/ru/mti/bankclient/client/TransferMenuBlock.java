@@ -3,9 +3,14 @@ package ru.mti.bankclient.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import ru.mti.bankclient.client.rpc.LoginService;
+import ru.mti.bankclient.shared.ClientDTO;
 
 /**
  * Блок меню денежных переводов
@@ -15,6 +20,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class TransferMenuBlock extends VerticalPanel {
     
     private MainPage mainPage;
+    private ClientDTO user;
     
     public TransferMenuBlock(MainPage page) {
         
@@ -98,7 +104,30 @@ public class TransferMenuBlock extends VerticalPanel {
     public void createTransfersContent() {
         // убираем содержимое центральной панели
         this.mainPage.centerBodyPanel.clear();
+        
+        LoginService.Util.getInstance().loginFromSessionServer(new AsyncCallback<ClientDTO>() {
+            @Override
+            public void onSuccess(ClientDTO result) {
+                user = result;
+            }
+
+            // в случае возникновения ошибки
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                
+                RootLayoutPanel rootPanel = RootLayoutPanel.get();
+                // очищаем страницу
+                rootPanel.clear();
+                // формируем окно ввода логина и пароля
+                rootPanel.add(new Login());
+                
+                caught.printStackTrace();
+            }
+
+        });
+        
         // добавляем панель с формами для перевода
-        this.mainPage.centerBodyPanel.add(new TransfersContent());
+        this.mainPage.centerBodyPanel.add(new TransfersContent(user));
     }
 }

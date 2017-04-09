@@ -5,6 +5,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.servlet.ServletContext;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.Client;
 import ru.mti.bankclient.session.ClientFacade;
@@ -30,7 +31,7 @@ public class BankClientServiceImpl extends RemoteServiceServlet implements BankC
     private OperationFacade operationFacade;
     
     private static byte tryCount = 5;
-    
+     
     /**
      * Метод получает объект клиента из базы данных по логину и паролю
      * @param login - логин

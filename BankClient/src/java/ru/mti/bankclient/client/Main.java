@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 public class Main implements EntryPoint {
     
     
+    @Override
     public void onModuleLoad() {
         
         RootLayoutPanel.get().add(new Login().asWidget());

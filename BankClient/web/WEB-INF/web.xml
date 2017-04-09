@@ -4,9 +4,17 @@
         <servlet-name>UserCheck</servlet-name>
         <servlet-class>ru.mti.bankclient.server.BankClientServiceImpl</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoginService</servlet-name>
+        <servlet-class>ru.mti.bankclient.server.LoginServiceImpl</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserCheck</servlet-name>
         <url-pattern>/ru.mti.bankclient.BankClient/usercheck</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginService</servlet-name>
+        <url-pattern>/ru.mti.bankclient.BankClient/loginservice</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

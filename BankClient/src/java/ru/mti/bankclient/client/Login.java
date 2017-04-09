@@ -1,4 +1,3 @@
-
 package ru.mti.bankclient.client;
 
 import ru.mti.bankclient.shared.ClientDTO;
@@ -14,7 +13,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import ru.mti.bankclient.client.rpc.BankClientServiceAsync;
 import ru.mti.bankclient.client.rpc.BankClientService;
-
+import ru.mti.bankclient.client.rpc.LoginService;
 
 /**
  * Точка входа в приложение
@@ -22,18 +21,18 @@ import ru.mti.bankclient.client.rpc.BankClientService;
  * @author Белых Евгений
  */
 public class Login extends TemplatePage {
-    
+
     private TextBox login;
     private PasswordTextBox pass;
     private BankClientServiceAsync userCheckService = GWT.create(BankClientService.class);
-    
+
     /**
      * Конструктор
      */
     public Login() {
-        
+
         super();
-        
+
         //поле для ввода логина
         login = new TextBox();
         login.setStyleName("login_textbox"); //ставим стиль оформления
@@ -47,15 +46,15 @@ public class Login extends TemplatePage {
         //кнопка входа
         Button confirmButton = new Button("Вход");
         confirmButton.setStyleName("login_confirm_button");
-        
+
         //вертикальная панель для компановки элементов
         VerticalPanel vPanel = new VerticalPanel();
         vPanel.add(login);
         vPanel.add(pass);
         vPanel.add(confirmButton);
-        vPanel.setSize("515px", "220px");       
+        vPanel.setSize("515px", "220px");
         vPanel.setStyleName("login_form_container");
-        
+
         //обработчик для клика по кнопке 'Вход'
         confirmButton.addClickHandler(new ClickHandler() {
             @Override
@@ -66,20 +65,20 @@ public class Login extends TemplatePage {
         //добавляем элементы на страницу
         this.centerBodyPanel.add(vPanel);
     }
-    
-    
+
     /**
-     * Проверяет правильность ввода логина и пароля и отправляет данные на сервер
+     * Проверяет правильность ввода логина и пароля и отправляет данные на
+     * сервер
      */
     private void sendInfoToServer() {
-        
+
         final String symbol = login.getText().toLowerCase().trim();
         login.setFocus(true);
 
         // проверяем ввод определенных символов в поле логина
         if (!symbol.matches("^[0-9a-z.@]{1,50}$")) {
-            Window.alert("Логин не может быть пустым и может состоять из " +
-                    "латинских символов нижнего регистра, цифр, а также символов '.' или '@'");
+            Window.alert("Логин не может быть пустым и может состоять из "
+                    + "латинских символов нижнего регистра, цифр, а также символов '.' или '@'");
             login.setFocus(true);
             login.selectAll();
             return;
@@ -92,6 +91,35 @@ public class Login extends TemplatePage {
             return;
         }
         
+        
+        LoginService.Util.getInstance().loginServer(login.getText(), pass.getText(), new AsyncCallback<ClientDTO>() {
+            @Override
+            public void onSuccess(ClientDTO result) {
+                if(result == null) {
+                    Window.alert("Учетной записи с таким логином не сущесвует.");
+                    return;
+                }
+                
+                if(result.isBlocked()) {
+                    Window.alert("Ваша учетная запись заблокирована! Обратитесь в банк за дополнительной информацией");
+                } else {
+                    if(result.getPassword().length() == 1) {
+                        Window.alert("Неверный логин или пароль. Количество попыток: " + result.getPassword());
+                    } else {
+                        openMainPage(result);
+                    }
+                }
+            }
+            // в случае возникновения ошибки
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                caught.printStackTrace();
+            }
+
+        });
+
+        /*
         // обрабатываем полученный от сервера результат
         final AsyncCallback<ClientDTO> callback = new AsyncCallback<ClientDTO>() {
             // при успешной отработке удаленного вызова
@@ -120,26 +148,26 @@ public class Login extends TemplatePage {
                 caught.printStackTrace();
             }
         };
-
+        
+         */
         // отправляем логин и пароль на сервер
-        userCheckService.checkUser(login.getText(), pass.getText(), callback);
-   
+        //userCheckService.checkUser(login.getText(), pass.getText(), callback);
+
     }
-    
+
     /**
      * открывает главную страницу
+     *
      * @param user - обертка с данными пользователя
      */
     private void openMainPage(ClientDTO user) {
-        
+
         RootLayoutPanel rootPanel = RootLayoutPanel.get();
         // убираем все виджеты
         rootPanel.clear();
-        
-        MainPage.user = user;
-        
+
         // открываем главную страницу
-        rootPanel.add(new MainPage());
+        rootPanel.add(new MainPage().asWidget());
     }
-    
+
 }

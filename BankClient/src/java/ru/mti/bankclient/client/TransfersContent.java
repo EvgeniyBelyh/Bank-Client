@@ -19,6 +19,7 @@ import ru.mti.bankclient.client.rpc.BankClientService;
 import ru.mti.bankclient.client.rpc.BankClientServiceAsync;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.AccountTypes;
+import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.OperationDTO;
 import ru.mti.bankclient.shared.PartnerBankDTO;
@@ -40,8 +41,12 @@ public class TransfersContent extends VerticalPanel {
     private Button cancelBtn = new Button("Отмена");
     private List<AccountDTO> accountList;
     private Button execBtn = new Button("Исполнить");
+    private ClientDTO user;
     
-    public TransfersContent() {
+    
+    public TransfersContent(ClientDTO user) {        
+        
+        this.user = user;
         
         this.accountCallback = new AsyncCallback<List<AccountDTO>>() {
             // при успешной отработке удаленного вызова
@@ -76,7 +81,7 @@ public class TransfersContent extends VerticalPanel {
         };  
         
         // отправляем запрос на сервер
-        bankClientServiceAsync.getAccounts(MainPage.user.getId(), accountCallback);
+        bankClientServiceAsync.getAccounts(user.getId(), accountCallback);
         createHeader();
         createBody();
         
@@ -215,7 +220,7 @@ public class TransfersContent extends VerticalPanel {
         operationDTO.setAccountId(locAccountValue);
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
-        operationDTO.setDescription("Перевод между собственными счетами клиента " + MainPage.user.getName());
+        operationDTO.setDescription("Перевод между собственными счетами клиента " + user.getName());
         operationDTO.setDestinationAccount(account.getNumber());
         operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
         operationDTO.setStatusId(Statuses.NEW.getId());
