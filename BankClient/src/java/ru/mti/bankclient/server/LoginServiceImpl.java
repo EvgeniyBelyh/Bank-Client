@@ -7,7 +7,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import ru.mti.bankclient.client.rpc.BankClientService;
 
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.session.ClientFacade;
@@ -25,7 +24,7 @@ import ru.mti.bankclient.shared.PartnerBankDTO;
  *
  * @author Белых Евгений
  */
-public class LoginServiceImpl extends RemoteServiceServlet implements LoginService, BankClientService
+public class LoginServiceImpl extends RemoteServiceServlet implements LoginService
 {
     private static final long serialVersionUID = 4456105400553118785L;
     
@@ -114,19 +113,19 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     {
         return getUserAlreadyFromSession();
     }
- 
+    
+    
     @Override
     public void logout()
     {
         deleteUserFromSession();
     }
- /*
-    @Override
-    public boolean changePassword(String name, String newPassword)
-    {
-        // change password logic
-    }
-*/ 
+
+    
+    /**
+     * выбирает объект клиента из сессии
+     * @return DTO клиента
+     */
     private ClientDTO getUserAlreadyFromSession()
     {
         ClientDTO user = null;
@@ -137,9 +136,14 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         {
             user = (ClientDTO) userObj;
         }
+        
         return user;
     }
- 
+    
+    /**
+     * сохраняет объект клиента в сессии
+     * @param user DTO клиента 
+     */
     private void storeUserInSession(ClientDTO user)
     {
         HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
@@ -147,12 +151,20 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         session.setAttribute("user", user);
     }
     
+    /**
+     * сохраняет количество попыток входа в атрибутах сессии
+     * @param count - количество попыток входа
+     */
     private void setTryCountInSesstion(int count) {
         HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
         HttpSession session = httpServletRequest.getSession(true);
         session.setAttribute("tryCount", count);        
     }
-
+    
+    /**
+     * выбирает количество поппыток входа из сессии
+     * @return - оставшееся количество попыток
+     */
     private Integer getTryCountInSesstion() {
         HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
         HttpSession session = httpServletRequest.getSession(true);
@@ -160,6 +172,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         return count;
     }
     
+     /**
+     * удаляет клиента из сессии и разрывает соединение
+     */
     private void deleteUserFromSession()
     {
         HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
@@ -269,9 +284,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
     @Override
     public void executeOperation() {
-        
-        BankSystem bankSystem = new BankSystem();
-        bankSystem.executeOperations();
+
     }
     
 }

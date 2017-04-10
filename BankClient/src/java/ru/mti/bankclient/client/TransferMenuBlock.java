@@ -70,7 +70,7 @@ public class TransferMenuBlock extends VerticalPanel {
         ownAccount.setText("Между своими счетами");
         ownAccount.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                createTransfersContent();
+                createTransfersOwnAccounts();
             }
         });
         // ссылка на страницу переводов между клиентами банка
@@ -78,7 +78,7 @@ public class TransferMenuBlock extends VerticalPanel {
         otherClient.setText("Другому клиенту банка");
         otherClient.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных для перевода
+                createTransfersInBank();
             }
         });
         // ссылка на страницу переводов в другой банк
@@ -101,7 +101,7 @@ public class TransferMenuBlock extends VerticalPanel {
     }
     
     
-    public void createTransfersContent() {
+    public void createTransfersOwnAccounts() {
         // убираем содержимое центральной панели
         this.mainPage.centerBodyPanel.clear();
         
@@ -116,11 +116,8 @@ public class TransferMenuBlock extends VerticalPanel {
             public void onFailure(Throwable caught) {
                 Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
                 
-                RootLayoutPanel rootPanel = RootLayoutPanel.get();
-                // очищаем страницу
-                rootPanel.clear();
-                // формируем окно ввода логина и пароля
-                rootPanel.add(new Login());
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();
                 
                 caught.printStackTrace();
             }
@@ -128,6 +125,34 @@ public class TransferMenuBlock extends VerticalPanel {
         });
         
         // добавляем панель с формами для перевода
-        this.mainPage.centerBodyPanel.add(new TransfersContent(user));
+        this.mainPage.centerBodyPanel.add(new TransfersOwnAccounts(user, mainPage));
+    }
+    
+    
+    public void createTransfersInBank() {
+        // убираем содержимое центральной панели
+        this.mainPage.centerBodyPanel.clear();
+        
+        LoginService.Util.getInstance().loginFromSessionServer(new AsyncCallback<ClientDTO>() {
+            @Override
+            public void onSuccess(ClientDTO result) {
+                user = result;
+            }
+
+            // в случае возникновения ошибки
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();
+                
+                caught.printStackTrace();
+            }
+
+        });
+        
+        // добавляем панель с формами для перевода
+        this.mainPage.centerBodyPanel.add(new TransfersInBank(user, mainPage));
     }
 }

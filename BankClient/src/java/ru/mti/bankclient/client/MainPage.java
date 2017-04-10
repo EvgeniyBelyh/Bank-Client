@@ -12,10 +12,6 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import ru.mti.bankclient.client.rpc.BankClientService;
-import ru.mti.bankclient.client.rpc.BankClientServiceAsync;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.client.rpc.LoginServiceAsync;
 import ru.mti.bankclient.shared.AccountDTO;
@@ -32,8 +28,6 @@ public class MainPage extends TemplatePage {
     public static int CURRENT_BANK = 1; // Код банка в справочнике банков
     private AsyncCallback<ClientDTO> clientCallback;
     private List<AccountDTO> accountList;
-    private BankClientServiceAsync bankClientServiceAsync = GWT.create(BankClientService.class);
-    private LoginServiceAsync loginServiceAsync = GWT.create(LoginService.class);
     AsyncCallback<List<AccountDTO>> accountCallback;
 
     public MainPage() {
@@ -73,36 +67,7 @@ public class MainPage extends TemplatePage {
         if (this.user == null) {
             this.centerBodyPanel.add(new LoginPanel(this.clientCallback));
         }
-        /*
-        LoginService.Util.getInstance().loginFromSessionServer(new AsyncCallback<ClientDTO>() {
-            @Override
-            public void onSuccess(ClientDTO result) {
-                user = result;
-            }
 
-            // в случае возникновения ошибки
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
-                
-                RootLayoutPanel rootPanel = RootLayoutPanel.get();
-                // очищаем страницу
-                rootPanel.clear();
-                // формируем окно ввода логина и пароля
-                rootPanel.add(new Login());
-                
-                caught.printStackTrace();
-            }
-
-        });
-
-        // создаем панель приветствия в хедере
-        createWelcomePanel();
-        // создаем меню
-        createMenuBlocks();
-        // создаем отображение центральной панели
-        createCenterPanel();
-         */
     }
 
     public MainPage(ClientDTO user) {
@@ -183,34 +148,8 @@ public class MainPage extends TemplatePage {
     /**
      * создает центральную панель главной страницы
      */
-    private void createCenterPanel() {
-        
-        //this.bankClientServiceAsync.getAccounts(user.getId(), this.accountCallback);
-        /*
-        this.accountCallback = new AsyncCallback<List<AccountDTO>>() {
-            // при успешной отработке удаленного вызова
-            public void onSuccess(List<AccountDTO> result) {               
-                accountList = result;                
-            }
-            // в случае возникновения ошибки
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка связи с сервером! Невозможно определить список счетов. Повторите попытку позднее");
-                caught.printStackTrace();
-            }         
-        };  
-        */
-        //LoginService.Util.getInstance().getAccounts(user.getId(), accountCallback);
-        
-        System.out.println("Выводим список клиентских счетов");
-        System.out.println("User ID = " + user.getId() + " User Name = " + user.getName());
-        
-        //loginServiceAsync.getAccounts(user.getId(), this.accountCallback);
-        
-        
-        for(AccountDTO account: user.getAccountList()) {
-            System.out.println(account.getAccountTypeName() + " " + account.getNumber());
-        }
-        
+    public void createCenterPanel() {
+              
         // создаем заголовок 
         HTML cardHeader = new HTML("<h2>Карты</h2>");
         cardHeader.setStyleName("operations_container h2");
@@ -293,5 +232,18 @@ public class MainPage extends TemplatePage {
 
         this.centerBodyPanel.add(depositTable);
     }
-
+    
+    
+    /**
+     * отчищает главную страницу от элементов
+     */
+    public void clearMainPage() {
+        // отчищаем панель меню
+        this.leftBodyPanel.clear();
+        // отчищаем центральную панель
+        this.centerBodyPanel.clear();
+        // отчищаем правую панель
+        this.rightBodyPanel.clear();
+    }
+    
 }

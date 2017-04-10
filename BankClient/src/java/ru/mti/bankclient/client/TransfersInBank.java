@@ -1,7 +1,6 @@
 
 package ru.mti.bankclient.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -9,16 +8,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import java.util.Date;
 import java.util.List;
-import ru.mti.bankclient.client.rpc.BankClientService;
-import ru.mti.bankclient.client.rpc.BankClientServiceAsync;
+import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.shared.AccountDTO;
-import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.OperationDTO;
@@ -30,44 +28,34 @@ import ru.mti.bankclient.shared.Statuses;
  * Класс формирует форму ввода данных для перевода
  * @author Белых Евгений
  */
-public class TransfersContent extends VerticalPanel {
+public class TransfersInBank implements IsWidget {
     
-    private BankClientServiceAsync bankClientServiceAsync = GWT.create(BankClientService.class);
+    private VerticalPanel verticalPanel = new VerticalPanel();
+    //private BankClientServiceAsync bankClientServiceAsync = GWT.create(BankClientService.class);
     private final AsyncCallback<List<AccountDTO>> accountCallback;
     private ListBox locAccount = new ListBox(); // список счетов списания
-    private ListBox destAccount = new ListBox(); // список счетов зачисления
+    private TextBox destAccount = new TextBox(); // счет зачисления другого клиента
     private TextBox sumField = new TextBox(); // сумма
     private Button confirmBtn = new Button("Перевести");
     private Button cancelBtn = new Button("Отмена");
     private List<AccountDTO> accountList;
-    private Button execBtn = new Button("Исполнить");
     private ClientDTO user;
+    private MainPage mainPage;
     
-    
-    public TransfersContent(ClientDTO user) {        
+    public TransfersInBank(ClientDTO user, MainPage mainPage) {        
         
         this.user = user;
+        this.mainPage = mainPage;
         
         this.accountCallback = new AsyncCallback<List<AccountDTO>>() {
             // при успешной отработке удаленного вызова
             public void onSuccess(List<AccountDTO> result) {
                 for(AccountDTO acc : result) {
-                    // пропускаем счета кредитных карт для списка счетов списания
-                    if(acc.getAccountTypeId() == AccountTypes.CREDIT_CARD.getId()) {
-                        destAccount.addItem(acc.getAccountTypeName() + " " 
-                            + acc.getNumber() + ", остаток " + acc.getBalance() 
-                            + " " + acc.getCurrencyName(), acc.getId().toString());
-                        
-                        continue;
-                    }
                     
                     locAccount.addItem(acc.getAccountTypeName() + " " 
                             + acc.getNumber() + ", остаток " + acc.getBalance() 
                             + " " + acc.getCurrencyName(), acc.getId().toString());
 
-                    destAccount.addItem(acc.getAccountTypeName() + " " 
-                            + acc.getNumber() + ", остаток " + acc.getBalance() 
-                            + " " + acc.getCurrencyName(), acc.getId().toString());
                 }
                 
                 accountList = result;
@@ -81,14 +69,15 @@ public class TransfersContent extends VerticalPanel {
         };  
         
         // отправляем запрос на сервер
-        bankClientServiceAsync.getAccounts(user.getId(), accountCallback);
+        
+        LoginService.Util.getInstance().getAccounts(user.getId(), accountCallback);
         createHeader();
         createBody();
         
         locAccount.setStyleName("operation_fields");
         destAccount.setStyleName("operation_fields");
         sumField.setStyleName("operation_fields");
-        this.setStyleName("operations_container");
+        verticalPanel.setStyleName("operations_container");
     }
     
     /**
@@ -98,7 +87,7 @@ public class TransfersContent extends VerticalPanel {
         
         HTML header = new HTML("<h2>Переводы между своими счетами</h2>");
         header.setStyleName("operations_container h2");
-        this.add(header);
+        verticalPanel.add(header);
     }
     
     /**
@@ -142,11 +131,9 @@ public class TransfersContent extends VerticalPanel {
         cancelBtn.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                RootLayoutPanel rootPanel = RootLayoutPanel.get();
-                // убираем все виджеты
-                rootPanel.clear();
-                // открываем главную страницу
-                rootPanel.add(new MainPage());
+                
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();
             }         
         });
 
@@ -158,26 +145,18 @@ public class TransfersContent extends VerticalPanel {
             }         
         });
 
-        // обрабатываем нажатие кнопки Перевести
-        execBtn.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                bankClientServiceAsync.executeOperation(operationExecuteCallback);               
-            }         
-        });
         
         // добавляем кнопки и стиль к панели кнопок
         buttonPanel.setStyleName("button_panel");
         buttonPanel.add(confirmBtn);
         buttonPanel.add(cancelBtn);
-        buttonPanel.add(execBtn);
         
         fields.add(buttonPanel);
         
         hPanel.add(headers);
         hPanel.add(fields);
         
-        this.add(hPanel);
+        verticalPanel.add(hPanel);
 
     }
     
@@ -189,7 +168,6 @@ public class TransfersContent extends VerticalPanel {
         Double summ;
         // определяем id счетов списания и зачисления
         int locAccountValue = Integer.parseInt(locAccount.getValue(locAccount.getSelectedIndex()));
-        int destAccountValue = Integer.parseInt(destAccount.getValue(destAccount.getSelectedIndex()));
         
         // пытаемся получить сумму перевода
         try {
@@ -197,12 +175,6 @@ public class TransfersContent extends VerticalPanel {
         } catch(NumberFormatException ex) {
             Window.alert("Сумма перевода указана неверно");
             sumField.setFocus(true);
-            return;
-        }
-        // если счет списания равен счету зачисления, то выводим предупреждение
-        if(locAccountValue == destAccountValue) {
-            Window.alert("Неверно указан счет зачисления");
-            destAccount.setFocus(true);
             return;
         }
         
@@ -220,8 +192,8 @@ public class TransfersContent extends VerticalPanel {
         operationDTO.setAccountId(locAccountValue);
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
-        operationDTO.setDescription("Перевод между собственными счетами клиента " + user.getName());
-        operationDTO.setDestinationAccount(account.getNumber());
+        operationDTO.setDescription("Перевод внутри банка");
+        operationDTO.setDestinationAccount(this.destAccount.getText());
         operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
         operationDTO.setStatusId(Statuses.NEW.getId());
         operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));             
@@ -238,8 +210,13 @@ public class TransfersContent extends VerticalPanel {
             }
         };
         
-        bankClientServiceAsync.saveOperation(operationDTO, operationCallback);
+        LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
         
+    }
+
+    @Override
+    public Widget asWidget() {
+        return verticalPanel;
     }
     
 }
