@@ -28,19 +28,22 @@ import ru.mti.bankclient.shared.Statuses;
  * Класс формирует форму ввода данных для перевода
  * @author Белых Евгений
  */
-public class TransfersInBank implements IsWidget {
+public class TransfersOutBank implements IsWidget {
     
     private VerticalPanel verticalPanel = new VerticalPanel();
     private final AsyncCallback<List<AccountDTO>> accountCallback;
     private ListBox locAccount = new ListBox(); // список счетов списания
     private TextBox destAccount = new TextBox(); // счет зачисления другого клиента
     private TextBox sumField = new TextBox(); // сумма
+    private TextBox descriptionField = new TextBox(); // назначение платежа
+    private TextBox BIKField = new TextBox(); // БИК банка получателя
     private Button confirmBtn = new Button("Перевести");
     private Button cancelBtn = new Button("Отмена");
     private List<AccountDTO> accountList;
+
     private MainPage mainPage;
     
-    public TransfersInBank(ClientDTO user, MainPage mainPage) {        
+    public TransfersOutBank(ClientDTO user, MainPage mainPage) {        
         
         this.mainPage = mainPage;
         
@@ -74,6 +77,8 @@ public class TransfersInBank implements IsWidget {
         locAccount.setStyleName("operation_fields");
         destAccount.setStyleName("operation_fields");
         sumField.setStyleName("operation_fields");
+        descriptionField.setStyleName("operation_fields");
+        BIKField.setStyleName("operation_fields");
         verticalPanel.setStyleName("operations_container");
     }
     
@@ -82,7 +87,7 @@ public class TransfersInBank implements IsWidget {
      */
     public void createHeader() {
         
-        HTML header = new HTML("<h2>Перевод другому клиенту банка</h2>");
+        HTML header = new HTML("<h2>Перевод в другой банк</h2>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);
     }
@@ -99,29 +104,20 @@ public class TransfersInBank implements IsWidget {
         fields.setSpacing(10);
         
         headers.add(new HTML("<h3>Счет списания</h3>"));
-        fields.add(locAccount);       
-        headers.add(new HTML("<h3>Счет зачисления</h3>"));
-        fields.add(destAccount);       
+        fields.add(locAccount);     
         headers.add(new HTML("<h3>Сумма перевода</h3>"));
         fields.add(sumField); 
+        headers.add(new HTML("<h3>Счет зачисления</h3>"));
+        fields.add(destAccount);       
+        headers.add(new HTML("<h3>Назначение платежа</h3>"));
+        fields.add(descriptionField);   
+        headers.add(new HTML("<h3>БИК банка получателя</h3>"));
+        fields.add(BIKField);  
+        
         headers.add(new HTML("<br>"));
         
         confirmBtn.setStyleName("confirm_button");
         cancelBtn.setStyleName("confirm_button");
-        
-        
-        final AsyncCallback operationExecuteCallback = new AsyncCallback() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка исполнения операций в АБС");
-            }
-
-            @Override
-            public void onSuccess(Object result) {
-                Window.alert("Операция исполнена успешно");
-            }
-        };
-        
         
         
         // обрабатываем нажатие кнопки Отмена
@@ -189,11 +185,15 @@ public class TransfersInBank implements IsWidget {
         operationDTO.setAccountId(locAccountValue);
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
-        operationDTO.setDescription("Перевод внутри банка");
+        operationDTO.setDescription(descriptionField.getText());
         operationDTO.setDestinationAccount(this.destAccount.getText());
-        operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
+        operationDTO.setOperationTypeId(OperTypes.TRANSFER_OUT.getId());
         operationDTO.setStatusId(Statuses.NEW.getId());
-        operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));             
+        
+        PartnerBankDTO pBank = new PartnerBankDTO();
+        pBank.setBik(BIKField.getText());
+        
+        operationDTO.setPartnerBankId(pBank);             
         
         AsyncCallback<Void> operationCallback = new AsyncCallback<Void>() {
             @Override

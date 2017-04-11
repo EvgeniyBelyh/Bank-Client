@@ -4,7 +4,10 @@ package ru.mti.bankclient.session;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
 import ru.mti.bankclient.shared.PartnerBank;
 
 /**
@@ -27,5 +30,23 @@ public class PartnerBankFacade extends AbstractFacade<PartnerBank> {
     public PartnerBankFacade() {
         super(PartnerBank.class);
     }
+    
+    public PartnerBank findByLogin(String bik) {
+        getEntityManager();
+        PartnerBank pBank = null;
+        EntityTransaction trans = em.getTransaction();
+        Query query = em.createNamedQuery("PartnerBank.findByBik");
+        query.setParameter("bik", bik);
+        trans.begin();
+        try {
+            pBank = (PartnerBank) query.getSingleResult();
+        } catch(NoResultException ex) {
+            System.out.println("Объект банка-корреспондента не выбрался из базы по логину");
+        } catch(Exception ex) {
+            throw ex;
+        }              
+        trans.commit();
+        return pBank;
+    }   
     
 }

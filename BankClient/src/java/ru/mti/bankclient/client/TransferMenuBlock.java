@@ -7,7 +7,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.shared.ClientDTO;
@@ -20,7 +19,10 @@ import ru.mti.bankclient.shared.ClientDTO;
 public class TransferMenuBlock extends VerticalPanel {
     
     private MainPage mainPage;
-    private ClientDTO user;
+    private ClientDTO user = null;
+    private static final int OWN_TRANSFER = 1;
+    private static final int IN_TRANSFER = 2;
+    private static final int OUT_TRANSFER = 3;
     
     public TransferMenuBlock(MainPage page) {
         
@@ -70,7 +72,7 @@ public class TransferMenuBlock extends VerticalPanel {
         ownAccount.setText("Между своими счетами");
         ownAccount.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                createTransfersOwnAccounts();
+                createTransfer(OWN_TRANSFER);
             }
         });
         // ссылка на страницу переводов между клиентами банка
@@ -78,7 +80,7 @@ public class TransferMenuBlock extends VerticalPanel {
         otherClient.setText("Другому клиенту банка");
         otherClient.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                createTransfersInBank();
+                createTransfer(IN_TRANSFER);
             }
         });
         // ссылка на страницу переводов в другой банк
@@ -86,7 +88,7 @@ public class TransferMenuBlock extends VerticalPanel {
         outBank.setText("В другой банк");
         outBank.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных для перевода
+                createTransfer(OUT_TRANSFER);
             }
         }); 
         // добавляем ссылки в тело блока
@@ -100,38 +102,37 @@ public class TransferMenuBlock extends VerticalPanel {
         this.add(body);
     }
     
-    
-    public void createTransfersOwnAccounts() {
+    /**
+     * отображает нужные виджеты в зависимости от выбранного пользователем
+     * типа перевода
+     * @param transferType тип перевода: 1 - между своими счетами
+     *                                   2 - другому клиенту банка
+     *                                   3 - в другой банк
+     */
+    public void createTransfer(int transferType) {
         // убираем содержимое центральной панели
         this.mainPage.centerBodyPanel.clear();
         
-        LoginService.Util.getInstance().loginFromSessionServer(new AsyncCallback<ClientDTO>() {
-            @Override
-            public void onSuccess(ClientDTO result) {
-                user = result;
-            }
-
-            // в случае возникновения ошибки
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
-                
-                mainPage.centerBodyPanel.clear();
-                mainPage.createCenterPanel();
-                
-                caught.printStackTrace();
-            }
-
-        });
+        if(user == null) {
+            setClientDTO();
+        }
         
-        // добавляем панель с формами для перевода
-        this.mainPage.centerBodyPanel.add(new TransfersOwnAccounts(user, mainPage));
+        switch(transferType) {
+            case OWN_TRANSFER:
+                this.mainPage.centerBodyPanel.add(new TransfersOwnAccounts(user, mainPage));
+                break;
+            case IN_TRANSFER:
+                this.mainPage.centerBodyPanel.add(new TransfersInBank(user, mainPage));
+                break;
+            case OUT_TRANSFER:
+                this.mainPage.centerBodyPanel.add(new TransfersOutBank(user, mainPage));
+                break;                
+        }
+
     }
+      
     
-    
-    public void createTransfersInBank() {
-        // убираем содержимое центральной панели
-        this.mainPage.centerBodyPanel.clear();
+    private void setClientDTO() {
         
         LoginService.Util.getInstance().loginFromSessionServer(new AsyncCallback<ClientDTO>() {
             @Override
@@ -151,8 +152,5 @@ public class TransferMenuBlock extends VerticalPanel {
             }
 
         });
-        
-        // добавляем панель с формами для перевода
-        this.mainPage.centerBodyPanel.add(new TransfersInBank(user, mainPage));
     }
 }
