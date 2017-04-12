@@ -19,7 +19,6 @@ import ru.mti.bankclient.shared.ClientDTO;
 public class TransferMenuBlock extends VerticalPanel {
     
     private MainPage mainPage;
-    private ClientDTO user = null;
     private static final int OWN_TRANSFER = 1;
     private static final int IN_TRANSFER = 2;
     private static final int OUT_TRANSFER = 3;
@@ -113,44 +112,18 @@ public class TransferMenuBlock extends VerticalPanel {
         // убираем содержимое центральной панели
         this.mainPage.centerBodyPanel.clear();
         
-        if(user == null) {
-            setClientDTO();
-        }
-        
         switch(transferType) {
             case OWN_TRANSFER:
-                this.mainPage.centerBodyPanel.add(new TransfersOwnAccounts(user, mainPage));
+                this.mainPage.centerBodyPanel.add(new TransfersOwnAccounts(mainPage));
                 break;
             case IN_TRANSFER:
-                this.mainPage.centerBodyPanel.add(new TransfersInBank(user, mainPage));
+                this.mainPage.centerBodyPanel.add(new TransfersInBank(mainPage));
                 break;
             case OUT_TRANSFER:
-                this.mainPage.centerBodyPanel.add(new TransfersOutBank(user, mainPage));
+                this.mainPage.centerBodyPanel.add(new TransfersOutBank(mainPage));
                 break;                
         }
 
     }
       
-    
-    private void setClientDTO() {
-        
-        LoginService.Util.getInstance().loginFromSessionServer(new AsyncCallback<ClientDTO>() {
-            @Override
-            public void onSuccess(ClientDTO result) {
-                user = result;
-            }
-
-            // в случае возникновения ошибки
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
-                
-                mainPage.centerBodyPanel.clear();
-                mainPage.createCenterPanel();
-                
-                caught.printStackTrace();
-            }
-
-        });
-    }
 }

@@ -7,9 +7,8 @@ package ru.mti.bankclient.shared;
  */
 public enum Statuses {
     NEW(1, "Новый"),
-    ON_EXECUTION(2, "На исполнении"),
-    EXECUTED(3, "Исполнен"),
-    NOT_EXECUTED(4, "Не исполнен");
+    EXECUTED(2, "Исполнено"),
+    NOT_EXECUTED(3, "Не исполнено");
     
     private int id;
     private String name;

@@ -9,13 +9,16 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.OperationDTO;
@@ -27,38 +30,34 @@ import ru.mti.bankclient.shared.Statuses;
  *
  * @author Белых Евгений
  */
-public class TransfersInBank implements IsWidget {
+public class AccountOperCardBlock implements IsWidget {
 
     private VerticalPanel verticalPanel = new VerticalPanel();
     private ListBox locAccount = new ListBox(); // список счетов списания
-    private TextBox destAccount = new TextBox(); // счет зачисления другого клиента
-    private TextBox sumField = new TextBox(); // сумма
-    private Button confirmBtn = new Button("Перевести");
+    private Button confirmBtn = new Button("Исполнить");
     private Button cancelBtn = new Button("Отмена");
-    private List<AccountDTO> accountList;
+    private List<AccountDTO> accountList = new ArrayList();
     private MainPage mainPage;
 
-    public TransfersInBank(MainPage mainPage) {
+    public AccountOperCardBlock(MainPage mainPage) {
 
         this.mainPage = mainPage;
         ClientDTO user = Util.getClientDTO();
 
         for (AccountDTO acc : user.getAccountList()) {
-
-            locAccount.addItem(acc.getAccountTypeName() + " "
-                    + acc.getNumber() + ", остаток " + acc.getBalance()
-                    + " " + acc.getCurrencyName(), acc.getId().toString());
-
+            // выбираем только карты
+            if (acc.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
+                locAccount.addItem(acc.getAccountTypeName() + " "
+                        + acc.getNumber() + ", остаток " + acc.getBalance()
+                        + " " + acc.getCurrencyName(), acc.getId().toString());
+                accountList.add(acc);
+            }
         }
-
-        accountList = user.getAccountList();
 
         createHeader();
         createBody();
 
         locAccount.setStyleName("operation_fields");
-        destAccount.setStyleName("operation_fields");
-        sumField.setStyleName("operation_fields");
         verticalPanel.setStyleName("operations_container");
     }
 
@@ -67,7 +66,7 @@ public class TransfersInBank implements IsWidget {
      */
     public void createHeader() {
 
-        HTML header = new HTML("<h2>Перевод другому клиенту банка</h2>");
+        HTML header = new HTML("<h2>Блокировка карты</h2>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);
     }
@@ -83,12 +82,8 @@ public class TransfersInBank implements IsWidget {
         VerticalPanel fields = new VerticalPanel();
         fields.setSpacing(10);
 
-        headers.add(new HTML("<h3>Счет списания</h3>"));
+        headers.add(new HTML("<h3>Карта</h3>"));
         fields.add(locAccount);
-        headers.add(new HTML("<h3>Счет зачисления</h3>"));
-        fields.add(destAccount);
-        headers.add(new HTML("<h3>Сумма перевода</h3>"));
-        fields.add(sumField);
         headers.add(new HTML("<br>"));
 
         confirmBtn.setStyleName("confirm_button");
@@ -135,32 +130,14 @@ public class TransfersInBank implements IsWidget {
         // определяем id счетов списания и зачисления
         int locAccountValue = Integer.parseInt(locAccount.getValue(locAccount.getSelectedIndex()));
 
-        // пытаемся получить сумму перевода
-        try {
-            summ = Double.parseDouble(sumField.getValue());
-        } catch (NumberFormatException ex) {
-            Window.alert("Сумма перевода указана неверно");
-            sumField.setFocus(true);
-            return;
-        }
-
-        // выбираем объект счета списания
-        AccountDTO account = accountList.get(locAccountValue);
-        // проверяем остаток на счете
-        if (account.getBalance() < summ) {
-            Window.alert("Недостаточно средств для перевода");
-            locAccount.setFocus(true);
-            return;
-        }
-
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
         operationDTO.setAccountId(locAccountValue);
-        operationDTO.setAmount(summ);
+        operationDTO.setAmount(0);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
-        operationDTO.setDescription("Перевод внутри банка");
-        operationDTO.setDestinationAccount(this.destAccount.getText());
-        operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
+        operationDTO.setDescription("Блокировка карты");
+        operationDTO.setDestinationAccount("0");
+        operationDTO.setOperationTypeId(OperTypes.CARD_BLOCK.getId());
         operationDTO.setStatusId(Statuses.NEW.getId());
         operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));
 
@@ -176,7 +153,21 @@ public class TransfersInBank implements IsWidget {
             }
         };
 
+        AsyncCallback<Void> operationExecuteCallback = new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                Window.alert("Карта успешно заблокирована");
+            }
+        };
+        
         LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
+        
+        //LoginService.Util.getInstance().executeOperation(operationExecuteCallback);
 
     }
 

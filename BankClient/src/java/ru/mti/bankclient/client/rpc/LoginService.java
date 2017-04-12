@@ -41,8 +41,6 @@ public interface LoginService extends RemoteService
  
     void logout();
     
-    public ClientDTO checkUser(String login, String pass);
-    
     public List<AccountDTO> getAccounts(int clientId);
     
     public void saveOperation(OperationDTO operationDTO);

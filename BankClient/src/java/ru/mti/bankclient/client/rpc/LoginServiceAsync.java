@@ -18,8 +18,6 @@ public interface LoginServiceAsync {
     public void loginFromSessionServer(AsyncCallback<ClientDTO> asyncCallback);
  
     void logout(AsyncCallback<Void> asyncCallback);
-    
-    public void checkUser(String login, String pass, AsyncCallback<ClientDTO> asyncCallback);
 
     public void getAccounts(int clientId, AsyncCallback<List<AccountDTO>> asyncCallback);
     

@@ -27,7 +27,6 @@ public class MainPage extends TemplatePage {
     private ClientDTO user = null;
     public static int CURRENT_BANK = 1; // Код банка в справочнике банков
     private AsyncCallback<ClientDTO> clientCallback;
-    private List<AccountDTO> accountList;
     AsyncCallback<List<AccountDTO>> accountCallback;
 
     public MainPage() {
@@ -140,7 +139,7 @@ public class MainPage extends TemplatePage {
         // добавляем блок меню оплаты услуг
         this.leftBodyPanel.add(new ServicePayMenuBlock());
         // добавляем блок меню операций со счетами
-        this.leftBodyPanel.add(new AccountOperationsMenuBlock());
+        this.leftBodyPanel.add(new AccountOperationsMenuBlock(this));
         // добавляем блок меню клиента
         this.leftBodyPanel.add(new ClientMenuBlock());
     }
