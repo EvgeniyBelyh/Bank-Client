@@ -38,10 +38,11 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     @EJB
     private AccountFacade accountFacade;
 
-    private static final int TRANSFER = 1;
-    private static final int SERVICE_PAY = 2;
-    private static final int CARD_BLOCK = 3;
-    private static final int VIRTUAL_CARD = 4;
+    private static final int IN_TRANSFER = 1;
+    private static final int OUT_TRANSFER = 2;
+    private static final int SERVICE_PAY = 3;
+    private static final int CARD_BLOCK = 4;
+    private static final int VIRTUAL_CARD = 5;
     
     
     private byte tryCount = 5;
@@ -310,7 +311,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                     // обновляем объект клиента в сессии
                     storeUserInSession(createClientDTO(clientFacade.find(user.getId())));
                     break;
-                case TRANSFER:
+                case IN_TRANSFER:
+                    break;
+                case OUT_TRANSFER:
                     break;
                 case VIRTUAL_CARD:
                     break;

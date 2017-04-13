@@ -36,7 +36,6 @@ public class AccountOperCardBlock implements IsWidget {
     private ListBox locAccount = new ListBox(); // список счетов списания
     private Button confirmBtn = new Button("Исполнить");
     private Button cancelBtn = new Button("Отмена");
-    private List<AccountDTO> accountList = new ArrayList();
     private MainPage mainPage;
 
     public AccountOperCardBlock(MainPage mainPage) {
@@ -50,7 +49,6 @@ public class AccountOperCardBlock implements IsWidget {
                 locAccount.addItem(acc.getAccountTypeName() + " "
                         + acc.getNumber() + ", остаток " + acc.getBalance()
                         + " " + acc.getCurrencyName(), acc.getId().toString());
-                accountList.add(acc);
             }
         }
 
@@ -126,7 +124,6 @@ public class AccountOperCardBlock implements IsWidget {
      */
     private void confirmButtonHandler() {
 
-        Double summ;
         // определяем id счетов списания и зачисления
         int locAccountValue = Integer.parseInt(locAccount.getValue(locAccount.getSelectedIndex()));
 
@@ -152,22 +149,8 @@ public class AccountOperCardBlock implements IsWidget {
                 Window.alert("Документ отправлен на обработку");
             }
         };
-
-        AsyncCallback<Void> operationExecuteCallback = new AsyncCallback<Void>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
-            }
-
-            @Override
-            public void onSuccess(Void result) {
-                Window.alert("Карта успешно заблокирована");
-            }
-        };
         
         LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
-        
-        //LoginService.Util.getInstance().executeOperation(operationExecuteCallback);
 
     }
 
