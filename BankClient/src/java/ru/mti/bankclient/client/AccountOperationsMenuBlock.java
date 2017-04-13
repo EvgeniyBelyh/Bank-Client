@@ -70,7 +70,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
         operationsHistory.setText("История операций");
         operationsHistory.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных
+                createAccountOperation(OPER_HISTORY);
             }
         }); 
         // добавляем ссылки в тело блока
@@ -115,7 +115,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
                 this.mainPage.centerBodyPanel.add(new TransfersOutBank(mainPage));
                 break; 
             case OPER_HISTORY:
-                this.mainPage.centerBodyPanel.add(new TransfersOutBank(mainPage));
+                this.mainPage.centerBodyPanel.add(new OperationsPanel());
                 break;                 
         }
 
