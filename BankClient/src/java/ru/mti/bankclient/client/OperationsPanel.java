@@ -1,14 +1,19 @@
 package ru.mti.bankclient.client;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.shared.impl.cldr.DateTimeFormatInfoImpl_ru;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.OperationDTO;
@@ -52,12 +57,16 @@ public class OperationsPanel implements IsWidget {
         }
 
         int i = 1; // индекс строки в таблице
-
+        
+        // создаем объект формата даты
+        DateTimeFormatInfoImpl_ru df = new DateTimeFormatInfoImpl_ru();
+        DateTimeFormat dateFormat = DateTimeFormat.getFormat(df.dateTimeLong("HH:mm:ss", "dd.MM.yyyy"));
+        
         // выбираем только карточные счета
         for (OperationDTO oper : operationsList) {
 
             // дата создания
-            cardsTable.setText(i, 0, oper.getCreateDate().toString());
+            cardsTable.setText(i, 0, dateFormat.format(oper.getCreateDate()));
             cardsTable.getCellFormatter().addStyleName(i, 0, "simple_cell");
             // тип операции
             cardsTable.setText(i, 1, oper.getOperationTypeName());

@@ -46,7 +46,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
         closeDeposit.setText("Закрыть вклад");
         closeDeposit.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных
+                createAccountOperation(CLOSE_DEPOSIT);
             }
         });
         // ссылка на страницу блокировки карты
@@ -106,7 +106,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
                 this.mainPage.centerBodyPanel.add(new TransfersOwnAccounts(mainPage));
                 break;
             case CLOSE_DEPOSIT:
-                this.mainPage.centerBodyPanel.add(new TransfersInBank(mainPage));
+                this.mainPage.centerBodyPanel.add(new DepositClosePanel(mainPage));
                 break;
             case BLOCK_CARD:
                 this.mainPage.centerBodyPanel.add(new AccountOperCardBlock(mainPage));
