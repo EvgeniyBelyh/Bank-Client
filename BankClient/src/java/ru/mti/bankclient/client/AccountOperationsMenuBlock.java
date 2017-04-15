@@ -38,7 +38,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
         openDeposit.setText("Открыть вклад");
         openDeposit.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных
+                createAccountOperation(OPEN_DEPOSIT);
             }
         });
         // ссылка на страницу закрытия вклада
@@ -103,7 +103,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
         
         switch(transferType) {
             case OPEN_DEPOSIT:
-                this.mainPage.centerBodyPanel.add(new TransfersOwnAccounts(mainPage));
+                this.mainPage.centerBodyPanel.add(new DepositOpenPanel(mainPage));
                 break;
             case CLOSE_DEPOSIT:
                 this.mainPage.centerBodyPanel.add(new DepositClosePanel(mainPage));

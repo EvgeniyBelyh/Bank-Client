@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import java.util.List;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.ClientDTO;
+import ru.mti.bankclient.shared.DepositDTO;
 import ru.mti.bankclient.shared.OperationDTO;
 
 /**
@@ -36,8 +37,6 @@ public interface LoginService extends RemoteService
     ClientDTO loginServer(String name, String password);
  
     ClientDTO loginFromSessionServer();
-     
-    //boolean changePassword(String name, String newPassword);
  
     void logout();
     
@@ -46,4 +45,8 @@ public interface LoginService extends RemoteService
     public void saveOperation(OperationDTO operationDTO);
     
     public void executeOperation();
+    
+    public List<DepositDTO> getDeposits();
+    
+    public void saveAccount(DepositDTO depositDTO);
 }

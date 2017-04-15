@@ -25,6 +25,7 @@ public class AccountDTO implements Serializable {
     private boolean blocked;
     private Date expirationDate;
     private String cvv;
+    private String accountName;
     //private List<Template> templateList;
     private List<OperationDTO> operationList = new ArrayList();
     private int accountTypeId;
@@ -146,6 +147,14 @@ public class AccountDTO implements Serializable {
     public void setCvv(String cvv) {
         this.cvv = cvv;
     }
+    
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
 /*
     public List<Template> getTemplateList() {
         return templateList;
@@ -196,7 +205,6 @@ public class AccountDTO implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof AccountDTO)) {
             return false;
         }

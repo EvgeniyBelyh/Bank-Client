@@ -85,6 +85,8 @@ public class Account implements Serializable {
     @Size(max = 3)
     @Column(name = "CVV")
     private String cvv;
+    @Column(name = "account_name")
+    private String accountName;   
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "accountId")
     private List<Template> templateList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "accountId")
@@ -238,6 +240,14 @@ public class Account implements Serializable {
         this.currencyId = currencyId;
     }
 
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

@@ -1,20 +1,22 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package ru.mti.bankclient.session;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.Query;
-import ru.mti.bankclient.shared.Account;
+import ru.mti.bankclient.shared.Deposit;
 
 /**
  *
- * @author Белых Евгений
+ * @author Жека
  */
 @Stateless
-public class AccountFacade extends AbstractFacade<Account> {
+public class DepositFacade extends AbstractFacade<Deposit> {
 
     @PersistenceUnit(unitName = "BankClientPU")
     private EntityManagerFactory factory;
@@ -26,8 +28,8 @@ public class AccountFacade extends AbstractFacade<Account> {
         return em;
     }
 
-    public AccountFacade() {
-        super(Account.class);
+    public DepositFacade() {
+        super(Deposit.class);
     }
-
+    
 }

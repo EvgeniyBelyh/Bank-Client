@@ -11,11 +11,14 @@ import javax.servlet.http.HttpSession;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.session.AccountFacade;
 import ru.mti.bankclient.session.ClientFacade;
+import ru.mti.bankclient.session.DepositFacade;
 import ru.mti.bankclient.session.OperationFacade;
 import ru.mti.bankclient.shared.Account;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.Client;
 import ru.mti.bankclient.shared.ClientDTO;
+import ru.mti.bankclient.shared.Deposit;
+import ru.mti.bankclient.shared.DepositDTO;
 import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.Operation;
 import ru.mti.bankclient.shared.OperationDTO;
@@ -37,6 +40,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private OperationFacade operationFacade;
     @EJB
     private AccountFacade accountFacade;
+    @EJB
+    private DepositFacade depositFacade;
 
     private static final int IN_TRANSFER = 1;
     private static final int OUT_TRANSFER = 2;
@@ -326,7 +331,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     /**
      * Блокирует карту клиента
      *
-     * @param oper - объект DTO клиента
+     * @param oper - объект DTO операции
      */
     private void cardBlock(OperationDTO oper) {
         // находим нужный счет и ставим флаг блокировки
@@ -342,5 +347,43 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         operationFacade.edit(new Operation(oper));
 
     }
+    
+     /**
+     * Создает DTO для сущности Deposit - депозит
+     *
+     * @param deposit - объект депозит
+     * @return DTO
+     */
+    private DepositDTO createDepositDTO(Deposit deposit) {
+        
+        DepositDTO depositDTO = new DepositDTO();
+        depositDTO.setId(deposit.getId());
+        depositDTO.setName(deposit.getName());
+        depositDTO.setDuration(deposit.getDuration());
+        depositDTO.setInterestRate(deposit.getInterestRate());
+        depositDTO.setDiscription(deposit.getDiscription());
+        System.out.println(depositDTO.toString());
+        return depositDTO;
+    }
+    
+    /**
+     * Выбирает список депозитов
+     * @return список DTO депозитов
+     */
+    @Override
+    public List<DepositDTO> getDeposits() {
 
+        List<DepositDTO> depositDTOList = new ArrayList();
+        List<Deposit> depositList = depositFacade.findAll();
+        for(Deposit deposit : depositList) {
+            DepositDTO depositDTO = createDepositDTO(deposit);
+            depositDTOList.add(depositDTO);
+        }
+        return depositDTOList;
+    }
+
+    @Override
+    public void saveAccount(DepositDTO depositDTO) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
