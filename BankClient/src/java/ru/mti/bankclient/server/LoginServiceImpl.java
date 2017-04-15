@@ -24,6 +24,8 @@ import ru.mti.bankclient.shared.Operation;
 import ru.mti.bankclient.shared.OperationDTO;
 import ru.mti.bankclient.shared.PartnerBank;
 import ru.mti.bankclient.shared.PartnerBankDTO;
+import ru.mti.bankclient.shared.ServiceProvider;
+import ru.mti.bankclient.shared.ServiceProviderDTO;
 import ru.mti.bankclient.shared.Statuses;
 
 /**
@@ -381,7 +383,27 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         }
         return depositDTOList;
     }
-
+    
+    
+     /**
+     * Создает DTO для сущности ServiceProvider - поставщик услуг
+     *
+     * @param serviceProvider - объект поставщика услуг
+     * @return DTO
+     */
+    private ServiceProviderDTO createServiceProviderDTO(ServiceProvider serviceProvider) {
+        
+        ServiceProviderDTO serviceProviderDTO = new ServiceProviderDTO();
+        serviceProviderDTO.setAccountNumber(serviceProvider.getAccountNumber());
+        serviceProviderDTO.setId(serviceProvider.getId());
+        serviceProviderDTO.setInn(serviceProvider.getInn());
+        serviceProviderDTO.setName(serviceProvider.getName());
+        serviceProviderDTO.setPartnerBankId(serviceProvider.getPartnerBankId().getId());
+        
+        return serviceProviderDTO;
+    }
+    
+    
     @Override
     public void openDeposit(DepositDTO depositDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -136,7 +136,7 @@ public class MainPage extends TemplatePage {
         // добавляем блок меню переводов
         this.leftBodyPanel.add(new TransferMenuBlock(this));
         // добавляем блок меню оплаты услуг
-        this.leftBodyPanel.add(new ServicePayMenuBlock());
+        this.leftBodyPanel.add(new ServicePayMenuBlock(this));
         // добавляем блок меню операций со счетами
         this.leftBodyPanel.add(new AccountOperationsMenuBlock(this));
         // добавляем блок меню клиента

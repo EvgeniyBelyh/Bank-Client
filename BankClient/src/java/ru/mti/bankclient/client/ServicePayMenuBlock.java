@@ -13,11 +13,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ServicePayMenuBlock extends TransferMenuBlock {
     
+    private static final int CELL_PHONE = 1;
+    private static final int INTERNET = 2;
+    private static final int UTILITIES = 3;
+    private MainPage mainPage;
     
-    public ServicePayMenuBlock() {
+    public ServicePayMenuBlock(MainPage mainPage) {
         
         super("Оплата услуг");
-
+        this.mainPage = mainPage;
     }
     
     /**
@@ -32,7 +36,7 @@ public class ServicePayMenuBlock extends TransferMenuBlock {
         cellPhone.setText("Сотовая связь");
         cellPhone.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных для оплаты услуг
+                createPaymentOperation(CELL_PHONE);
             }
         });
         // ссылка на страницу оплаты услуг Интернет
@@ -40,7 +44,7 @@ public class ServicePayMenuBlock extends TransferMenuBlock {
         internet.setText("Интернет");
         internet.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных для оплаты услуг
+                createPaymentOperation(INTERNET);
             }
         });
         // ссылка на страницу оплаты услуг ЖКХ
@@ -48,7 +52,7 @@ public class ServicePayMenuBlock extends TransferMenuBlock {
         utilities.setText("ЖКХ");
         utilities.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных для оплаты услуг
+                createPaymentOperation(UTILITIES);
             }
         }); 
         // добавляем ссылки в тело блока
@@ -61,5 +65,29 @@ public class ServicePayMenuBlock extends TransferMenuBlock {
         // добавляем тело на панель
         this.add(body);
     }
-        
+    
+     /**
+     * отображает нужные виджеты в зависимости от выбранного пользователем
+     * типа операции
+     * @param paymentType тип операции:  1 - сотовая связь
+     *                                   2 - Интернет
+     *                                   3 - ЖКХ
+     */
+    public void createPaymentOperation(int paymentType) {
+        // убираем содержимое центральной панели
+        this.mainPage.centerBodyPanel.clear();
+                
+        switch(paymentType) {
+            case CELL_PHONE:
+                this.mainPage.centerBodyPanel.add(new ServicePayCellPhonePanel(mainPage));
+                break;
+            case INTERNET:
+                this.mainPage.centerBodyPanel.add(new DepositClosePanel(mainPage));
+                break;
+            case UTILITIES:
+                this.mainPage.centerBodyPanel.add(new AccountOperCardBlock(mainPage));
+                break;             
+        }
+
+    }    
 }

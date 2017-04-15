@@ -70,7 +70,7 @@ public class PartnerBank implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "partnerBankId")
     private List<Template> templateList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "partnerBankId")
-    private List<ServiceProvider> serviceProviderList;
+    private List<ServiceProviderDTO> serviceProviderList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "partnerBankId")
     private List<Operation> operationList;
 
@@ -157,11 +157,11 @@ public class PartnerBank implements Serializable {
     }
 
     @XmlTransient
-    public List<ServiceProvider> getServiceProviderList() {
+    public List<ServiceProviderDTO> getServiceProviderList() {
         return serviceProviderList;
     }
 
-    public void setServiceProviderList(List<ServiceProvider> serviceProviderList) {
+    public void setServiceProviderList(List<ServiceProviderDTO> serviceProviderList) {
         this.serviceProviderList = serviceProviderList;
     }
 
