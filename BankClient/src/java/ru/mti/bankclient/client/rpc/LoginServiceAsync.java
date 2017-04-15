@@ -24,7 +24,7 @@ public interface LoginServiceAsync {
     
     public void saveOperation(OperationDTO operationDTO, AsyncCallback<Void> asyncCallback);
 
-    public void saveAccount(DepositDTO depositDTO, AsyncCallback<Void> asyncCallback);
+    public void openDeposit(DepositDTO depositDTO, AsyncCallback<Void> asyncCallback);
     
     public void executeOperation(AsyncCallback asyncCallback);
     

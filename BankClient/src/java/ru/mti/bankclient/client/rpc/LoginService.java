@@ -48,5 +48,5 @@ public interface LoginService extends RemoteService
     
     public List<DepositDTO> getDeposits();
     
-    public void saveAccount(DepositDTO depositDTO);
+    public void openDeposit(DepositDTO depositDTO);
 }

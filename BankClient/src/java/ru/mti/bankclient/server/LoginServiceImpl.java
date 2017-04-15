@@ -362,7 +362,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         depositDTO.setDuration(deposit.getDuration());
         depositDTO.setInterestRate(deposit.getInterestRate());
         depositDTO.setDiscription(deposit.getDiscription());
-        System.out.println(depositDTO.toString());
+
         return depositDTO;
     }
     
@@ -383,7 +383,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     }
 
     @Override
-    public void saveAccount(DepositDTO depositDTO) {
+    public void openDeposit(DepositDTO depositDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
