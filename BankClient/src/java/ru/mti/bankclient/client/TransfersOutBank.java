@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.OperationDTO;
@@ -47,10 +48,11 @@ public class TransfersOutBank implements IsWidget {
         ClientDTO user = Util.getClientDTO();
 
         for (AccountDTO acc : user.getAccountList()) {
-
-            locAccount.addItem(acc.getAccountTypeName() + " "
-                    + acc.getNumber() + ", остаток " + acc.getBalance()
-                    + " " + acc.getCurrencyName(), acc.getId().toString());
+            if (acc.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
+                locAccount.addItem(acc.getAccountTypeName() + " "
+                        + acc.getNumber() + ", остаток " + acc.getBalance()
+                        + " " + acc.getCurrencyName(), acc.getId().toString());
+            }
         }
 
         accountList = user.getAccountList();
@@ -153,18 +155,23 @@ public class TransfersOutBank implements IsWidget {
             return;
         }
 
+        ClientDTO user = Util.getClientDTO();
+
         // выбираем объект счета списания
-        AccountDTO account = accountList.get(locAccountValue);
-        // проверяем остаток на счете
-        if (account.getBalance() < summ) {
-            Window.alert("Недостаточно средств для перевода");
-            locAccount.setFocus(true);
-            return;
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == Integer.parseInt(locAccount.getSelectedValue())) {
+                // проверяем остаток на счете
+                if (acc.getBalance() < summ) {
+                    Window.alert("Недостаточно средств для перевода");
+                    locAccount.setFocus(true);
+                    return;
+                }
+            }
         }
 
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
-        operationDTO.setAccountId(locAccountValue);
+        operationDTO.setAccountId(Integer.parseInt(locAccount.getSelectedValue()));
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
         operationDTO.setDescription(descriptionField.getText());

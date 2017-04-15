@@ -47,7 +47,7 @@ public class TransfersOwnAccounts implements IsWidget {
 
         for (AccountDTO acc : user.getAccountList()) {
             // пропускаем счета кредитных карт для списка счетов списания
-            if (acc.getAccountTypeId() == AccountTypes.CREDIT_CARD.getId()) {
+            if (acc.getAccountTypeId() != AccountTypes.DEBIT_CARD.getId()) {
                 destAccount.addItem(acc.getAccountTypeName() + " "
                         + acc.getNumber() + ", остаток " + acc.getBalance()
                         + " " + acc.getCurrencyName(), acc.getId().toString());
@@ -164,18 +164,26 @@ public class TransfersOwnAccounts implements IsWidget {
             return;
         }
 
+        AccountDTO account = null;
+
         // выбираем объект счета списания
-        AccountDTO account = accountList.get(locAccountValue);
-        // проверяем остаток на счете
-        if (account.getBalance() < summ) {
-            Window.alert("Недостаточно средств для перевода");
-            locAccount.setFocus(true);
-            return;
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == Integer.parseInt(destAccount.getSelectedValue())) {
+                account = acc;
+            }
+            if (acc.getId() == Integer.parseInt(locAccount.getSelectedValue())) {
+                // проверяем остаток на счете
+                if (acc.getBalance() < summ) {
+                    Window.alert("Недостаточно средств для перевода");
+                    locAccount.setFocus(true);
+                    return;
+                }
+            }
         }
 
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
-        operationDTO.setAccountId(locAccountValue);
+        operationDTO.setAccountId(Integer.parseInt(locAccount.getSelectedValue()));
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
         operationDTO.setDescription("Перевод между собственными счетами клиента " + user.getName());
