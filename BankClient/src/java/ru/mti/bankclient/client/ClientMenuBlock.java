@@ -98,7 +98,7 @@ public class ClientMenuBlock extends TransferMenuBlock {
                 this.mainPage.centerBodyPanel.add(new DepositOpenPanel(mainPage));
                 break;
             case BANK_MESSAGES:
-                this.mainPage.centerBodyPanel.add(new DepositClosePanel(mainPage));
+                this.mainPage.centerBodyPanel.add(new ClientMenuBankMessagePanel());
                 break;
             case TARIFF:
                 this.mainPage.centerBodyPanel.add(new AccountOperCardBlock(mainPage));

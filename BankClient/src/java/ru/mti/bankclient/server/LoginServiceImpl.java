@@ -17,6 +17,8 @@ import ru.mti.bankclient.session.ProviderCategoryFacade;
 import ru.mti.bankclient.session.ServiceProviderFacade;
 import ru.mti.bankclient.shared.Account;
 import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.BankMessage;
+import ru.mti.bankclient.shared.BankMessageDTO;
 import ru.mti.bankclient.shared.Client;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.Deposit;
@@ -131,6 +133,12 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 clientDTO.getAccountList().add(createAccountDTO(acc));
             }
         }
+        
+        if (client.getBankMessageList() != null) {
+            for (BankMessage bankMessage : client.getBankMessageList()) {
+                clientDTO.getBankMessageList().add(createBankMessageDTO(bankMessage));
+            }
+        }        
 
         return clientDTO;
     }
@@ -438,6 +446,27 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         return templateDTO;
     }
 
+    
+        /**
+     * Создает DTO для сущности BankMessage - сообщение от банка
+     *
+     * @param bankMessage - объект сообщения банка
+     * @return DTO
+     */
+    private BankMessageDTO createBankMessageDTO(BankMessage bankMessage) {
+
+        BankMessageDTO bankMessageDTO = new BankMessageDTO();
+        bankMessageDTO.setClientId(bankMessage.getClientId().getId());
+        bankMessageDTO.setId(bankMessage.getId());
+        bankMessageDTO.setMessageDate(bankMessage.getMessageDate());
+        bankMessageDTO.setText(bankMessage.getText());
+
+        return bankMessageDTO;
+    }
+    
+    
+    
+    
     /**
      * Выбирает всех поставщиков услуг указанной категории
      *

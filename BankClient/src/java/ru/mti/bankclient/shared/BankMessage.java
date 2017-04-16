@@ -6,6 +6,7 @@
 package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,6 +36,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "BankMessage.findById", query = "SELECT b FROM BankMessage b WHERE b.id = :id")
     , @NamedQuery(name = "BankMessage.findByText", query = "SELECT b FROM BankMessage b WHERE b.text = :text")})
 public class BankMessage implements Serializable {
+
+    @Column(name = "message_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date messageDate;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -108,6 +115,14 @@ public class BankMessage implements Serializable {
     @Override
     public String toString() {
         return "ru.mti.bankclient.shared.BankMessage[ id=" + id + " ]";
+    }
+
+    public Date getMessageDate() {
+        return messageDate;
+    }
+
+    public void setMessageDate(Date messageDate) {
+        this.messageDate = messageDate;
     }
     
 }

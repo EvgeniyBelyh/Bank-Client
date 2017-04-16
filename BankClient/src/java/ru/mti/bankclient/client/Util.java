@@ -30,8 +30,6 @@ public class Util {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
-                
-                caught.printStackTrace();
             }
         });
         

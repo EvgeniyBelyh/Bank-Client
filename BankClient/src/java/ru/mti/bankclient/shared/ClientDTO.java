@@ -18,7 +18,7 @@ public class ClientDTO implements Serializable {
     private boolean blocked;
     private boolean admin;
     private List<AccountDTO> accountList = new ArrayList();
-
+    private List<BankMessageDTO> bankMessageList = new ArrayList();
     
     public ClientDTO() {
         
@@ -89,4 +89,14 @@ public class ClientDTO implements Serializable {
     public void setAccountList(List<AccountDTO> accountList) {
         this.accountList = accountList;
     }
+
+    public List<BankMessageDTO> getBankMessageList() {
+        return bankMessageList;
+    }
+
+    public void setBankMessageList(List<BankMessageDTO> bankMessageList) {
+        this.bankMessageList = bankMessageList;
+    }
+    
+    
 }
