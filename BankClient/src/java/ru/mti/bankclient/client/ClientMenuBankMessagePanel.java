@@ -31,7 +31,7 @@ public class ClientMenuBankMessagePanel implements IsWidget {
 
     private void createPanel() {
         // создаем заголовок 
-        HTML cardHeader = new HTML("<h2>История операций</h2>");
+        HTML cardHeader = new HTML("<h2>Сообщения банка</h2>");
         cardHeader.setStyleName("operations_container h2");
         vPanel.add(cardHeader);
 
@@ -76,16 +76,16 @@ public class ClientMenuBankMessagePanel implements IsWidget {
     }
 
     /**
-     * Создает список операций по всем счетам клиента
+     * Создает список сообщений и сортирует в обратном порядке
      *
-     * @return список операций
+     * @return список сообщений банка
      */
     private List<BankMessageDTO> getBankMessageList() {
 
         ClientDTO user = Util.getClientDTO();
         List<BankMessageDTO> bankMessageList = user.getBankMessageList();
 
-        // сортируем список операций по датам создания
+        // сортируем список сообщений по дате получения в обратном порядке
         Collections.sort(bankMessageList, new Comparator<BankMessageDTO>() {
             @Override
             public int compare(BankMessageDTO o1, BankMessageDTO o2) {
