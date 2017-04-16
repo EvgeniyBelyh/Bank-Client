@@ -38,8 +38,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
     @EJB
     private ClientFacade clientFacade;
-    //@EJB
-    //private OperationFacade operationFacade;
+    @EJB
+    private OperationFacade operationFacade;
     @EJB
     private AccountFacade accountFacade;
     @EJB
@@ -292,7 +292,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      */
     @Override
     public void saveOperation(OperationDTO operationDTO) {
-        //operationFacade.create(new Operation(operationDTO));
+        operationFacade.create(new Operation(operationDTO));
     }
 
     @Override
@@ -346,7 +346,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         oper.setNumber( 1 + (int)(Math.random() * ((100000 - 1) + 1)));
         oper.setStatusId(Statuses.EXECUTED.getId());
         
-        //operationFacade.edit(new Operation(oper));
+        operationFacade.edit(new Operation(oper));
 
     }
     
@@ -408,10 +408,4 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     public void openDeposit(DepositDTO depositDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-/*
-    @Override
-    public ServiceProviderDTO getProvider(String inn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-*/
 }

@@ -7,7 +7,6 @@ import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.DepositDTO;
 import ru.mti.bankclient.shared.OperationDTO;
-//import ru.mti.bankclient.shared.ServiceProviderDTO;
 
 /**
  *
@@ -30,7 +29,5 @@ public interface LoginServiceAsync {
     public void executeOperation(AsyncCallback asyncCallback);
     
     public void getDeposits(AsyncCallback<List<DepositDTO>> asyncCallback);
-    
-    //public void getProvider(String inn, AsyncCallback<ServiceProviderDTO> asyncCallback);
 
 }
