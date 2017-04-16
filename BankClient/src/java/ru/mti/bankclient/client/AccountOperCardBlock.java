@@ -52,7 +52,7 @@ public class AccountOperCardBlock implements IsWidget {
         createBody();
 
         locAccount.setStyleName("operation_fields");
-        //verticalPanel.setStyleName("operations_container");
+        verticalPanel.setStyleName("operations_container");
     }
 
     /**

@@ -212,6 +212,7 @@ public class DepositOpenPanel implements IsWidget {
 
             // проверяем наличие суммы на счете
             for (AccountDTO account : user.getAccountList()) {
+                Window.alert("AccountID = " + String.valueOf(account.getId()) + " ListBoxIndex = " + String.valueOf(locAccount.getSelectedIndex()));
                 if (account.getId() == Integer.parseInt(locAccount.getSelectedValue())) {
                     // проверяем остаток на счете
                     if (account.getBalance() < summ) {
