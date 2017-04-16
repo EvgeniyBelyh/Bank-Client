@@ -141,8 +141,10 @@ public class MainPage extends TemplatePage {
         this.leftBodyPanel.add(new AccountOperationsMenuBlock(this));
         // добавляем блок меню клиента
         this.leftBodyPanel.add(new ClientMenuBlock(this));
-        //добавляем панель курсов валют
+        // добавляем блок курсов валют
         this.rightBodyPanel.add(new CurrencyMenuBlock());
+        // добавляем блок информации
+        this.rightBodyPanel.add(new InformationMenuBlock());
     }
 
     /**

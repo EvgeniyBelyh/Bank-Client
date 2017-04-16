@@ -1,11 +1,8 @@
 package ru.mti.bankclient.client;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
-import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -45,14 +42,23 @@ public class CurrencyMenuBlock extends TransferMenuBlock {
         currencyTable.setText(2, 1, "60.28");
         currencyTable.setText(2, 2, "61.53");
         
-        currencyTable.setCellSpacing(15);
+
         
         FlexCellFormatter formatter = currencyTable.getFlexCellFormatter();
+        formatter.setHorizontalAlignment(0, 1, ALIGN_RIGHT);
+        formatter.setHorizontalAlignment(0, 2, ALIGN_RIGHT);
         formatter.setHorizontalAlignment(1, 1, ALIGN_RIGHT);
         formatter.setHorizontalAlignment(1, 2, ALIGN_RIGHT);
         formatter.setHorizontalAlignment(2, 1, ALIGN_RIGHT);
         formatter.setHorizontalAlignment(2, 2, ALIGN_RIGHT); 
 
+        formatter.setWidth(0, 0, "80px");
+        formatter.setWidth(1, 0, "80px");
+        formatter.setWidth(2, 0, "80px");
+
+        formatter.setWidth(0, 2, "70px");
+        formatter.setWidth(1, 2, "70px");
+        formatter.setWidth(2, 2, "70px");
         
         body.add(currencyTable);
         
