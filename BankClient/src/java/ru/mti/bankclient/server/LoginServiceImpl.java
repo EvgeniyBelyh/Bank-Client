@@ -13,6 +13,8 @@ import ru.mti.bankclient.session.AccountFacade;
 import ru.mti.bankclient.session.ClientFacade;
 import ru.mti.bankclient.session.DepositFacade;
 import ru.mti.bankclient.session.OperationFacade;
+import ru.mti.bankclient.session.ProviderCategoryFacade;
+import ru.mti.bankclient.session.ServiceProviderFacade;
 import ru.mti.bankclient.shared.Account;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.Client;
@@ -24,6 +26,8 @@ import ru.mti.bankclient.shared.Operation;
 import ru.mti.bankclient.shared.OperationDTO;
 import ru.mti.bankclient.shared.PartnerBank;
 import ru.mti.bankclient.shared.PartnerBankDTO;
+import ru.mti.bankclient.shared.ProviderCategories;
+import ru.mti.bankclient.shared.ProviderCategory;
 import ru.mti.bankclient.shared.ServiceProvider;
 import ru.mti.bankclient.shared.ServiceProviderDTO;
 import ru.mti.bankclient.shared.Statuses;
@@ -44,6 +48,10 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private AccountFacade accountFacade;
     @EJB
     private DepositFacade depositFacade;
+    @EJB
+    private ServiceProviderFacade serviceProviderFacade;
+    @EJB
+    private ProviderCategoryFacade providerCategoryFacade;
 
     private static final int IN_TRANSFER = 1;
     private static final int OUT_TRANSFER = 2;
@@ -401,6 +409,26 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         serviceProviderDTO.setPartnerBankId(serviceProvider.getPartnerBankId().getId());
         
         return serviceProviderDTO;
+    }
+    
+    /**
+     * Выбирает всех поставщиков услуг указанной категории
+     * @param categories - перечисление категорий
+     * @return - список DTO сущностей поставщиков услуг
+     * 
+     */
+    @Override
+    public List<ServiceProviderDTO> getServiceProviderByCategory(ProviderCategories categories) {
+        
+        List<ServiceProviderDTO> serviceProviderDTOList = new ArrayList();
+        ProviderCategory providerCategory = providerCategoryFacade.find(categories.CELL_PHONE.getId());
+        List<ServiceProvider> serviceProviderList = providerCategory.getServiceProviderList();
+        
+        for(ServiceProvider provider : serviceProviderList) {
+            serviceProviderDTOList.add(createServiceProviderDTO(provider));
+        }
+        
+        return serviceProviderDTOList;
     }
     
     
