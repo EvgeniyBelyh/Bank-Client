@@ -49,8 +49,6 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     @EJB
     private DepositFacade depositFacade;
     @EJB
-    private ServiceProviderFacade serviceProviderFacade;
-    @EJB
     private ProviderCategoryFacade providerCategoryFacade;
 
     private static final int IN_TRANSFER = 1;
@@ -418,10 +416,10 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      * 
      */
     @Override
-    public List<ServiceProviderDTO> getServiceProviderByCategory(ProviderCategories categories) {
+    public List<ServiceProviderDTO> getServiceProviderByCategory(int categorieId) {
         
         List<ServiceProviderDTO> serviceProviderDTOList = new ArrayList();
-        ProviderCategory providerCategory = providerCategoryFacade.find(categories.CELL_PHONE.getId());
+        ProviderCategory providerCategory = providerCategoryFacade.find(categorieId);
         List<ServiceProvider> serviceProviderList = providerCategory.getServiceProviderList();
         
         for(ServiceProvider provider : serviceProviderList) {

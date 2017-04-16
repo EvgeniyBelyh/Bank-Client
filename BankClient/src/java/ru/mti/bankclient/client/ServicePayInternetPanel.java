@@ -27,11 +27,11 @@ import ru.mti.bankclient.shared.ServiceProviderDTO;
 import ru.mti.bankclient.shared.Statuses;
 
 /**
- * Создает панель оплаты сотовой связи
+ * Создает панель оплаты Интернета
  *
  * @author Евгений Белых
  */
-public class ServicePayCellPhonePanel implements IsWidget {
+public class ServicePayInternetPanel implements IsWidget {
 
     private VerticalPanel verticalPanel = new VerticalPanel();
     private List<ServiceProviderDTO> serviceProviderList = new ArrayList();
@@ -44,12 +44,12 @@ public class ServicePayCellPhonePanel implements IsWidget {
     private Button cancelBtn = new Button("Отмена");
     private TextBox phoneNumber = new TextBox();
 
-    public ServicePayCellPhonePanel(MainPage mainPage) {
+    public ServicePayInternetPanel(MainPage mainPage) {
 
         this.mainPage = mainPage;
         this.user = Util.getClientDTO();
 
-        HTML header = new HTML("<h2>Оплата услуг - Сотовая связь</h2><br>");
+        HTML header = new HTML("<h2>Оплата услуг - Интернет</h2><br>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);
         
@@ -78,7 +78,7 @@ public class ServicePayCellPhonePanel implements IsWidget {
             }
         };
         // отправляем запрос на сервер
-        LoginService.Util.getInstance().getServiceProviderByCategory(ProviderCategories.CELL_PHONE.getId(), serviceProviderCallback);
+        LoginService.Util.getInstance().getServiceProviderByCategory(ProviderCategories.INTERNET.getId(), serviceProviderCallback);
 
         headers.add(new HTML("<h3>Оператор</h3>"));
         fields.add(serviceProviderListBox);
@@ -196,7 +196,7 @@ public class ServicePayCellPhonePanel implements IsWidget {
         operationDTO.setAccountId(locAccountValue);
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
-        operationDTO.setDescription("Оплата сотовой связи");
+        operationDTO.setDescription("Оплата услуг Интернет");
         operationDTO.setDestinationAccount(serviceProviderDTO.getAccountNumber());
         operationDTO.setOperationTypeId(OperTypes.SERVICE_PAY.getId());
         operationDTO.setStatusId(Statuses.NEW.getId());

@@ -82,7 +82,7 @@ public class ServicePayMenuBlock extends TransferMenuBlock {
                 this.mainPage.centerBodyPanel.add(new ServicePayCellPhonePanel(mainPage));
                 break;
             case INTERNET:
-                this.mainPage.centerBodyPanel.add(new DepositClosePanel(mainPage));
+                this.mainPage.centerBodyPanel.add(new ServicePayInternetPanel(mainPage));
                 break;
             case UTILITIES:
                 this.mainPage.centerBodyPanel.add(new AccountOperCardBlock(mainPage));
