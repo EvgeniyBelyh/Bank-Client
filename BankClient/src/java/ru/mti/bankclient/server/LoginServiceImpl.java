@@ -31,6 +31,8 @@ import ru.mti.bankclient.shared.ProviderCategory;
 import ru.mti.bankclient.shared.ServiceProvider;
 import ru.mti.bankclient.shared.ServiceProviderDTO;
 import ru.mti.bankclient.shared.Statuses;
+import ru.mti.bankclient.shared.Template;
+import ru.mti.bankclient.shared.TemplateDTO;
 
 /**
  *
@@ -410,6 +412,27 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         
         return serviceProviderDTO;
     }
+
+     /**
+     * Создает DTO для сущности Template - шаблон операции
+     *
+     * @param template - объект шаблона
+     * @return DTO
+     */
+    private TemplateDTO createTemplateDTO(Template template) {
+        
+        TemplateDTO templateDTO = new TemplateDTO();
+        templateDTO.setAccountId(template.getAccountId().getId());
+        templateDTO.setDescription(template.getDescription());
+        templateDTO.setDestinationAccount(template.getDestinationAccount());
+        templateDTO.setId(template.getId());
+        templateDTO.setName(template.getName());
+        templateDTO.setOperationTypeId(template.getOperationTypeId().getId());
+        templateDTO.setPartnerBankId(template.getPartnerBankId().getId());
+        
+        return templateDTO;
+    }
+
     
     /**
      * Выбирает всех поставщиков услуг указанной категории

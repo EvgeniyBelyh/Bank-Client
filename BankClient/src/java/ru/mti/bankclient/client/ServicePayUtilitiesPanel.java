@@ -232,6 +232,7 @@ public class ServicePayUtilitiesPanel implements IsWidget {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                mainPage.createCenterPanel();
             }
 
             @Override

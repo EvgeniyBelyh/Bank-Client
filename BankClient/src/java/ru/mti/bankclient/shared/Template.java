@@ -6,7 +6,6 @@
 package ru.mti.bankclient.shared;
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,8 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,10 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Template.findAll", query = "SELECT t FROM Template t")
     , @NamedQuery(name = "Template.findById", query = "SELECT t FROM Template t WHERE t.id = :id")
     , @NamedQuery(name = "Template.findByDescription", query = "SELECT t FROM Template t WHERE t.description = :description")
-    , @NamedQuery(name = "Template.findByDestinationAccount", query = "SELECT t FROM Template t WHERE t.destinationAccount = :destinationAccount")
-    , @NamedQuery(name = "Template.findByNumber", query = "SELECT t FROM Template t WHERE t.number = :number")
-    , @NamedQuery(name = "Template.findByExecutionDate", query = "SELECT t FROM Template t WHERE t.executionDate = :executionDate")
-    , @NamedQuery(name = "Template.findByComment", query = "SELECT t FROM Template t WHERE t.comment = :comment")})
+    , @NamedQuery(name = "Template.findByDestinationAccount", query = "SELECT t FROM Template t WHERE t.destinationAccount = :destinationAccount")})
 public class Template implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -57,14 +51,9 @@ public class Template implements Serializable {
     @Size(min = 1, max = 20)
     @Column(name = "destination_account")
     private String destinationAccount;
-    @Column(name = "number")
-    private Integer number;
-    @Column(name = "execution_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date executionDate;
-    @Size(max = 200)
-    @Column(name = "comment")
-    private String comment;
+    @Size(max = 150)
+    @Column(name = "name")
+    private String name;
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Account accountId;
@@ -112,28 +101,12 @@ public class Template implements Serializable {
         this.destinationAccount = destinationAccount;
     }
 
-    public Integer getNumber() {
-        return number;
+    public String getName() {
+        return name;
     }
 
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public Date getExecutionDate() {
-        return executionDate;
-    }
-
-    public void setExecutionDate(Date executionDate) {
-        this.executionDate = executionDate;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Account getAccountId() {
