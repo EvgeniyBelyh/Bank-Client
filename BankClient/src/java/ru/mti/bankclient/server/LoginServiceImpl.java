@@ -50,6 +50,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private DepositFacade depositFacade;
     @EJB
     private ProviderCategoryFacade providerCategoryFacade;
+    @EJB
+    private ServiceProviderFacade serviceProviderFacade;
 
     private static final int IN_TRANSFER = 1;
     private static final int OUT_TRANSFER = 2;
@@ -433,5 +435,14 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     @Override
     public void openDeposit(DepositDTO depositDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ServiceProviderDTO getServiceProviderByInn(String inn) {
+        
+        ServiceProvider provider = serviceProviderFacade.findByInn(inn);
+        
+        return createServiceProviderDTO(provider);
+        
     }
 }

@@ -53,4 +53,6 @@ public interface LoginService extends RemoteService
     public void openDeposit(DepositDTO depositDTO);
     
     public List<ServiceProviderDTO> getServiceProviderByCategory(int categorieId);
+    
+    public ServiceProviderDTO getServiceProviderByInn(String inn);
 }

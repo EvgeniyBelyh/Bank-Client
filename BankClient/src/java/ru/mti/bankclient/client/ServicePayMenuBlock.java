@@ -85,7 +85,7 @@ public class ServicePayMenuBlock extends TransferMenuBlock {
                 this.mainPage.centerBodyPanel.add(new ServicePayInternetPanel(mainPage));
                 break;
             case UTILITIES:
-                this.mainPage.centerBodyPanel.add(new AccountOperCardBlock(mainPage));
+                this.mainPage.centerBodyPanel.add(new ServicePayUtilitiesPanel(mainPage));
                 break;             
         }
 

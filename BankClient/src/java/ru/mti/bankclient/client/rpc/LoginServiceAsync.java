@@ -33,4 +33,6 @@ public interface LoginServiceAsync {
     public void getDeposits(AsyncCallback<List<DepositDTO>> asyncCallback);
 
     public void getServiceProviderByCategory(int categorieId, AsyncCallback<List<ServiceProviderDTO>> asyncCallback);
+    
+    public void getServiceProviderByInn(String inn, AsyncCallback<ServiceProviderDTO> asyncCallback);
 }
