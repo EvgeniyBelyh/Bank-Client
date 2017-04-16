@@ -352,3 +352,7 @@ body {
 	color: #bd5a35;
 	text-decoration:underline;
 }
+
+.currency_table_text {
+    color: #848484;
+}
