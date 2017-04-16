@@ -72,7 +72,6 @@ public class TransfersOwnAccounts implements IsWidget {
         locAccount.setStyleName("operation_fields");
         destAccount.setStyleName("operation_fields");
         sumField.setStyleName("operation_fields");
-        verticalPanel.setStyleName("operations_container");
     }
 
     /**
@@ -80,7 +79,7 @@ public class TransfersOwnAccounts implements IsWidget {
      */
     public void createHeader() {
 
-        HTML header = new HTML("<h2>Переводы между своими счетами</h2>");
+        HTML header = new HTML("<h2>Переводы между своими счетами</h2><br>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);
     }
@@ -95,7 +94,8 @@ public class TransfersOwnAccounts implements IsWidget {
         VerticalPanel headers = new VerticalPanel();
         VerticalPanel fields = new VerticalPanel();
         fields.setSpacing(10);
-
+        headers.setStyleName("operations_container");
+        
         headers.add(new HTML("<h3>Счет списания</h3>"));
         fields.add(locAccount);
         headers.add(new HTML("<h3>Счет зачисления</h3>"));

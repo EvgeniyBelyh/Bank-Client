@@ -12,10 +12,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ClientMenuBlock extends TransferMenuBlock {
     
-    public ClientMenuBlock() {
+    private static final int TEMPLATES = 1;
+    private static final int BANK_MESSAGES = 2;
+    private static final int TARIFF = 3;
+    private static final int HELP = 4;
+    
+    private MainPage mainPage;
+    
+    public ClientMenuBlock(MainPage mainPage) {
         
         super("Мое меню");
-
+        this.mainPage = mainPage;
     }
     
     /**
@@ -30,7 +37,7 @@ public class ClientMenuBlock extends TransferMenuBlock {
         templates.setText("Шаблоны");
         templates.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных
+                createClientMenuPanel(TEMPLATES);
             }
         });
         // ссылка на страницу с сообщениями от банка
@@ -38,7 +45,7 @@ public class ClientMenuBlock extends TransferMenuBlock {
         bankMessages.setText("Сообщения от банка");
         bankMessages.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных
+                createClientMenuPanel(BANK_MESSAGES);
             }
         });
         // ссылка на страницу тарифов
@@ -46,7 +53,7 @@ public class ClientMenuBlock extends TransferMenuBlock {
         tarif.setText("Тарифы");
         tarif.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных
+                createClientMenuPanel(TARIFF);
             }
         });
         // ссылка на страницу помощи
@@ -54,7 +61,7 @@ public class ClientMenuBlock extends TransferMenuBlock {
         help.setText("Помощь");
         help.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных
+                createClientMenuPanel(HELP);
             }
         }); 
 
@@ -71,4 +78,35 @@ public class ClientMenuBlock extends TransferMenuBlock {
         this.add(body);
     }
     
+    
+     /**
+     * отображает нужные виджеты в зависимости от выбранного пользователем
+     * типа операции
+     * @param menuBlockIndex тип операции: 1 - открыть депозит
+     *                                   2 - закрыть депозит
+     *                                   3 - блокировать карту
+     *                                   4 - выпустить виртуальную карту
+     *                                   5 - история операций
+     */
+    public void createClientMenuPanel(int menuBlockIndex) {
+        // убираем содержимое центральной панели
+        this.mainPage.centerBodyPanel.clear();
+        
+        
+        switch(menuBlockIndex) {
+            case TEMPLATES:
+                this.mainPage.centerBodyPanel.add(new DepositOpenPanel(mainPage));
+                break;
+            case BANK_MESSAGES:
+                this.mainPage.centerBodyPanel.add(new DepositClosePanel(mainPage));
+                break;
+            case TARIFF:
+                this.mainPage.centerBodyPanel.add(new AccountOperCardBlock(mainPage));
+                break;
+            case HELP:
+                this.mainPage.centerBodyPanel.add(new TransfersOutBank(mainPage));
+                break;                 
+        }
+
+    }
 }

@@ -140,7 +140,7 @@ public class MainPage extends TemplatePage {
         // добавляем блок меню операций со счетами
         this.leftBodyPanel.add(new AccountOperationsMenuBlock(this));
         // добавляем блок меню клиента
-        this.leftBodyPanel.add(new ClientMenuBlock());
+        this.leftBodyPanel.add(new ClientMenuBlock(this));
     }
 
     /**

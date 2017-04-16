@@ -63,7 +63,6 @@ public class TransfersOutBank implements IsWidget {
         sumField.setStyleName("operation_fields");
         descriptionField.setStyleName("operation_fields");
         BIKField.setStyleName("operation_fields");
-        verticalPanel.setStyleName("operations_container");
     }
 
     /**
@@ -71,7 +70,7 @@ public class TransfersOutBank implements IsWidget {
      */
     public void createHeader() {
 
-        HTML header = new HTML("<h2>Перевод в другой банк</h2>");
+        HTML header = new HTML("<h2>Перевод в другой банк</h2><br>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);
     }
@@ -97,7 +96,8 @@ public class TransfersOutBank implements IsWidget {
         fields.add(descriptionField);
         headers.add(new HTML("<h3>БИК банка получателя</h3>"));
         fields.add(BIKField);
-
+        headers.setStyleName("operations_container");
+        
         headers.add(new HTML("<br>"));
 
         confirmBtn.setStyleName("confirm_button");

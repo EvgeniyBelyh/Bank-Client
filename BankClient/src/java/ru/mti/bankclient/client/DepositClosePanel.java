@@ -64,7 +64,7 @@ public class DepositClosePanel implements IsWidget {
 
         locAccount.setStyleName("operation_fields");
         destAccount.setStyleName("operation_fields");
-        verticalPanel.setStyleName("operations_container");
+
     }
 
     /**
@@ -72,7 +72,7 @@ public class DepositClosePanel implements IsWidget {
      */
     public void createHeader() {
 
-        HTML header = new HTML("<h2>Закрытие вклада</h2>");
+        HTML header = new HTML("<h2>Закрытие вклада</h2><br>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);
     }
@@ -93,7 +93,8 @@ public class DepositClosePanel implements IsWidget {
         headers.add(new HTML("<h3>Счет зачисления</h3>"));
         fields.add(destAccount);
         headers.add(new HTML("<br>"));
-
+        headers.setStyleName("operations_container");
+        
         confirmBtn.setStyleName("confirm_button");
         cancelBtn.setStyleName("confirm_button");
 

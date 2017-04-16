@@ -52,7 +52,7 @@ public class AccountOperCardBlock implements IsWidget {
         createBody();
 
         locAccount.setStyleName("operation_fields");
-        verticalPanel.setStyleName("operations_container");
+
     }
 
     /**
@@ -60,7 +60,7 @@ public class AccountOperCardBlock implements IsWidget {
      */
     public void createHeader() {
 
-        HTML header = new HTML("<h2>Блокировка карты</h2>");
+        HTML header = new HTML("<h2>Блокировка карты</h2><br>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);
     }
@@ -79,6 +79,7 @@ public class AccountOperCardBlock implements IsWidget {
         headers.add(new HTML("<h3>Карта</h3>"));
         fields.add(locAccount);
         headers.add(new HTML("<br>"));
+        headers.setStyleName("operations_container");
 
         confirmBtn.setStyleName("confirm_button");
         cancelBtn.setStyleName("confirm_button");
