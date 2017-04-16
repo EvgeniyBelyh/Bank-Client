@@ -52,7 +52,7 @@ public class ProviderCategory implements Serializable {
         @JoinColumn(name = "provider_category_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "service_provider_id", referencedColumnName = "id")})
     @ManyToMany
-    private List<ServiceProviderDTO> serviceProviderList;
+    private List<ServiceProvider> serviceProviderList;
 
     public ProviderCategory() {
     }
@@ -83,11 +83,11 @@ public class ProviderCategory implements Serializable {
     }
 
     @XmlTransient
-    public List<ServiceProviderDTO> getServiceProviderList() {
+    public List<ServiceProvider> getServiceProviderList() {
         return serviceProviderList;
     }
 
-    public void setServiceProviderList(List<ServiceProviderDTO> serviceProviderList) {
+    public void setServiceProviderList(List<ServiceProvider> serviceProviderList) {
         this.serviceProviderList = serviceProviderList;
     }
 
