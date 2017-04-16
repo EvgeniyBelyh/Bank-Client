@@ -7,14 +7,14 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
-import ru.mti.bankclient.shared.ServiceProviderDTO;
+import ru.mti.bankclient.shared.ServiceProvider;
 
 /**
  *
  * @author Белых Евгений
  */
 @Stateless
-public class ServiceProviderFacade extends AbstractFacade<ServiceProviderDTO> {
+public class ServiceProviderFacade extends AbstractFacade<ServiceProvider> {
 
     @PersistenceUnit(unitName = "BankClientPU")
     private EntityManagerFactory factory;
@@ -27,18 +27,18 @@ public class ServiceProviderFacade extends AbstractFacade<ServiceProviderDTO> {
     }
 
     public ServiceProviderFacade() {
-        super(ServiceProviderDTO.class);
+        super(ServiceProvider.class);
     }
 
-    public ServiceProviderDTO findByInn(String inn) {
+    public ServiceProvider findByInn(String inn) {
         getEntityManager();
-        ServiceProviderDTO serviceProvider = null;
+        ServiceProvider serviceProvider = null;
         EntityTransaction trans = em.getTransaction();
         Query query = em.createNamedQuery("ServiceProvider.findByInn");
         query.setParameter("inn", inn);
         trans.begin();
         try {
-            serviceProvider = (ServiceProviderDTO) query.getSingleResult();
+            serviceProvider = (ServiceProvider) query.getSingleResult();
         } catch (NoResultException ex) {
             System.out.println("Объект поставщика услуг не выбрался из базы по ИНН");
         } catch (Exception ex) {
@@ -47,4 +47,5 @@ public class ServiceProviderFacade extends AbstractFacade<ServiceProviderDTO> {
         trans.commit();
         return serviceProvider;
     }
+
 }
