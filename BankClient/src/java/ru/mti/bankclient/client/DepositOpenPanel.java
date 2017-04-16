@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.i18n.client.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import ru.mti.bankclient.client.rpc.LoginService;
@@ -42,7 +43,7 @@ public class DepositOpenPanel implements IsWidget {
         this.user = Util.getClientDTO();
 
         // создаем заголовок 
-        HTML depositHeader = new HTML("<h2>Открытие вклада</h2>");
+        HTML depositHeader = new HTML("<h2>Открытие вклада</h2><br>");
         depositHeader.setStyleName("operations_container h2");
         vPanel.add(depositHeader);
         
@@ -103,7 +104,7 @@ public class DepositOpenPanel implements IsWidget {
         // заголовок таблицы
         depositTable.setText(0, 0, "Наименование");
         depositTable.setText(0, 1, "Срок вклада, дни");
-        depositTable.setText(0, 2, "Ставка");
+        depositTable.setText(0, 2, "Ставка, %");
         depositTable.setText(0, 3, " ");
         // форматируем заголовок
         for (int m = 0; m < 4; m++) {
@@ -111,7 +112,10 @@ public class DepositOpenPanel implements IsWidget {
         }
 
         int i = 1; // индекс строки в таблице
-
+        
+        // форматирование процентной ставки
+        NumberFormat nFormat = NumberFormat.getFormat("#0.00");
+        
         // выбираем только карточные счета
         for (DepositDTO deposit : depositList) {
 
@@ -122,7 +126,7 @@ public class DepositOpenPanel implements IsWidget {
             depositTable.setText(i, 1, String.valueOf(deposit.getDuration()));
             depositTable.getCellFormatter().addStyleName(i, 1, "simple_cell");
             // ставка
-            depositTable.setText(i, 2, String.valueOf(deposit.getInterestRate()));
+            depositTable.setText(i, 2, String.valueOf(nFormat.format(deposit.getInterestRate())));
             depositTable.getCellFormatter().addStyleName(i, 2, "simple_cell");
             // кнопка открытия
             Button openButton = new Button("Открыть");

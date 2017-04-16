@@ -60,8 +60,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private static final int SERVICE_PAY = 3;
     private static final int CARD_BLOCK = 4;
     private static final int VIRTUAL_CARD = 5;
-    
-    
+
     private byte tryCount = 5;
 
     @Override
@@ -235,6 +234,12 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         accountDTO.setExpirationDate(account.getExpirationDate());
         accountDTO.setCvv(account.getCvv());
 
+        if (account.getTemplateList() != null) {
+            for (Template template : account.getTemplateList()) {
+                accountDTO.getTemplateList().add(createTemplateDTO(template));
+            }
+        }
+
         if (account.getOperationList() != null) {
             for (Operation oper : account.getOperationList()) {
                 accountDTO.getOperationList().add(createOperationDTO(oper));
@@ -319,7 +324,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 }
             }
         }
-        
+
         // идем по всему списку операций на исполнении
         for (OperationDTO oper : operationList) {
             switch (oper.getOperationTypeId()) {
@@ -335,7 +340,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 case VIRTUAL_CARD:
                     break;
                 case SERVICE_PAY:
-                    break;                    
+                    break;
             }
         }
     }
@@ -353,21 +358,21 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         // исполняем операцию
         oper.setComment("Карта успешно заблокирована");
         oper.setExecutionDate(new Date(System.currentTimeMillis()));
-        oper.setNumber( 1 + (int)(Math.random() * ((100000 - 1) + 1)));
+        oper.setNumber(1 + (int) (Math.random() * ((100000 - 1) + 1)));
         oper.setStatusId(Statuses.EXECUTED.getId());
-        
+
         operationFacade.edit(new Operation(oper));
 
     }
-    
-     /**
+
+    /**
      * Создает DTO для сущности Deposit - депозит
      *
      * @param deposit - объект депозит
      * @return DTO
      */
     private DepositDTO createDepositDTO(Deposit deposit) {
-        
+
         DepositDTO depositDTO = new DepositDTO();
         depositDTO.setId(deposit.getId());
         depositDTO.setName(deposit.getName());
@@ -377,9 +382,10 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
         return depositDTO;
     }
-    
+
     /**
      * Выбирает список депозитов
+     *
      * @return список DTO депозитов
      */
     @Override
@@ -387,40 +393,39 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
         List<DepositDTO> depositDTOList = new ArrayList();
         List<Deposit> depositList = depositFacade.findAll();
-        for(Deposit deposit : depositList) {
+        for (Deposit deposit : depositList) {
             DepositDTO depositDTO = createDepositDTO(deposit);
             depositDTOList.add(depositDTO);
         }
         return depositDTOList;
     }
-    
-    
-     /**
+
+    /**
      * Создает DTO для сущности ServiceProvider - поставщик услуг
      *
      * @param serviceProvider - объект поставщика услуг
      * @return DTO
      */
     private ServiceProviderDTO createServiceProviderDTO(ServiceProvider serviceProvider) {
-        
+
         ServiceProviderDTO serviceProviderDTO = new ServiceProviderDTO();
         serviceProviderDTO.setAccountNumber(serviceProvider.getAccountNumber());
         serviceProviderDTO.setId(serviceProvider.getId());
         serviceProviderDTO.setInn(serviceProvider.getInn());
         serviceProviderDTO.setName(serviceProvider.getName());
         serviceProviderDTO.setPartnerBankId(serviceProvider.getPartnerBankId().getId());
-        
+
         return serviceProviderDTO;
     }
 
-     /**
+    /**
      * Создает DTO для сущности Template - шаблон операции
      *
      * @param template - объект шаблона
      * @return DTO
      */
     private TemplateDTO createTemplateDTO(Template template) {
-        
+
         TemplateDTO templateDTO = new TemplateDTO();
         templateDTO.setAccountId(template.getAccountId().getId());
         templateDTO.setDescription(template.getDescription());
@@ -429,32 +434,31 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         templateDTO.setName(template.getName());
         templateDTO.setOperationTypeId(template.getOperationTypeId().getId());
         templateDTO.setPartnerBankId(template.getPartnerBankId().getId());
-        
+
         return templateDTO;
     }
 
-    
     /**
      * Выбирает всех поставщиков услуг указанной категории
+     *
      * @param categories - перечисление категорий
      * @return - список DTO сущностей поставщиков услуг
-     * 
+     *
      */
     @Override
     public List<ServiceProviderDTO> getServiceProviderByCategory(int categorieId) {
-        
+
         List<ServiceProviderDTO> serviceProviderDTOList = new ArrayList();
         ProviderCategory providerCategory = providerCategoryFacade.find(categorieId);
         List<ServiceProvider> serviceProviderList = providerCategory.getServiceProviderList();
-        
-        for(ServiceProvider provider : serviceProviderList) {
+
+        for (ServiceProvider provider : serviceProviderList) {
             serviceProviderDTOList.add(createServiceProviderDTO(provider));
         }
-        
+
         return serviceProviderDTOList;
     }
-    
-    
+
     @Override
     public void openDeposit(DepositDTO depositDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -462,10 +466,10 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
     @Override
     public ServiceProviderDTO getServiceProviderByInn(String inn) {
-        
+
         ServiceProvider provider = serviceProviderFacade.findByInn(inn);
-        
+
         return createServiceProviderDTO(provider);
-        
+
     }
 }
