@@ -40,6 +40,7 @@ public class ServicePayInternetPanel implements IsWidget {
     private ListBox locAccount = new ListBox();
     private ListBox serviceProviderListBox = new ListBox();
     private TextBox sumField = new TextBox();
+    private TextBox agreementId = new TextBox();
     private Button confirmBtn = new Button("Оплатить");
     private Button cancelBtn = new Button("Отмена");
     private TextBox phoneNumber = new TextBox();
@@ -84,6 +85,8 @@ public class ServicePayInternetPanel implements IsWidget {
         fields.add(serviceProviderListBox);
         headers.add(new HTML("<h3>Счет списания</h3>"));
         fields.add(locAccount);
+        headers.add(new HTML("<h3>Номер договора</h3>"));
+        fields.add(agreementId);
         headers.add(new HTML("<h3>Сумма</h3>"));
         fields.add(sumField);
         headers.add(new HTML("<br>"));
@@ -91,6 +94,7 @@ public class ServicePayInternetPanel implements IsWidget {
         locAccount.setStyleName("operation_fields");
         serviceProviderListBox.setStyleName("operation_fields");
         sumField.setStyleName("operation_fields");
+        agreementId.setStyleName("operation_fields");
         
         // создаем кнопки
         createButtons();
@@ -196,7 +200,7 @@ public class ServicePayInternetPanel implements IsWidget {
         operationDTO.setAccountId(locAccountValue);
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
-        operationDTO.setDescription("Оплата услуг Интернет");
+        operationDTO.setDescription("Оплата услуг Интернет. Номер договора " + agreementId.getText());
         operationDTO.setDestinationAccount(serviceProviderDTO.getAccountNumber());
         operationDTO.setOperationTypeId(OperTypes.SERVICE_PAY.getId());
         operationDTO.setStatusId(Statuses.NEW.getId());

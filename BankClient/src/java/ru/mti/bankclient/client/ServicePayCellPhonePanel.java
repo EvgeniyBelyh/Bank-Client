@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.regexp.shared.RegExp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,7 @@ public class ServicePayCellPhonePanel implements IsWidget {
     private ListBox locAccount = new ListBox();
     private ListBox serviceProviderListBox = new ListBox();
     private TextBox sumField = new TextBox();
+    private TextBox cellPhoneTextBox = new TextBox();
     private Button confirmBtn = new Button("Оплатить");
     private Button cancelBtn = new Button("Отмена");
     private TextBox phoneNumber = new TextBox();
@@ -52,15 +54,14 @@ public class ServicePayCellPhonePanel implements IsWidget {
         HTML header = new HTML("<h2>Оплата услуг - Сотовая связь</h2><br>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);
-        
-        
+
         HorizontalPanel hPanel = new HorizontalPanel();
         HorizontalPanel buttonPanel = new HorizontalPanel();
         VerticalPanel headers = new VerticalPanel();
         VerticalPanel fields = new VerticalPanel();
         fields.setSpacing(10);
         headers.setStyleName("operations_container");
-        
+
         // создаем обработчик выборки операторов сотовой связи
         AsyncCallback<List<ServiceProviderDTO>> serviceProviderCallback = new AsyncCallback<List<ServiceProviderDTO>>() {
             @Override
@@ -84,6 +85,8 @@ public class ServicePayCellPhonePanel implements IsWidget {
         fields.add(serviceProviderListBox);
         headers.add(new HTML("<h3>Счет списания</h3>"));
         fields.add(locAccount);
+        headers.add(new HTML("<h3>Номер телефона</h3>"));
+        fields.add(cellPhoneTextBox);
         headers.add(new HTML("<h3>Сумма</h3>"));
         fields.add(sumField);
         headers.add(new HTML("<br>"));
@@ -91,7 +94,10 @@ public class ServicePayCellPhonePanel implements IsWidget {
         locAccount.setStyleName("operation_fields");
         serviceProviderListBox.setStyleName("operation_fields");
         sumField.setStyleName("operation_fields");
-        
+        cellPhoneTextBox.setStyleName("operation_fields");
+        cellPhoneTextBox.getElement().setAttribute("placeholder", "Формат номера: 9091234567");
+        cellPhoneTextBox.getElement().setAttribute("maxlength", "10");
+
         // создаем кнопки
         createButtons();
 
@@ -106,7 +112,7 @@ public class ServicePayCellPhonePanel implements IsWidget {
         hPanel.add(fields);
 
         verticalPanel.add(hPanel);
-        
+
         // заполняем список счетов списания денег
         for (AccountDTO account : user.getAccountList()) {
             if (account.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
@@ -117,7 +123,7 @@ public class ServicePayCellPhonePanel implements IsWidget {
         }
 
     }
-    
+
     /**
      * определяет обработчики и стили кнопок
      */
@@ -146,7 +152,6 @@ public class ServicePayCellPhonePanel implements IsWidget {
 
     }
 
-    
     /**
      * обработчик нажатия клавиши Оплатить
      */
@@ -167,13 +172,13 @@ public class ServicePayCellPhonePanel implements IsWidget {
 
         // выбираем объект счета списания        
         AccountDTO account = null;
-        
-        for(AccountDTO acc : user.getAccountList()) {
-            if(acc.getId() == locAccountValue) {
+
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == locAccountValue) {
                 account = acc;
             }
         }
-        
+
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");
@@ -183,20 +188,29 @@ public class ServicePayCellPhonePanel implements IsWidget {
 
         // выбираем объект оператора сотовой связи
         ServiceProviderDTO serviceProviderDTO = null;
-        
-        for(ServiceProviderDTO provider : serviceProviderList) {
-            if(provider.getId() == Integer.parseInt(serviceProviderListBox.getSelectedValue())) {
+
+        for (ServiceProviderDTO provider : serviceProviderList) {
+            if (provider.getId() == Integer.parseInt(serviceProviderListBox.getSelectedValue())) {
                 serviceProviderDTO = provider;
             }
         }
+
+        // проверяем правильность ввода телефона
+        String cellPhone = cellPhoneTextBox.getText();
+        RegExp regExp = RegExp.compile("[0-9]{10}");
+
+        if (!regExp.test(cellPhone)) {
+            Window.alert("Номер телефона указан неверно!");
+            return;
+        } 
         
-        
+
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
         operationDTO.setAccountId(locAccountValue);
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
-        operationDTO.setDescription("Оплата сотовой связи");
+        operationDTO.setDescription("Оплата сотовой связи. Номер телефона " + cellPhone);
         operationDTO.setDestinationAccount(serviceProviderDTO.getAccountNumber());
         operationDTO.setOperationTypeId(OperTypes.SERVICE_PAY.getId());
         operationDTO.setStatusId(Statuses.NEW.getId());
@@ -217,7 +231,7 @@ public class ServicePayCellPhonePanel implements IsWidget {
         LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
 
     }
-    
+
     @Override
     public Widget asWidget() {
         return verticalPanel;
