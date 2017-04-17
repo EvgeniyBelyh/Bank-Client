@@ -110,7 +110,10 @@ public class TemplatesPanel implements IsWidget {
         vPanel1.add(new HTML("<h3>Название шаблона</h3>"));
         templateNameTextBox.setStyleName("operation_fields");
         vPanel2.add(templateNameTextBox);
-
+        templateNamePanel.add(vPanel1);
+        templateNamePanel.add(vPanel2);
+        vPanel.add(templateNamePanel);
+        
         List<OperationDTO> operationsList = getOperationList();
 
         // добавляем таблицу с информацие об операциях
@@ -149,10 +152,10 @@ public class TemplatesPanel implements IsWidget {
             templateCreateTable.setText(i, 3, oper.getStatusName());
             templateCreateTable.getCellFormatter().addStyleName(i, 3, "simple_cell");
             // кнопка создания шаблона
-            Button createButton = new Button("Применить");
+            Button createButton = new Button("Создать шаблон");
             createButton.addClickHandler(new TemplateCreateClickHandler(oper));
-            templateExecuteTable.setWidget(i, 4, createButton);
-            templateExecuteTable.getCellFormatter().addStyleName(i, 4, "simple_cell");
+            templateCreateTable.setWidget(i, 4, createButton);
+            templateCreateTable.getCellFormatter().addStyleName(i, 4, "simple_cell");
 
             i++;
         }
@@ -299,7 +302,7 @@ public class TemplatesPanel implements IsWidget {
                 }
             };
 
-            if (templateName != "") {
+            if (templateName.length() > 0) {
 
                 TemplateDTO templateDTO = new TemplateDTO();
                 templateDTO.setAccountId(operationDTO.getAccountId());
