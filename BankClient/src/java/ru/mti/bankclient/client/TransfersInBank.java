@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.OperationDTO;
@@ -45,10 +46,11 @@ public class TransfersInBank implements IsWidget {
 
         for (AccountDTO acc : user.getAccountList()) {
 
-            locAccount.addItem(acc.getAccountTypeName() + " "
-                    + acc.getNumber() + ", остаток " + acc.getBalance()
-                    + " " + acc.getCurrencyName(), acc.getId().toString());
-
+            if (acc.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
+                locAccount.addItem(acc.getAccountTypeName() + " "
+                        + acc.getNumber() + ", остаток " + acc.getBalance()
+                        + " " + acc.getCurrencyName(), acc.getId().toString());
+            }
         }
 
         accountList = user.getAccountList();
@@ -144,8 +146,16 @@ public class TransfersInBank implements IsWidget {
             return;
         }
 
-        // выбираем объект счета списания
-        AccountDTO account = accountList.get(locAccountValue);
+        // выбираем объект счета списания        
+        AccountDTO account = null;
+        ClientDTO user = Util.getClientDTO();
+
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == locAccountValue) {
+                account = acc;
+            }
+        }
+
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");

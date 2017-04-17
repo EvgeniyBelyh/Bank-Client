@@ -13,6 +13,7 @@ import ru.mti.bankclient.session.AccountFacade;
 import ru.mti.bankclient.session.ClientFacade;
 import ru.mti.bankclient.session.DepositFacade;
 import ru.mti.bankclient.session.OperationFacade;
+import ru.mti.bankclient.session.PartnerBankFacade;
 import ru.mti.bankclient.session.ProviderCategoryFacade;
 import ru.mti.bankclient.session.ServiceProviderFacade;
 import ru.mti.bankclient.shared.Account;
@@ -56,6 +57,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private ProviderCategoryFacade providerCategoryFacade;
     @EJB
     private ServiceProviderFacade serviceProviderFacade;
+    @EJB
+    private PartnerBankFacade partnerBankFacade;
 
     private static final int IN_TRANSFER = 1;
     private static final int OUT_TRANSFER = 2;
@@ -492,7 +495,12 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     public void openDeposit(DepositDTO depositDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    /**
+     * Находит поставщика услуг по ИНН
+     * @param inn - ИНН
+     * @return DTO поставщика услуг
+     */
     @Override
     public ServiceProviderDTO getServiceProviderByInn(String inn) {
 
@@ -500,5 +508,18 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
         return createServiceProviderDTO(provider);
 
+    }
+
+     /**
+     * Находит банк-контрагент по БИК
+     * @param inn - БИК
+     * @return DTO банка-контрагента
+     */
+    @Override
+    public PartnerBankDTO getPartnerBankByBik(String bik) {
+        
+        PartnerBank bank = partnerBankFacade.findByBik(bik);
+        
+        return createPartnerBankDTO(bank);
     }
 }

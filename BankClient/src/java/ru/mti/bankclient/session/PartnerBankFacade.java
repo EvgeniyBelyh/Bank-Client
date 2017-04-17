@@ -31,7 +31,7 @@ public class PartnerBankFacade extends AbstractFacade<PartnerBank> {
         super(PartnerBank.class);
     }
     
-    public PartnerBank findByLogin(String bik) {
+    public PartnerBank findByBik(String bik) {
         getEntityManager();
         PartnerBank pBank = null;
         EntityTransaction trans = em.getTransaction();

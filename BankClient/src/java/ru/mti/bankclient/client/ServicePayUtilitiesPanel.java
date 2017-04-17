@@ -131,7 +131,7 @@ public class ServicePayUtilitiesPanel implements IsWidget {
 
         // заполняем список счетов списания денег
         for (AccountDTO account : user.getAccountList()) {
-            if (account.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
+            if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
                 locAccount.addItem(account.getAccountTypeName() + " "
                         + account.getNumber() + ", остаток " + account.getBalance()
                         + " " + account.getCurrencyName(), account.getId().toString());
@@ -174,7 +174,7 @@ public class ServicePayUtilitiesPanel implements IsWidget {
     private void confirmButtonHandler() {
 
         Double summ;
-        // определяем id счетов списания и зачисления
+        // определяем id счета
         int locAccountValue = Integer.parseInt(locAccount.getValue(locAccount.getSelectedIndex()));
 
         // пытаемся получить сумму перевода

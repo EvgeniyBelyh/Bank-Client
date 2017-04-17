@@ -115,7 +115,7 @@ public class ServicePayCellPhonePanel implements IsWidget {
 
         // заполняем список счетов списания денег
         for (AccountDTO account : user.getAccountList()) {
-            if (account.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
+            if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
                 locAccount.addItem(account.getAccountTypeName() + " "
                         + account.getNumber() + ", остаток " + account.getBalance()
                         + " " + account.getCurrencyName(), account.getId().toString());

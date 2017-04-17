@@ -1,5 +1,7 @@
 package ru.mti.bankclient.client;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.OperationDTO;
@@ -37,6 +40,11 @@ public class TransfersOutBank implements IsWidget {
     private TextBox BIKField = new TextBox(); // БИК банка получателя
     private Button confirmBtn = new Button("Перевести");
     private Button cancelBtn = new Button("Отмена");
+    private HTML headerLabel = new HTML();
+    private HTML bankLabel = new HTML();
+    private PartnerBankDTO partnerBankDTO;
+    private AsyncCallback<PartnerBankDTO> partnerBankCallback; 
+    
     private List<AccountDTO> accountList;
 
     private MainPage mainPage;
@@ -48,9 +56,11 @@ public class TransfersOutBank implements IsWidget {
 
         for (AccountDTO acc : user.getAccountList()) {
 
-            locAccount.addItem(acc.getAccountTypeName() + " "
-                    + acc.getNumber() + ", остаток " + acc.getBalance()
-                    + " " + acc.getCurrencyName(), acc.getId().toString());
+            if (acc.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
+                locAccount.addItem(acc.getAccountTypeName() + " "
+                        + acc.getNumber() + ", остаток " + acc.getBalance()
+                        + " " + acc.getCurrencyName(), acc.getId().toString());
+            }
         }
 
         accountList = user.getAccountList();
@@ -86,20 +96,50 @@ public class TransfersOutBank implements IsWidget {
         VerticalPanel fields = new VerticalPanel();
         fields.setSpacing(10);
 
+                // создаем обработчик выборки оператора по ИНН
+        partnerBankCallback = new AsyncCallback<PartnerBankDTO>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                headerLabel.setHTML("<font color=\"#FFFFFF\">Банк</font>");
+                bankLabel.setHTML("Банк не выбран. Проверьте БИК");
+            }
+
+            @Override
+            public void onSuccess(PartnerBankDTO result) {
+
+                partnerBankDTO = result;
+                headerLabel.setHTML("<font color=\"#FFFFFF\">Поставщик</font>");                
+                bankLabel.setHTML("Банк: " + partnerBankDTO.getName());
+            }
+        };
+
+        BIKField.addBlurHandler(new BlurHandler() {
+
+            @Override
+            public void onBlur(BlurEvent event) {
+                // отправляем запрос на сервер
+                LoginService.Util.getInstance().getPartnerBankByBik(BIKField.getText(), partnerBankCallback);
+            }
+        });
+        
+        
+        
         headers.add(new HTML("<h3>Счет списания</h3>"));
         fields.add(locAccount);
         headers.add(new HTML("<h3>Сумма перевода</h3>"));
         fields.add(sumField);
         headers.add(new HTML("<h3>Счет зачисления</h3>"));
         fields.add(destAccount);
-        headers.add(new HTML("<h3>Назначение платежа</h3>"));
-        fields.add(descriptionField);
         headers.add(new HTML("<h3>БИК банка получателя</h3>"));
         fields.add(BIKField);
-        headers.setStyleName("operations_container");
-        
-        headers.add(new HTML("<br>"));
+        headers.add(headerLabel);
+        fields.add(bankLabel);
+        headers.add(new HTML("<h3>Назначение платежа</h3>"));
+        fields.add(descriptionField);
 
+        headers.setStyleName("operations_container");       
+        headers.add(new HTML("<br>"));
+        
         confirmBtn.setStyleName("confirm_button");
         cancelBtn.setStyleName("confirm_button");
 
@@ -152,9 +192,17 @@ public class TransfersOutBank implements IsWidget {
             sumField.setFocus(true);
             return;
         }
+        
+        // выбираем объект счета списания        
+        AccountDTO account = null;
+        ClientDTO user = Util.getClientDTO();
 
-        // выбираем объект счета списания
-        AccountDTO account = accountList.get(locAccountValue);
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == locAccountValue) {
+                account = acc;
+            }
+        }
+        
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");

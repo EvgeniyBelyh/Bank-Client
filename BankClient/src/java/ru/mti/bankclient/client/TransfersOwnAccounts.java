@@ -47,7 +47,7 @@ public class TransfersOwnAccounts implements IsWidget {
 
         for (AccountDTO acc : user.getAccountList()) {
             // пропускаем счета кредитных карт для списка счетов списания
-            if (acc.getAccountTypeId() == AccountTypes.CREDIT_CARD.getId()) {
+            if (acc.getAccountTypeId() != AccountTypes.DEBIT_CARD.getId()) {
                 destAccount.addItem(acc.getAccountTypeName() + " "
                         + acc.getNumber() + ", остаток " + acc.getBalance()
                         + " " + acc.getCurrencyName(), acc.getId().toString());
@@ -164,8 +164,16 @@ public class TransfersOwnAccounts implements IsWidget {
             return;
         }
 
-        // выбираем объект счета списания
-        AccountDTO account = accountList.get(locAccountValue);
+        // выбираем объект счета списания        
+        AccountDTO account = null;
+        ClientDTO user = Util.getClientDTO();
+
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == locAccountValue) {
+                account = acc;
+            }
+        }
+        
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");
