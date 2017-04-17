@@ -19,6 +19,7 @@ public class TemplateDTO implements Serializable {
     private int accountId;
     private int operationTypeId;
     private int partnerBankId;
+    private double amount;
 
     public TemplateDTO() {
     }
@@ -89,6 +90,14 @@ public class TemplateDTO implements Serializable {
         this.partnerBankId = partnerBankId;
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }  
+    
     @Override
     public int hashCode() {
         int hash = 0;

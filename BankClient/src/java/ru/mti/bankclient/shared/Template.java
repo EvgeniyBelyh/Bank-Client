@@ -54,6 +54,10 @@ public class Template implements Serializable {
     @Size(max = 150)
     @Column(name = "name")
     private String name;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "amount")
+    private double amount;
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Account accountId;
@@ -77,6 +81,17 @@ public class Template implements Serializable {
         this.destinationAccount = destinationAccount;
     }
 
+    public Template(TemplateDTO templateDTO) {
+        this.accountId = new Account(templateDTO.getAccountId());
+        this.amount = templateDTO.getAmount();
+        this.description = templateDTO.getDescription();
+        this.destinationAccount = templateDTO.getDestinationAccount();
+        this.id = templateDTO.getId();
+        this.name = templateDTO.getName();
+        this.operationTypeId = new OperationType(templateDTO.getOperationTypeId());
+        this.partnerBankId = new PartnerBank(templateDTO.getPartnerBankId());
+    }
+    
     public Integer getId() {
         return id;
     }
@@ -133,6 +148,14 @@ public class Template implements Serializable {
         this.partnerBankId = partnerBankId;
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

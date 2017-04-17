@@ -16,6 +16,7 @@ import ru.mti.bankclient.session.OperationFacade;
 import ru.mti.bankclient.session.PartnerBankFacade;
 import ru.mti.bankclient.session.ProviderCategoryFacade;
 import ru.mti.bankclient.session.ServiceProviderFacade;
+import ru.mti.bankclient.session.TemplateFacade;
 import ru.mti.bankclient.shared.Account;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.BankMessage;
@@ -59,6 +60,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private ServiceProviderFacade serviceProviderFacade;
     @EJB
     private PartnerBankFacade partnerBankFacade;
+    @EJB
+    private TemplateFacade templateFacade;
 
     private static final int IN_TRANSFER = 1;
     private static final int OUT_TRANSFER = 2;
@@ -445,6 +448,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         templateDTO.setName(template.getName());
         templateDTO.setOperationTypeId(template.getOperationTypeId().getId());
         templateDTO.setPartnerBankId(template.getPartnerBankId().getId());
+        templateDTO.setAmount(template.getAmount());
 
         return templateDTO;
     }
@@ -521,5 +525,15 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         PartnerBank bank = partnerBankFacade.findByBik(bik);
         
         return createPartnerBankDTO(bank);
+    }
+
+    /**
+     * сохраняет в базе объект шаблон
+     * @param templateDTO - DTO шаблона
+     */
+    @Override
+    public void saveTemplate(TemplateDTO templateDTO) {
+        
+        templateFacade.create(new Template(templateDTO));
     }
 }

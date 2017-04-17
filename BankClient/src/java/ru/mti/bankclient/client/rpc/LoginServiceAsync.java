@@ -10,6 +10,7 @@ import ru.mti.bankclient.shared.OperationDTO;
 import ru.mti.bankclient.shared.PartnerBankDTO;
 import ru.mti.bankclient.shared.ProviderCategories;
 import ru.mti.bankclient.shared.ServiceProviderDTO;
+import ru.mti.bankclient.shared.TemplateDTO;
 
 /**
  *
@@ -38,4 +39,6 @@ public interface LoginServiceAsync {
     public void getServiceProviderByInn(String inn, AsyncCallback<ServiceProviderDTO> asyncCallback);
     
     public void getPartnerBankByBik(String bik, AsyncCallback<PartnerBankDTO> asyncCallback);
+    
+    public void saveTemplate(TemplateDTO templateDTO, AsyncCallback<Void> asyncCallback);
 }

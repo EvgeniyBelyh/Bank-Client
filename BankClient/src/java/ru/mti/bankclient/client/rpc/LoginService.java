@@ -12,6 +12,7 @@ import ru.mti.bankclient.shared.OperationDTO;
 import ru.mti.bankclient.shared.PartnerBankDTO;
 import ru.mti.bankclient.shared.ProviderCategories;
 import ru.mti.bankclient.shared.ServiceProviderDTO;
+import ru.mti.bankclient.shared.TemplateDTO;
 
 /**
  *
@@ -58,4 +59,6 @@ public interface LoginService extends RemoteService
     public ServiceProviderDTO getServiceProviderByInn(String inn);
     
     public PartnerBankDTO getPartnerBankByBik(String bik);
+    
+    public void saveTemplate(TemplateDTO templateDTO);
 }
