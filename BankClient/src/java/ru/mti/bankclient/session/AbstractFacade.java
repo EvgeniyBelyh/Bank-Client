@@ -6,7 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 /**
- *
+ * Абстрактный класс для управляющих классов, взаимодействующих
+ * с базой данных
  * @author Белых Евгений
  */
 public abstract class AbstractFacade<T> {
