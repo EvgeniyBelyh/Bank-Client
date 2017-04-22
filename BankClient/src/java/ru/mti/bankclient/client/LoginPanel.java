@@ -66,12 +66,11 @@ public class LoginPanel implements IsWidget {
     private void sendInfoToServer() {
 
         final String symbol = login.getText().toLowerCase().trim();
-        login.setFocus(true);
 
         // проверяем ввод определенных символов в поле логина
         if (!symbol.matches("^[0-9a-z.@]{1,50}$")) {
             Window.alert("Логин не может быть пустым и может состоять из "
-                    + "латинских символов нижнего регистра, цифр, а также символов '.' или '@'");
+                    + "латинских символов, цифр, а также символов '.' или '@'");
             login.setFocus(true);
             login.selectAll();
             return;

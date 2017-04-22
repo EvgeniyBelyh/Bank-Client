@@ -69,7 +69,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private static final int CARD_BLOCK = 4;
     private static final int VIRTUAL_CARD = 5;
 
-    private byte tryCount = 5;
+    private int tryCount = 5;
 
     @Override
     public ClientDTO loginServer(String login, String pass) {
