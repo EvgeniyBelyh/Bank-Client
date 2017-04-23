@@ -30,4 +30,23 @@ public class AccountFacade extends AbstractFacade<Account> {
         super(Account.class);
     }
 
+    
+    public Account findByNumber(String number) {
+        getEntityManager();
+        Account account = null;
+        EntityTransaction trans = em.getTransaction();
+        Query query = em.createNamedQuery("Account.findByNumber");
+        query.setParameter("number", number);
+        trans.begin();
+        try {
+            account = (Account) query.getSingleResult();
+        } catch(NoResultException ex) {
+            System.out.println("Объект счета не выбрался из базы по логину и паролю");
+        } catch(Exception ex) {
+            throw ex;
+        }              
+        trans.commit();
+        return account;
+    }
+    
 }

@@ -346,6 +346,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                     cardBlock(oper);
                     break;
                 case IN_TRANSFER:
+                    executeInTransfer(oper);
                     break;
                 case OUT_TRANSFER:
                     break;
@@ -360,6 +361,22 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     }
 
     /**
+     * Исполняет операцию без проверок
+     *
+     * @param oper - объект DTO операции
+     */    
+    private void simpleExecuteOperation(OperationDTO oper, String comment, int status) {
+        
+        oper.setComment(comment);
+        oper.setExecutionDate(new Date(System.currentTimeMillis()));
+        oper.setNumber(1 + (int) (Math.random() * ((100000 - 1) + 1)));
+        oper.setStatusId(status);
+
+        operationFacade.edit(new Operation(oper));
+    }
+    
+    
+    /**
      * Блокирует карту клиента
      *
      * @param oper - объект DTO операции
@@ -370,15 +387,45 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         blockedCard.setBlocked(true);
         accountFacade.edit(blockedCard);
         // исполняем операцию
-        oper.setComment("Карта успешно заблокирована");
-        oper.setExecutionDate(new Date(System.currentTimeMillis()));
-        oper.setNumber(1 + (int) (Math.random() * ((100000 - 1) + 1)));
-        oper.setStatusId(Statuses.EXECUTED.getId());
-
-        operationFacade.edit(new Operation(oper));
+        simpleExecuteOperation(oper, "Карта успешно заблокирована", Statuses.EXECUTED.getId());
 
     }
 
+    
+    /**
+     * Исполняет перевод внутри банка
+     * @param oper - объект DTO операции 
+     */
+    private void executeInTransfer(OperationDTO oper) {
+        
+        int status = Statuses.NOT_EXECUTED.getId();
+        String comment = "";
+        
+        Account destinationAccount = accountFacade.findByNumber(oper.getDestinationAccount());
+        
+        if (destinationAccount != null) {
+            // выбираем счет списания
+            Account transferAccount = accountFacade.find(oper.getAccountId());
+            // уменьшаем остаток на счете
+            transferAccount.setBalance(transferAccount.getBalance() - oper.getAmount());
+            // увеличиваем остаток на счете назначения
+            destinationAccount.setBalance(destinationAccount.getBalance() + oper.getAmount());
+            // устанавливаем статус исполнено
+            status = Statuses.EXECUTED.getId();
+            // определяем комментарий
+            comment = "Перевод завершен успешно";
+        } else {
+             // устанавливаем статус исполнено
+            status = Statuses.NOT_EXECUTED.getId();
+            // определяем комментарий
+            comment = "Неверно указан счет получателя";           
+        }
+     
+        // исполняем операцию
+        simpleExecuteOperation(oper, comment, status);       
+    }
+    
+    
     /**
      * Создает DTO для сущности Deposit - депозит
      *
