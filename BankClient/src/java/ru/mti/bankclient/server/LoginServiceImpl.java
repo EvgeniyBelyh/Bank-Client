@@ -321,7 +321,11 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      */
     @Override
     public void saveOperation(OperationDTO operationDTO) {
+        // получаем объект пользователя из сессии
+        ClientDTO user = getUserAlreadyFromSession();
         operationFacade.create(new Operation(operationDTO));
+        // обновляем объект клиента в сессии
+        storeUserInSession(createClientDTO(clientFacade.find(user.getId())));
     }
 
     @Override
@@ -408,8 +412,12 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
             Account transferAccount = accountFacade.find(oper.getAccountId());
             // уменьшаем остаток на счете
             transferAccount.setBalance(transferAccount.getBalance() - oper.getAmount());
+            // сохраняем значение в базе
+            accountFacade.edit(transferAccount);
             // увеличиваем остаток на счете назначения
             destinationAccount.setBalance(destinationAccount.getBalance() + oper.getAmount());
+            // сохраняем значение в базе
+            accountFacade.edit(destinationAccount);
             // устанавливаем статус исполнено
             status = Statuses.EXECUTED.getId();
             // определяем комментарий

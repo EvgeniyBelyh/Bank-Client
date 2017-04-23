@@ -33,25 +33,41 @@ public class AccountOperCardBlock implements IsWidget {
     private Button confirmBtn = new Button("Исполнить");
     private Button cancelBtn = new Button("Отмена");
     private MainPage mainPage;
+    private ClientDTO user;
 
     public AccountOperCardBlock(MainPage mainPage) {
 
         this.mainPage = mainPage;
-        ClientDTO user = Util.getClientDTO();
 
-        for (AccountDTO acc : user.getAccountList()) {
-            // выбираем только карты
-            if (acc.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
-                locAccount.addItem(acc.getAccountTypeName() + " "
-                        + acc.getNumber() + ", остаток " + acc.getBalance()
-                        + " " + acc.getCurrencyName(), acc.getId().toString());
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
+            
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
             }
-        }
 
-        createHeader();
-        createBody();
+            @Override
+            public void onSuccess(ClientDTO result) {
 
-        locAccount.setStyleName("operation_fields");
+                user = result;
+
+                for (AccountDTO acc : user.getAccountList()) {
+                    // выбираем только карты
+                    if (acc.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
+                        locAccount.addItem(acc.getAccountTypeName() + " "
+                                + acc.getNumber() + ", остаток " + acc.getBalance()
+                                + " " + acc.getCurrencyName(), acc.getId().toString());
+                    }
+                }
+
+                createHeader();
+                createBody();
+
+                locAccount.setStyleName("operation_fields");
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
 
     }
 
@@ -146,7 +162,7 @@ public class AccountOperCardBlock implements IsWidget {
                 Window.alert("Документ отправлен на обработку");
             }
         };
-        
+
         LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
 
     }

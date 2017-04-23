@@ -40,30 +40,45 @@ public class DepositClosePanel implements IsWidget {
 
     public DepositClosePanel(MainPage mainPage) {
 
-        this.user = Util.getClientDTO();
         this.mainPage = mainPage;
 
-        for (AccountDTO acc : user.getAccountList()) {
-            // пропускаем счета кредитных карт для списка счетов списания
-            if (acc.getAccountTypeId() == AccountTypes.DEPOSIT.getId()) {
-                locAccount.addItem(acc.getAccountTypeName() + " "
-                    + acc.getNumber() + ", остаток " + acc.getBalance()
-                    + " " + acc.getCurrencyName(), acc.getId().toString());
-            } else {
-                destAccount.addItem(acc.getAccountTypeName() + " "
-                        + acc.getNumber() + ", остаток " + acc.getBalance()
-                        + " " + acc.getCurrencyName(), acc.getId().toString());
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
             }
 
-        }
+            @Override
+            public void onSuccess(ClientDTO result) {
 
-        accountList = user.getAccountList();
+                user = result;
 
-        createHeader();
-        createBody();
+                for (AccountDTO acc : user.getAccountList()) {
+                    // пропускаем счета кредитных карт для списка счетов списания
+                    if (acc.getAccountTypeId() == AccountTypes.DEPOSIT.getId()) {
+                        locAccount.addItem(acc.getAccountTypeName() + " "
+                                + acc.getNumber() + ", остаток " + acc.getBalance()
+                                + " " + acc.getCurrencyName(), acc.getId().toString());
+                    } else {
+                        destAccount.addItem(acc.getAccountTypeName() + " "
+                                + acc.getNumber() + ", остаток " + acc.getBalance()
+                                + " " + acc.getCurrencyName(), acc.getId().toString());
+                    }
 
-        locAccount.setStyleName("operation_fields");
-        destAccount.setStyleName("operation_fields");
+                }
+
+                accountList = user.getAccountList();
+
+                createHeader();
+                createBody();
+
+                locAccount.setStyleName("operation_fields");
+                destAccount.setStyleName("operation_fields");
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
 
     }
 
@@ -94,7 +109,7 @@ public class DepositClosePanel implements IsWidget {
         fields.add(destAccount);
         headers.add(new HTML("<br>"));
         headers.setStyleName("operations_container");
-        
+
         confirmBtn.setStyleName("confirm_button");
         cancelBtn.setStyleName("confirm_button");
 

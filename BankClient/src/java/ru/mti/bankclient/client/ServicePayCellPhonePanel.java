@@ -47,10 +47,24 @@ public class ServicePayCellPhonePanel implements IsWidget {
     private TextBox phoneNumber = new TextBox();
 
     public ServicePayCellPhonePanel(MainPage mainPage) {
-
+        
         this.mainPage = mainPage;
-        this.user = Util.getClientDTO();
+              
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
 
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
+            }
+
+            @Override
+            public void onSuccess(ClientDTO result) {
+                user = result;
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
+              
         HTML header = new HTML("<h2>Оплата услуг - Сотовая связь</h2><br>");
         header.setStyleName("operations_container h2");
         verticalPanel.add(header);

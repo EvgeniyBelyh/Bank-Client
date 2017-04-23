@@ -42,8 +42,34 @@ public class TransfersOwnAccounts implements IsWidget {
 
     public TransfersOwnAccounts(MainPage mainPage) {
 
-        this.user = Util.getClientDTO();
         this.mainPage = mainPage;
+
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
+            }
+
+            @Override
+            public void onSuccess(ClientDTO result) {
+                
+                user = result;
+
+                createAccountList();
+                createHeader();
+                createBody();
+
+                locAccount.setStyleName("operation_fields");
+                destAccount.setStyleName("operation_fields");
+                sumField.setStyleName("operation_fields");
+            }
+        };
+        
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
+
+    }
+
+    public void createAccountList() {
 
         for (AccountDTO acc : user.getAccountList()) {
             // пропускаем счета кредитных карт для списка счетов списания
@@ -65,13 +91,6 @@ public class TransfersOwnAccounts implements IsWidget {
         }
 
         accountList = user.getAccountList();
-
-        createHeader();
-        createBody();
-
-        locAccount.setStyleName("operation_fields");
-        destAccount.setStyleName("operation_fields");
-        sumField.setStyleName("operation_fields");
     }
 
     /**
@@ -95,7 +114,7 @@ public class TransfersOwnAccounts implements IsWidget {
         VerticalPanel fields = new VerticalPanel();
         fields.setSpacing(10);
         headers.setStyleName("operations_container");
-        
+
         headers.add(new HTML("<h3>Счет списания</h3>"));
         fields.add(locAccount);
         headers.add(new HTML("<h3>Счет зачисления</h3>"));
@@ -166,14 +185,13 @@ public class TransfersOwnAccounts implements IsWidget {
 
         // выбираем объект счета списания        
         AccountDTO account = null;
-        ClientDTO user = Util.getClientDTO();
 
         for (AccountDTO acc : user.getAccountList()) {
             if (acc.getId() == locAccountValue) {
                 account = acc;
             }
         }
-        
+
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");

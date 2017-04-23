@@ -2,6 +2,8 @@ package ru.mti.bankclient.client;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.shared.impl.cldr.DateTimeFormatInfoImpl_ru;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -10,6 +12,9 @@ import com.google.gwt.user.client.ui.Widget;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import ru.mti.bankclient.client.rpc.LoginService;
+import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.BankMessageDTO;
 import ru.mti.bankclient.shared.ClientDTO;
 
@@ -21,12 +26,31 @@ import ru.mti.bankclient.shared.ClientDTO;
 public class ClientMenuBankMessagePanel implements IsWidget {
 
     private VerticalPanel vPanel;
+    private ClientDTO user;
 
     
     public ClientMenuBankMessagePanel() {
 
         vPanel = new VerticalPanel();
-        createPanel();
+        
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
+            
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка выбора списка сообщений. Повторите попытку позднее");
+            }
+
+            @Override
+            public void onSuccess(ClientDTO result) {
+
+                user = result;
+
+                createPanel();
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
+              
     }
 
     private void createPanel() {
@@ -82,7 +106,6 @@ public class ClientMenuBankMessagePanel implements IsWidget {
      */
     private List<BankMessageDTO> getBankMessageList() {
 
-        ClientDTO user = Util.getClientDTO();
         List<BankMessageDTO> bankMessageList = user.getBankMessageList();
 
         // сортируем список сообщений по дате получения в обратном порядке

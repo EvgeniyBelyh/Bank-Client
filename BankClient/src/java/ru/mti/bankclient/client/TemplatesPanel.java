@@ -47,15 +47,30 @@ public class TemplatesPanel implements IsWidget {
     public TemplatesPanel(MainPage mainPage) {
 
         this.mainPage = mainPage;
-        this.user = Util.getClientDTO();
 
-        // создаем заголовок 
-        HTML depositHeader = new HTML("<h2>Шаблоны операций</h2><br>");
-        depositHeader.setStyleName("operations_container h2");
-        vPanel.add(depositHeader);
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
 
-        createTable();
-        createCancelButton();
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
+            }
+
+            @Override
+            public void onSuccess(ClientDTO result) {
+                
+                user = result;
+
+                // создаем заголовок 
+                HTML depositHeader = new HTML("<h2>Шаблоны операций</h2><br>");
+                depositHeader.setStyleName("operations_container h2");
+                vPanel.add(depositHeader);
+
+                createTable();
+                createCancelButton();
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
 
     }
 
@@ -113,7 +128,7 @@ public class TemplatesPanel implements IsWidget {
         templateNamePanel.add(vPanel1);
         templateNamePanel.add(vPanel2);
         vPanel.add(templateNamePanel);
-        
+
         List<OperationDTO> operationsList = getOperationList();
 
         // добавляем таблицу с информацие об операциях

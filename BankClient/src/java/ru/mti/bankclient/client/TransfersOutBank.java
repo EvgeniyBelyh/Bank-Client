@@ -43,36 +43,50 @@ public class TransfersOutBank implements IsWidget {
     private HTML headerLabel = new HTML();
     private HTML bankLabel = new HTML();
     private PartnerBankDTO partnerBankDTO;
-    private AsyncCallback<PartnerBankDTO> partnerBankCallback; 
-    
+    private AsyncCallback<PartnerBankDTO> partnerBankCallback;
+    private ClientDTO user;
     private List<AccountDTO> accountList;
-
     private MainPage mainPage;
 
     public TransfersOutBank(MainPage mainPage) {
 
         this.mainPage = mainPage;
-        ClientDTO user = Util.getClientDTO();
 
-        for (AccountDTO acc : user.getAccountList()) {
-
-            if (acc.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
-                locAccount.addItem(acc.getAccountTypeName() + " "
-                        + acc.getNumber() + ", остаток " + acc.getBalance()
-                        + " " + acc.getCurrencyName(), acc.getId().toString());
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
             }
-        }
 
-        accountList = user.getAccountList();
+            @Override
+            public void onSuccess(ClientDTO result) {
 
-        createHeader();
-        createBody();
+                user = result;
 
-        locAccount.setStyleName("operation_fields");
-        destAccount.setStyleName("operation_fields");
-        sumField.setStyleName("operation_fields");
-        descriptionField.setStyleName("operation_fields");
-        BIKField.setStyleName("operation_fields");
+                for (AccountDTO acc : user.getAccountList()) {
+
+                    if (acc.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
+                        locAccount.addItem(acc.getAccountTypeName() + " "
+                                + acc.getNumber() + ", остаток " + acc.getBalance()
+                                + " " + acc.getCurrencyName(), acc.getId().toString());
+                    }
+                }
+
+                accountList = user.getAccountList();
+
+                createHeader();
+                createBody();
+
+                locAccount.setStyleName("operation_fields");
+                destAccount.setStyleName("operation_fields");
+                sumField.setStyleName("operation_fields");
+                descriptionField.setStyleName("operation_fields");
+                BIKField.setStyleName("operation_fields");
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
+
     }
 
     /**
@@ -96,7 +110,7 @@ public class TransfersOutBank implements IsWidget {
         VerticalPanel fields = new VerticalPanel();
         fields.setSpacing(10);
 
-                // создаем обработчик выборки оператора по ИНН
+        // создаем обработчик выборки оператора по ИНН
         partnerBankCallback = new AsyncCallback<PartnerBankDTO>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -108,7 +122,7 @@ public class TransfersOutBank implements IsWidget {
             public void onSuccess(PartnerBankDTO result) {
 
                 partnerBankDTO = result;
-                headerLabel.setHTML("<font color=\"#FFFFFF\">Поставщик</font>");                
+                headerLabel.setHTML("<font color=\"#FFFFFF\">Поставщик</font>");
                 bankLabel.setHTML("Банк: " + partnerBankDTO.getName());
             }
         };
@@ -121,9 +135,7 @@ public class TransfersOutBank implements IsWidget {
                 LoginService.Util.getInstance().getPartnerBankByBik(BIKField.getText(), partnerBankCallback);
             }
         });
-        
-        
-        
+
         headers.add(new HTML("<h3>Счет списания</h3>"));
         fields.add(locAccount);
         headers.add(new HTML("<h3>Сумма перевода</h3>"));
@@ -137,9 +149,9 @@ public class TransfersOutBank implements IsWidget {
         headers.add(new HTML("<h3>Назначение платежа</h3>"));
         fields.add(descriptionField);
 
-        headers.setStyleName("operations_container");       
+        headers.setStyleName("operations_container");
         headers.add(new HTML("<br>"));
-        
+
         confirmBtn.setStyleName("confirm_button");
         cancelBtn.setStyleName("confirm_button");
 
@@ -192,17 +204,22 @@ public class TransfersOutBank implements IsWidget {
             sumField.setFocus(true);
             return;
         }
-        
+
         // выбираем объект счета списания        
         AccountDTO account = null;
-        ClientDTO user = Util.getClientDTO();
 
         for (AccountDTO acc : user.getAccountList()) {
             if (acc.getId() == locAccountValue) {
                 account = acc;
             }
         }
-        
+
+        // проверяем блокировку счета
+        if (account.getBlocked()) {
+            Window.alert("Счет списания блокирован. Операция невозможна");
+            return;
+        }
+
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");

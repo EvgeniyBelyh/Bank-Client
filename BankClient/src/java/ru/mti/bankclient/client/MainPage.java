@@ -40,14 +40,17 @@ public class MainPage extends TemplatePage {
             public void run() {
                 AsyncCallback executeCallback = new AsyncCallback() {
                     @Override
-                    public void onFailure(Throwable caught) {                        
+                    public void onFailure(Throwable caught) { 
+                        Window.alert("Ошибка исполнения операции");
                     }
 
                     @Override
-                    public void onSuccess(Object result) {                        
+                    public void onSuccess(Object result) { 
+                        Window.alert("Операция успешно исполнена");
                     }
                 };
                 
+                Window.alert("Отправили запрос на сервер");
                 LoginService.Util.getInstance().executeOperation(executeCallback);
             }
         };
@@ -72,7 +75,7 @@ public class MainPage extends TemplatePage {
                     createCenterPanel();
                     
                     // запускаем таймер исполнения операций на сервере
-                    timer.scheduleRepeating(60000);
+                    timer.scheduleRepeating(10000);
                 }
             }
 

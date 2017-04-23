@@ -36,21 +36,19 @@ public class DepositOpenPanel implements IsWidget {
     private ListBox locAccount = new ListBox();
     private TextBox sumField = new TextBox();
 
-    
     public DepositOpenPanel(MainPage mainPage) {
 
         this.mainPage = mainPage;
-        this.user = Util.getClientDTO();
 
         // создаем заголовок 
         HTML depositHeader = new HTML("<h2>Открытие вклада</h2><br>");
         depositHeader.setStyleName("operations_container h2");
         vPanel.add(depositHeader);
-        
+
         sumField.setStyleName("operation_fields");
         locAccount.setStyleName("operation_fields");
         //vPanel.setStyleName("operations_container");
-        
+
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.setStyleName("operations_container");
         VerticalPanel headers = new VerticalPanel();
@@ -63,21 +61,36 @@ public class DepositOpenPanel implements IsWidget {
         headers.add(new HTML("<h3>Сумма перевода</h3>"));
         fields.add(sumField);
         headers.add(new HTML("<br>"));
-        
+
         hPanel.add(headers);
         hPanel.add(fields);
-        
+
         vPanel.add(hPanel);
-        
-        for (AccountDTO account : user.getAccountList()) {
-            if (account.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
-                locAccount.addItem(account.getAccountTypeName() + " "
-                        + account.getNumber() + ", остаток " + account.getBalance()
-                        + " " + account.getCurrencyName(), account.getId().toString());
+
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
             }
-        }
-        
-        
+
+            @Override
+            public void onSuccess(ClientDTO result) {
+
+                user = result;
+
+                for (AccountDTO account : user.getAccountList()) {
+                    if (account.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
+                        locAccount.addItem(account.getAccountTypeName() + " "
+                                + account.getNumber() + ", остаток " + account.getBalance()
+                                + " " + account.getCurrencyName(), account.getId().toString());
+                    }
+                }
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
+
         AsyncCallback<List<DepositDTO>> depositCallback = new AsyncCallback<List<DepositDTO>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -112,10 +125,10 @@ public class DepositOpenPanel implements IsWidget {
         }
 
         int i = 1; // индекс строки в таблице
-        
+
         // форматирование процентной ставки
         NumberFormat nFormat = NumberFormat.getFormat("#0.00");
-        
+
         // выбираем только карточные счета
         for (DepositDTO deposit : depositList) {
 
@@ -141,12 +154,11 @@ public class DepositOpenPanel implements IsWidget {
         vPanel.add(depositTable);
 
     }
-    
-    
+
     private void createCancelButton() {
-        
+
         HorizontalPanel buttonPanel = new HorizontalPanel();
-        
+
         Button cancelBtn = new Button("Отмена");
         cancelBtn.setStyleName("confirm_button");
 
@@ -160,11 +172,10 @@ public class DepositOpenPanel implements IsWidget {
             }
         });
 
-
         // добавляем кнопку к панели кнопок
         buttonPanel.add(cancelBtn);
         buttonPanel.setSpacing(10);
-        
+
         vPanel.add(buttonPanel);
     }
 
@@ -204,7 +215,7 @@ public class DepositOpenPanel implements IsWidget {
         private boolean check() {
 
             Double summ;
-            
+
             // пытаемся получить сумму перевода
             try {
                 summ = Double.parseDouble(sumField.getValue());

@@ -38,29 +38,45 @@ public class TransfersInBank implements IsWidget {
     private Button cancelBtn = new Button("Отмена");
     private List<AccountDTO> accountList;
     private MainPage mainPage;
+    private ClientDTO user;
 
     public TransfersInBank(MainPage mainPage) {
 
         this.mainPage = mainPage;
-        ClientDTO user = Util.getClientDTO();
 
-        for (AccountDTO acc : user.getAccountList()) {
-
-            if (acc.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
-                locAccount.addItem(acc.getAccountTypeName() + " "
-                        + acc.getNumber() + ", остаток " + acc.getBalance()
-                        + " " + acc.getCurrencyName(), acc.getId().toString());
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
             }
-        }
 
-        accountList = user.getAccountList();
+            @Override
+            public void onSuccess(ClientDTO result) {
 
-        createHeader();
-        createBody();
+                user = result;
 
-        locAccount.setStyleName("operation_fields");
-        destAccount.setStyleName("operation_fields");
-        sumField.setStyleName("operation_fields");
+                for (AccountDTO acc : user.getAccountList()) {
+
+                    if (acc.getAccountTypeId() == AccountTypes.DEBIT_CARD.getId()) {
+                        locAccount.addItem(acc.getAccountTypeName() + " "
+                                + acc.getNumber() + ", остаток " + acc.getBalance()
+                                + " " + acc.getCurrencyName(), acc.getId().toString());
+                    }
+                }
+
+                accountList = user.getAccountList();
+
+                createHeader();
+                createBody();
+
+                locAccount.setStyleName("operation_fields");
+                destAccount.setStyleName("operation_fields");
+                sumField.setStyleName("operation_fields");
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
+
     }
 
     /**
@@ -148,7 +164,6 @@ public class TransfersInBank implements IsWidget {
 
         // выбираем объект счета списания        
         AccountDTO account = null;
-        ClientDTO user = Util.getClientDTO();
 
         for (AccountDTO acc : user.getAccountList()) {
             if (acc.getId() == locAccountValue) {
