@@ -3,6 +3,7 @@ package ru.mti.bankclient.client;
 import ru.mti.bankclient.shared.ClientDTO;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -27,9 +28,29 @@ public class MainPage extends TemplatePage {
     private AsyncCallback<ClientDTO> clientCallback;
     AsyncCallback<List<AccountDTO>> accountCallback;
 
+    Timer timer;
+    
     public MainPage() {
 
         super();
+        
+        // определяем таймер исполнения операций на сервере
+        this.timer = new Timer() {
+            @Override
+            public void run() {
+                AsyncCallback executeCallback = new AsyncCallback() {
+                    @Override
+                    public void onFailure(Throwable caught) {                        
+                    }
+
+                    @Override
+                    public void onSuccess(Object result) {                        
+                    }
+                };
+                
+                LoginService.Util.getInstance().executeOperation(executeCallback);
+            }
+        };
         
         this.clientCallback = new AsyncCallback<ClientDTO>() {
             @Override
@@ -49,6 +70,9 @@ public class MainPage extends TemplatePage {
                     createWelcomePanel();
                     createMenuBlocks();
                     createCenterPanel();
+                    
+                    // запускаем таймер исполнения операций на сервере
+                    timer.scheduleRepeating(60000);
                 }
             }
 
@@ -69,6 +93,24 @@ public class MainPage extends TemplatePage {
 
         super();
 
+        // определяем таймер исполнения операций на сервере
+        this.timer = new Timer() {
+            @Override
+            public void run() {
+                AsyncCallback executeCallback = new AsyncCallback() {
+                    @Override
+                    public void onFailure(Throwable caught) {                        
+                    }
+
+                    @Override
+                    public void onSuccess(Object result) {                        
+                    }
+                };
+                
+                LoginService.Util.getInstance().executeOperation(executeCallback);
+            }
+        };
+
         this.user = user;
 
         // создаем панель приветствия в хедере
@@ -77,6 +119,9 @@ public class MainPage extends TemplatePage {
         createMenuBlocks();
         // создаем отображение центральной панели
         createCenterPanel();
+        
+        // запускаем таймер исполнения операций на сервере
+        timer.scheduleRepeating(60000);
     }
 
     /**
@@ -108,7 +153,10 @@ public class MainPage extends TemplatePage {
                     }
 
                 });
-
+                
+                // останавливаем таймер исполнения операций
+                timer.cancel();
+                
                 RootLayoutPanel rootPanel = RootLayoutPanel.get();
                 // очищаем страницу
                 rootPanel.clear();

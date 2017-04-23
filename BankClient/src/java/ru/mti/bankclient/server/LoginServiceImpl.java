@@ -1,9 +1,11 @@
 package ru.mti.bankclient.server;
 
+import java.util.Timer;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimerTask;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,12 +27,10 @@ import ru.mti.bankclient.shared.Client;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.Deposit;
 import ru.mti.bankclient.shared.DepositDTO;
-import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.Operation;
 import ru.mti.bankclient.shared.OperationDTO;
 import ru.mti.bankclient.shared.PartnerBank;
 import ru.mti.bankclient.shared.PartnerBankDTO;
-import ru.mti.bankclient.shared.ProviderCategories;
 import ru.mti.bankclient.shared.ProviderCategory;
 import ru.mti.bankclient.shared.ServiceProvider;
 import ru.mti.bankclient.shared.ServiceProviderDTO;
@@ -70,7 +70,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private static final int VIRTUAL_CARD = 5;
 
     private int tryCount = 5;
-
+    
     @Override
     public ClientDTO loginServer(String login, String pass) {
         Client client;
@@ -344,8 +344,6 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
             switch (oper.getOperationTypeId()) {
                 case CARD_BLOCK:
                     cardBlock(oper);
-                    // обновляем объект клиента в сессии
-                    storeUserInSession(createClientDTO(clientFacade.find(user.getId())));
                     break;
                 case IN_TRANSFER:
                     break;
@@ -357,6 +355,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                     break;
             }
         }
+        // обновляем объект клиента в сессии
+        storeUserInSession(createClientDTO(clientFacade.find(user.getId())));
     }
 
     /**
@@ -536,4 +536,6 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         
         templateFacade.create(new Template(templateDTO));
     }
+
+    
 }
