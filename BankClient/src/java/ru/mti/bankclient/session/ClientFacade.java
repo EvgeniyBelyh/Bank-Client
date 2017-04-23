@@ -31,26 +31,6 @@ public class ClientFacade extends AbstractFacade<Client> {
         super(Client.class);
     }
     
-    public Client findByLoginAndPassword(String login, String pass) {
-        getEntityManager();
-        Client client = null;
-        EntityTransaction trans = em.getTransaction();
-        Query query = em.createNamedQuery("Client.findByLoginAndPassword");
-        query.setParameter("login", login);
-        query.setParameter("password", pass);
-        trans.begin();
-        try {
-            client = (Client) query.getSingleResult();
-        } catch(NoResultException ex) {
-            System.out.println("Объект клиента не выбрался из базы по логину и паролю");
-        } catch(Exception ex) {
-            throw ex;
-        }              
-        trans.commit();
-        return client;
-    }
-    
-    
      public Client findByLogin(String login) {
         getEntityManager();
         Client client = null;

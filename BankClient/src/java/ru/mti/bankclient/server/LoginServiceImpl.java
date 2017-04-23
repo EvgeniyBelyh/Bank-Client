@@ -321,11 +321,21 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      */
     @Override
     public void saveOperation(OperationDTO operationDTO) {
+
+        operationFacade.create(new Operation(operationDTO));
+        
         // получаем объект пользователя из сессии
         ClientDTO user = getUserAlreadyFromSession();
-        operationFacade.create(new Operation(operationDTO));
+        
         // обновляем объект клиента в сессии
         storeUserInSession(createClientDTO(clientFacade.find(user.getId())));
+        
+        for(Account acc : clientFacade.find(user.getId()).getAccountList()) {
+            for(Operation oper : acc.getOperationList()) {
+                System.out.println("Операция " + oper.getOperationTypeId().getName() + " " + String.valueOf(oper.getAmount()));
+            }
+        }
+        
     }
 
     @Override

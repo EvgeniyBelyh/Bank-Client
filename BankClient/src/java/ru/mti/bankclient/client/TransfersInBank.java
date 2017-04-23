@@ -171,6 +171,12 @@ public class TransfersInBank implements IsWidget {
             }
         }
 
+        // проверяем блокировку счета
+        if (account.getBlocked()) {
+            Window.alert("Счет списания блокирован. Операция невозможна");
+            return;
+        }
+        
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");
