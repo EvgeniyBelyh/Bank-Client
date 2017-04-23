@@ -49,34 +49,6 @@ public class ServicePayInternetPanel implements IsWidget {
 
         this.mainPage = mainPage;
 
-        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
-            }
-
-            @Override
-            public void onSuccess(ClientDTO result) {
-                user = result;
-            }
-        };
-
-        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
-        
-       
-        HTML header = new HTML("<h2>Оплата услуг - Интернет</h2><br>");
-        header.setStyleName("operations_container h2");
-        verticalPanel.add(header);
-        
-        
-        HorizontalPanel hPanel = new HorizontalPanel();
-        HorizontalPanel buttonPanel = new HorizontalPanel();
-        VerticalPanel headers = new VerticalPanel();
-        VerticalPanel fields = new VerticalPanel();
-        fields.setSpacing(10);
-        headers.setStyleName("operations_container");
-        
         // создаем обработчик выборки операторов сотовой связи
         AsyncCallback<List<ServiceProviderDTO>> serviceProviderCallback = new AsyncCallback<List<ServiceProviderDTO>>() {
             @Override
@@ -93,50 +65,82 @@ public class ServicePayInternetPanel implements IsWidget {
                 serviceProviderList = result;
             }
         };
+        
         // отправляем запрос на сервер
         LoginService.Util.getInstance().getServiceProviderByCategory(ProviderCategories.INTERNET.getId(), serviceProviderCallback);
 
-        headers.add(new HTML("<h3>Поставщик</h3>"));
-        fields.add(serviceProviderListBox);
-        headers.add(new HTML("<h3>Счет списания</h3>"));
-        fields.add(locAccount);
-        headers.add(new HTML("<h3>Номер договора</h3>"));
-        fields.add(agreementId);
-        headers.add(new HTML("<h3>Сумма</h3>"));
-        fields.add(sumField);
-        headers.add(new HTML("<br>"));
-
-        locAccount.setStyleName("operation_fields");
-        serviceProviderListBox.setStyleName("operation_fields");
-        sumField.setStyleName("operation_fields");
-        agreementId.setStyleName("operation_fields");
         
-        // создаем кнопки
-        createButtons();
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
 
-        // добавляем кнопки и стиль к панели кнопок
-        buttonPanel.setStyleName("button_panel");
-        buttonPanel.add(confirmBtn);
-        buttonPanel.add(cancelBtn);
-
-        fields.add(buttonPanel);
-
-        hPanel.add(headers);
-        hPanel.add(fields);
-
-        verticalPanel.add(hPanel);
-        
-        // заполняем список счетов списания денег
-        for (AccountDTO account : user.getAccountList()) {
-            if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
-                locAccount.addItem(account.getAccountTypeName() + " "
-                        + account.getNumber() + ", остаток " + account.getBalance()
-                        + " " + account.getCurrencyName(), account.getId().toString());
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
             }
-        }
+
+            @Override
+            public void onSuccess(ClientDTO result) {
+                user = result;
+
+                // заполняем список счетов списания денег
+                for (AccountDTO account : user.getAccountList()) {
+                    if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
+                        locAccount.addItem(account.getAccountTypeName() + " "
+                                + account.getNumber() + ", остаток " + account.getBalance()
+                                + " " + account.getCurrencyName(), account.getId().toString());
+                    }
+                }
+
+                HTML header = new HTML("<h2>Оплата услуг - Интернет</h2><br>");
+                header.setStyleName("operations_container h2");
+                verticalPanel.add(header);
+
+                HorizontalPanel hPanel = new HorizontalPanel();
+                HorizontalPanel buttonPanel = new HorizontalPanel();
+                VerticalPanel headers = new VerticalPanel();
+                VerticalPanel fields = new VerticalPanel();
+                fields.setSpacing(10);
+                headers.setStyleName("operations_container");
+
+                headers.add(new HTML("<h3>Поставщик</h3>"));
+                fields.add(serviceProviderListBox);
+                headers.add(new HTML("<h3>Счет списания</h3>"));
+                fields.add(locAccount);
+                headers.add(new HTML("<h3>Номер договора</h3>"));
+                fields.add(agreementId);
+                headers.add(new HTML("<h3>Сумма</h3>"));
+                fields.add(sumField);
+                headers.add(new HTML("<br>"));
+
+                locAccount.setStyleName("operation_fields");
+                serviceProviderListBox.setStyleName("operation_fields");
+                sumField.setStyleName("operation_fields");
+                agreementId.setStyleName("operation_fields");
+
+                // создаем кнопки
+                createButtons();
+
+                // добавляем кнопки и стиль к панели кнопок
+                buttonPanel.setStyleName("button_panel");
+                buttonPanel.add(confirmBtn);
+                buttonPanel.add(cancelBtn);
+
+                fields.add(buttonPanel);
+
+                hPanel.add(headers);
+                hPanel.add(fields);
+
+                verticalPanel.add(hPanel);
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
+
+        
+        // отправляем запрос на сервер
+        LoginService.Util.getInstance().getServiceProviderByCategory(ProviderCategories.INTERNET.getId(), serviceProviderCallback);
 
     }
-    
+
     /**
      * определяет обработчики и стили кнопок
      */
@@ -165,7 +169,6 @@ public class ServicePayInternetPanel implements IsWidget {
 
     }
 
-    
     /**
      * обработчик нажатия клавиши Оплатить
      */
@@ -186,13 +189,13 @@ public class ServicePayInternetPanel implements IsWidget {
 
         // выбираем объект счета списания        
         AccountDTO account = null;
-        
-        for(AccountDTO acc : user.getAccountList()) {
-            if(acc.getId() == locAccountValue) {
+
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == locAccountValue) {
                 account = acc;
             }
         }
-        
+
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");
@@ -202,14 +205,13 @@ public class ServicePayInternetPanel implements IsWidget {
 
         // выбираем объект оператора сотовой связи
         ServiceProviderDTO serviceProviderDTO = null;
-        
-        for(ServiceProviderDTO provider : serviceProviderList) {
-            if(provider.getId() == Integer.parseInt(serviceProviderListBox.getSelectedValue())) {
+
+        for (ServiceProviderDTO provider : serviceProviderList) {
+            if (provider.getId() == Integer.parseInt(serviceProviderListBox.getSelectedValue())) {
                 serviceProviderDTO = provider;
             }
         }
-        
-        
+
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
         operationDTO.setAccountId(locAccountValue);
@@ -236,7 +238,7 @@ public class ServicePayInternetPanel implements IsWidget {
         LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
 
     }
-    
+
     @Override
     public Widget asWidget() {
         return verticalPanel;

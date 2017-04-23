@@ -47,34 +47,8 @@ public class ServicePayCellPhonePanel implements IsWidget {
     private TextBox phoneNumber = new TextBox();
 
     public ServicePayCellPhonePanel(MainPage mainPage) {
-        
+
         this.mainPage = mainPage;
-              
-        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
-            }
-
-            @Override
-            public void onSuccess(ClientDTO result) {
-                user = result;
-            }
-        };
-
-        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
-              
-        HTML header = new HTML("<h2>Оплата услуг - Сотовая связь</h2><br>");
-        header.setStyleName("operations_container h2");
-        verticalPanel.add(header);
-
-        HorizontalPanel hPanel = new HorizontalPanel();
-        HorizontalPanel buttonPanel = new HorizontalPanel();
-        VerticalPanel headers = new VerticalPanel();
-        VerticalPanel fields = new VerticalPanel();
-        fields.setSpacing(10);
-        headers.setStyleName("operations_container");
 
         // создаем обработчик выборки операторов сотовой связи
         AsyncCallback<List<ServiceProviderDTO>> serviceProviderCallback = new AsyncCallback<List<ServiceProviderDTO>>() {
@@ -92,49 +66,78 @@ public class ServicePayCellPhonePanel implements IsWidget {
                 serviceProviderList = result;
             }
         };
+        
         // отправляем запрос на сервер
         LoginService.Util.getInstance().getServiceProviderByCategory(ProviderCategories.CELL_PHONE.getId(), serviceProviderCallback);
+        
+        AsyncCallback<ClientDTO> userCallback = new AsyncCallback<ClientDTO>() {
 
-        headers.add(new HTML("<h3>Оператор</h3>"));
-        fields.add(serviceProviderListBox);
-        headers.add(new HTML("<h3>Счет списания</h3>"));
-        fields.add(locAccount);
-        headers.add(new HTML("<h3>Номер телефона</h3>"));
-        fields.add(cellPhoneTextBox);
-        headers.add(new HTML("<h3>Сумма</h3>"));
-        fields.add(sumField);
-        headers.add(new HTML("<br>"));
-
-        locAccount.setStyleName("operation_fields");
-        serviceProviderListBox.setStyleName("operation_fields");
-        sumField.setStyleName("operation_fields");
-        cellPhoneTextBox.setStyleName("operation_fields");
-        cellPhoneTextBox.getElement().setAttribute("placeholder", "Формат номера: 9091234567");
-        cellPhoneTextBox.getElement().setAttribute("maxlength", "10");
-
-        // создаем кнопки
-        createButtons();
-
-        // добавляем кнопки и стиль к панели кнопок
-        buttonPanel.setStyleName("button_panel");
-        buttonPanel.add(confirmBtn);
-        buttonPanel.add(cancelBtn);
-
-        fields.add(buttonPanel);
-
-        hPanel.add(headers);
-        hPanel.add(fields);
-
-        verticalPanel.add(hPanel);
-
-        // заполняем список счетов списания денег
-        for (AccountDTO account : user.getAccountList()) {
-            if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
-                locAccount.addItem(account.getAccountTypeName() + " "
-                        + account.getNumber() + ", остаток " + account.getBalance()
-                        + " " + account.getCurrencyName(), account.getId().toString());
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Ошибка формирования списка счетов. Повторите попытку позднее");
             }
-        }
+
+            @Override
+            public void onSuccess(ClientDTO result) {
+                user = result;
+
+                // заполняем список счетов списания денег
+                for (AccountDTO account : user.getAccountList()) {
+                    if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
+                        locAccount.addItem(account.getAccountTypeName() + " "
+                                + account.getNumber() + ", остаток " + account.getBalance()
+                                + " " + account.getCurrencyName(), account.getId().toString());
+                    }
+                }
+
+                HTML header = new HTML("<h2>Оплата услуг - Сотовая связь</h2><br>");
+                header.setStyleName("operations_container h2");
+                verticalPanel.add(header);
+
+                HorizontalPanel hPanel = new HorizontalPanel();
+                HorizontalPanel buttonPanel = new HorizontalPanel();
+                VerticalPanel headers = new VerticalPanel();
+                VerticalPanel fields = new VerticalPanel();
+                fields.setSpacing(10);
+                headers.setStyleName("operations_container");
+
+                headers.add(new HTML("<h3>Оператор</h3>"));
+                fields.add(serviceProviderListBox);
+                headers.add(new HTML("<h3>Счет списания</h3>"));
+                fields.add(locAccount);
+                headers.add(new HTML("<h3>Номер телефона</h3>"));
+                fields.add(cellPhoneTextBox);
+                headers.add(new HTML("<h3>Сумма</h3>"));
+                fields.add(sumField);
+                headers.add(new HTML("<br>"));
+
+                locAccount.setStyleName("operation_fields");
+                serviceProviderListBox.setStyleName("operation_fields");
+                sumField.setStyleName("operation_fields");
+                cellPhoneTextBox.setStyleName("operation_fields");
+                cellPhoneTextBox.getElement().setAttribute("placeholder", "Формат номера: 9091234567");
+                cellPhoneTextBox.getElement().setAttribute("maxlength", "10");
+
+                // создаем кнопки
+                createButtons();
+
+                // добавляем кнопки и стиль к панели кнопок
+                buttonPanel.setStyleName("button_panel");
+                buttonPanel.add(confirmBtn);
+                buttonPanel.add(cancelBtn);
+
+                fields.add(buttonPanel);
+
+                hPanel.add(headers);
+                hPanel.add(fields);
+
+                verticalPanel.add(hPanel);
+
+            }
+        };
+
+        LoginService.Util.getInstance().loginFromSessionServer(userCallback);
+
 
     }
 
@@ -216,8 +219,7 @@ public class ServicePayCellPhonePanel implements IsWidget {
         if (!regExp.test(cellPhone)) {
             Window.alert("Номер телефона указан неверно!");
             return;
-        } 
-        
+        }
 
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();

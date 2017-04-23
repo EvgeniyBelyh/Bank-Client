@@ -50,9 +50,9 @@ public class ServicePayUtilitiesPanel implements IsWidget {
     private TextBox phoneNumber = new TextBox();
     private ServiceProviderDTO serviceProviderDTO;
     private AsyncCallback<ServiceProviderDTO> serviceProviderCallback;
-    private HTML providerLabel =  new HTML();
-    private HTML headerLabel =  new HTML();
-    
+    private HTML providerLabel = new HTML();
+    private HTML headerLabel = new HTML();
+
     public ServicePayUtilitiesPanel(MainPage mainPage) {
 
         this.mainPage = mainPage;
@@ -67,34 +67,64 @@ public class ServicePayUtilitiesPanel implements IsWidget {
             @Override
             public void onSuccess(ClientDTO result) {
                 user = result;
+
+                // заполняем список счетов списания денег
+                for (AccountDTO account : user.getAccountList()) {
+                    if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
+                        locAccount.addItem(account.getAccountTypeName() + " "
+                                + account.getNumber() + ", остаток " + account.getBalance()
+                                + " " + account.getCurrencyName(), account.getId().toString());
+                    }
+                }
+
+                HTML header = new HTML("<h2>Оплата услуг - ЖКХ</h2><br>");
+                header.setStyleName("operations_container h2");
+                verticalPanel.add(header);
+
+                HorizontalPanel hPanel = new HorizontalPanel();
+                HorizontalPanel buttonPanel = new HorizontalPanel();
+                VerticalPanel headers = new VerticalPanel();
+                VerticalPanel fields = new VerticalPanel();
+                fields.setSpacing(10);
+                headers.setStyleName("operations_container");
+
+                headers.add(new HTML("<h3>Счет списания</h3>"));
+                fields.add(locAccount);
+                headers.add(new HTML("<h3>Сумма</h3>"));
+                fields.add(sumField);
+                headers.add(new HTML("<h3>ИНН поставщика</h3>"));
+                fields.add(providerInn);
+                headers.add(headerLabel);
+                fields.add(providerLabel);
+                headers.add(new HTML("<h3>Номер лицевого счета</h3>"));
+                fields.add(agreementId);
+                headers.add(new HTML("<br>"));
+
+                locAccount.setStyleName("operation_fields");
+                serviceProviderListBox.setStyleName("operation_fields");
+                sumField.setStyleName("operation_fields");
+                agreementId.setStyleName("operation_fields");
+                providerInn.setStyleName("operation_fields");
+
+                // создаем кнопки
+                createButtons();
+
+                // добавляем кнопки и стиль к панели кнопок
+                buttonPanel.setStyleName("button_panel");
+                buttonPanel.add(confirmBtn);
+                buttonPanel.add(cancelBtn);
+
+                fields.add(buttonPanel);
+
+                hPanel.add(headers);
+                hPanel.add(fields);
+
+                verticalPanel.add(hPanel);
             }
         };
 
         LoginService.Util.getInstance().loginFromSessionServer(userCallback);
-        
-        HTML header = new HTML("<h2>Оплата услуг - ЖКХ</h2><br>");
-        header.setStyleName("operations_container h2");
-        verticalPanel.add(header);
 
-        HorizontalPanel hPanel = new HorizontalPanel();
-        HorizontalPanel buttonPanel = new HorizontalPanel();
-        VerticalPanel headers = new VerticalPanel();
-        VerticalPanel fields = new VerticalPanel();
-        fields.setSpacing(10);
-        headers.setStyleName("operations_container");
-
-        headers.add(new HTML("<h3>Счет списания</h3>"));
-        fields.add(locAccount);
-        headers.add(new HTML("<h3>Сумма</h3>"));
-        fields.add(sumField);
-        headers.add(new HTML("<h3>ИНН поставщика</h3>"));
-        fields.add(providerInn);
-        headers.add(headerLabel);
-        fields.add(providerLabel);
-        headers.add(new HTML("<h3>Номер лицевого счета</h3>"));
-        fields.add(agreementId);
-        headers.add(new HTML("<br>"));
-        
         // создаем обработчик выборки оператора по ИНН
         serviceProviderCallback = new AsyncCallback<ServiceProviderDTO>() {
             @Override
@@ -107,7 +137,7 @@ public class ServicePayUtilitiesPanel implements IsWidget {
             public void onSuccess(ServiceProviderDTO result) {
 
                 serviceProviderDTO = result;
-                headerLabel.setHTML("<font color=\"#FFFFFF\">Поставщик</font>");                
+                headerLabel.setHTML("<font color=\"#FFFFFF\">Поставщик</font>");
                 providerLabel.setHTML("Поставщик: " + serviceProviderDTO.getName());
             }
         };
@@ -120,37 +150,6 @@ public class ServicePayUtilitiesPanel implements IsWidget {
                 LoginService.Util.getInstance().getServiceProviderByInn(providerInn.getText(), serviceProviderCallback);
             }
         });
-        
-
-        locAccount.setStyleName("operation_fields");
-        serviceProviderListBox.setStyleName("operation_fields");
-        sumField.setStyleName("operation_fields");
-        agreementId.setStyleName("operation_fields");
-        providerInn.setStyleName("operation_fields");
-
-        // создаем кнопки
-        createButtons();
-
-        // добавляем кнопки и стиль к панели кнопок
-        buttonPanel.setStyleName("button_panel");
-        buttonPanel.add(confirmBtn);
-        buttonPanel.add(cancelBtn);
-
-        fields.add(buttonPanel);
-
-        hPanel.add(headers);
-        hPanel.add(fields);
-
-        verticalPanel.add(hPanel);
-
-        // заполняем список счетов списания денег
-        for (AccountDTO account : user.getAccountList()) {
-            if (account.getAccountTypeId() != AccountTypes.DEPOSIT.getId()) {
-                locAccount.addItem(account.getAccountTypeName() + " "
-                        + account.getNumber() + ", остаток " + account.getBalance()
-                        + " " + account.getCurrencyName(), account.getId().toString());
-            }
-        }
 
     }
 
@@ -215,21 +214,20 @@ public class ServicePayUtilitiesPanel implements IsWidget {
             locAccount.setFocus(true);
             return;
         }
-        
+
         // проверяем ИНН поставщика
-        if(providerInn.getText().length() < 10 || providerInn.getText().length() > 10) {
+        if (providerInn.getText().length() < 10 || providerInn.getText().length() > 10) {
             Window.alert("Неверно указан ИНН поставщика услуг");
             providerInn.setFocus(true);
             return;
         }
-        
+
         // проверяем номер лицевого счета
-        if(agreementId.getText().length() < 2) {
+        if (agreementId.getText().length() < 2) {
             Window.alert("Неверно указан номер лицевого счета");
             agreementId.setFocus(true);
             return;
         }
-        
 
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
