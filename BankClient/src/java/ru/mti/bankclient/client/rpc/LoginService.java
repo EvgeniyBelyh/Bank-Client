@@ -48,7 +48,7 @@ public interface LoginService extends RemoteService
     
     public void saveOperation(OperationDTO operationDTO);
     
-    public void executeOperation();
+    public void executeOperation(OperationDTO operationDTO);
     
     public List<DepositDTO> getDeposits();
     

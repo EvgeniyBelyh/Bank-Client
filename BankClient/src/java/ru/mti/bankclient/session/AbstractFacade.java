@@ -37,6 +37,8 @@ public abstract class AbstractFacade<T> {
         manager.merge(entity);
         manager.flush();
         trans.commit();
+       
+
     }
 
     public void remove(T entity) {

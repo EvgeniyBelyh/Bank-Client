@@ -187,7 +187,7 @@ public class TransfersOwnAccounts implements IsWidget {
         AccountDTO account = null;
 
         for (AccountDTO acc : user.getAccountList()) {
-            if (acc.getId() == locAccountValue) {
+            if (acc.getId() == destAccountValue) {
                 account = acc;
             }
         }
@@ -213,6 +213,7 @@ public class TransfersOwnAccounts implements IsWidget {
         operationDTO.setDescription("Перевод между собственными счетами клиента " + user.getName());
         operationDTO.setDestinationAccount(account.getNumber());
         operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
+        operationDTO.setOperationTypeName("Внутренний перевод");
         operationDTO.setStatusId(Statuses.NEW.getId());
         operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));
 
@@ -224,11 +225,11 @@ public class TransfersOwnAccounts implements IsWidget {
 
             @Override
             public void onSuccess(Void result) {
-                Window.alert("Документ отправлен на обработку");
+                Window.alert("Перевод успешно завершен!");
             }
         };
 
-        LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
+        LoginService.Util.getInstance().executeOperation(operationDTO, operationCallback);
 
     }
 

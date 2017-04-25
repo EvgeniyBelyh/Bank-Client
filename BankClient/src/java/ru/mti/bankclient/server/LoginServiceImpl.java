@@ -323,26 +323,18 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     public void saveOperation(OperationDTO operationDTO) {
 
         operationFacade.create(new Operation(operationDTO));
-        
+
         // получаем объект пользователя из сессии
         ClientDTO user = getUserAlreadyFromSession();
-        
-        // обновляем объект клиента в сессии
-        storeUserInSession(createClientDTO(clientFacade.find(user.getId())));
-        
-        for(Account acc : clientFacade.find(user.getId()).getAccountList()) {
-            for(Operation oper : acc.getOperationList()) {
-                System.out.println("Операция " + oper.getOperationTypeId().getName() + " " + String.valueOf(oper.getAmount()));
-            }
-        }
         
     }
 
     @Override
-    public void executeOperation() {
+    public void executeOperation(OperationDTO oper) {
+        
         // получаем объект пользователя из сессии
         ClientDTO user = getUserAlreadyFromSession();
-        List<OperationDTO> operationList = new ArrayList();
+/*        List<OperationDTO> operationList = new ArrayList();
 
         // выбираем все операции клиента, которые требуют исполнения
         for (AccountDTO acc : user.getAccountList()) {
@@ -352,15 +344,15 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 }
             }
         }
+*/
+            OperationDTO returnedOper = null;
 
-        // идем по всему списку операций на исполнении
-        for (OperationDTO oper : operationList) {
             switch (oper.getOperationTypeId()) {
                 case CARD_BLOCK:
-                    cardBlock(oper);
+                    returnedOper = cardBlock(oper);
                     break;
                 case IN_TRANSFER:
-                    executeInTransfer(oper);
+                    returnedOper = executeInTransfer(oper);
                     break;
                 case OUT_TRANSFER:
                     break;
@@ -369,9 +361,16 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 case SERVICE_PAY:
                     break;
             }
-        }
+            
+            // ставим операцию в список операций по счету
+            for(AccountDTO acc : user.getAccountList()) {
+                if(acc.getId() == oper.getAccountId()) {
+                    acc.getOperationList().add(returnedOper);
+                }
+            }
+            
         // обновляем объект клиента в сессии
-        storeUserInSession(createClientDTO(clientFacade.find(user.getId())));
+        storeUserInSession(user);
     }
 
     /**
@@ -379,14 +378,16 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      *
      * @param oper - объект DTO операции
      */    
-    private void simpleExecuteOperation(OperationDTO oper, String comment, int status) {
+    private OperationDTO simpleExecuteOperation(OperationDTO oper, String comment, Statuses status) {
         
         oper.setComment(comment);
         oper.setExecutionDate(new Date(System.currentTimeMillis()));
         oper.setNumber(1 + (int) (Math.random() * ((100000 - 1) + 1)));
-        oper.setStatusId(status);
+        oper.setStatusId(status.getId());
+        oper.setStatusName(status.getName());
 
         operationFacade.edit(new Operation(oper));
+        return oper;
     }
     
     
@@ -395,14 +396,13 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      *
      * @param oper - объект DTO операции
      */
-    private void cardBlock(OperationDTO oper) {
+    private OperationDTO cardBlock(OperationDTO oper) {
         // находим нужный счет и ставим флаг блокировки
         Account blockedCard = accountFacade.find(oper.getAccountId());
         blockedCard.setBlocked(true);
         accountFacade.edit(blockedCard);
         // исполняем операцию
-        simpleExecuteOperation(oper, "Карта успешно заблокирована", Statuses.EXECUTED.getId());
-
+        return simpleExecuteOperation(oper, "Карта успешно заблокирована", Statuses.EXECUTED);
     }
 
     
@@ -410,9 +410,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      * Исполняет перевод внутри банка
      * @param oper - объект DTO операции 
      */
-    private void executeInTransfer(OperationDTO oper) {
+    private OperationDTO executeInTransfer(OperationDTO oper) {
         
-        int status = Statuses.NOT_EXECUTED.getId();
+        Statuses status = Statuses.NOT_EXECUTED;
         String comment = "";
         
         Account destinationAccount = accountFacade.findByNumber(oper.getDestinationAccount());
@@ -428,19 +428,32 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
             destinationAccount.setBalance(destinationAccount.getBalance() + oper.getAmount());
             // сохраняем значение в базе
             accountFacade.edit(destinationAccount);
+            
+            // получаем объект пользователя из сессии
+            ClientDTO user = getUserAlreadyFromSession();
+            
+            for(AccountDTO acc : user.getAccountList()) {
+                if(acc.getId() == transferAccount.getId()) {
+                    acc.setBalance(transferAccount.getBalance());
+                }
+                 if(acc.getId() == destinationAccount.getId()) {
+                    acc.setBalance(destinationAccount.getBalance());
+                }               
+            }
+            
             // устанавливаем статус исполнено
-            status = Statuses.EXECUTED.getId();
+            status = Statuses.EXECUTED;
             // определяем комментарий
             comment = "Перевод завершен успешно";
         } else {
-             // устанавливаем статус исполнено
-            status = Statuses.NOT_EXECUTED.getId();
+             // устанавливаем статус не исполнено
+            status = Statuses.NOT_EXECUTED;
             // определяем комментарий
             comment = "Неверно указан счет получателя";           
         }
      
         // исполняем операцию
-        simpleExecuteOperation(oper, comment, status);       
+        return simpleExecuteOperation(oper, comment, status);       
     }
     
     

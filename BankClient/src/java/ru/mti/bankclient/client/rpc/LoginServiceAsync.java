@@ -30,7 +30,7 @@ public interface LoginServiceAsync {
 
     public void openDeposit(DepositDTO depositDTO, AsyncCallback<Void> asyncCallback);
     
-    public void executeOperation(AsyncCallback asyncCallback);
+    public void executeOperation(OperationDTO operationDTO, AsyncCallback<Void> asyncCallback);
     
     public void getDeposits(AsyncCallback<List<DepositDTO>> asyncCallback);
 
