@@ -192,6 +192,7 @@ public class TransfersInBank implements IsWidget {
         operationDTO.setDescription("Перевод внутри банка");
         operationDTO.setDestinationAccount(this.destAccount.getText());
         operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
+        operationDTO.setOperationTypeName("Внутренний перевод");
         operationDTO.setStatusId(Statuses.NEW.getId());
         operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));
 
@@ -199,11 +200,15 @@ public class TransfersInBank implements IsWidget {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();
             }
 
             @Override
             public void onSuccess(Void result) {
-                Window.alert("Документ отправлен на обработку");
+                Window.alert("Перевод успешно завершен!");
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();
             }
         };
 
