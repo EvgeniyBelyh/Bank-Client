@@ -41,4 +41,6 @@ public interface LoginServiceAsync {
     public void getPartnerBankByBik(String bik, AsyncCallback<PartnerBankDTO> asyncCallback);
     
     public void saveTemplate(TemplateDTO templateDTO, AsyncCallback<Void> asyncCallback);
+    
+    public void closeDeposit(AccountDTO accountDTO, AsyncCallback<Void> asyncCallback);
 }

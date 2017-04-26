@@ -156,7 +156,13 @@ public class DepositClosePanel implements IsWidget {
         int destAccountValue = Integer.parseInt(destAccount.getValue(destAccount.getSelectedIndex()));
 
         // выбираем объект счета списания
-        AccountDTO account = accountList.get(locAccountValue);
+        AccountDTO account = null;
+
+        for (AccountDTO acc : accountList) {
+            if (acc.getId() == destAccountValue) {
+                account = acc;
+            }
+        }
 
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
@@ -177,11 +183,38 @@ public class DepositClosePanel implements IsWidget {
 
             @Override
             public void onSuccess(Void result) {
-                Window.alert("Документ отправлен на обработку");
+
+                AsyncCallback<Void> accountCallback = new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                        mainPage.centerBodyPanel.clear();
+                        mainPage.createCenterPanel();
+                    }
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        Window.alert("Счет успешно закрыт");
+                        mainPage.centerBodyPanel.clear();
+                        mainPage.createCenterPanel();
+                    }
+                };
+
+                // выбираем объект счета списания
+                AccountDTO account = null;
+
+                for (AccountDTO acc : accountList) {
+                    if (acc.getId() == Integer.parseInt(locAccount.getValue(locAccount.getSelectedIndex()))) {
+                        account = acc;
+                    }
+                }
+
+                LoginService.Util.getInstance().closeDeposit(account, accountCallback);
+
             }
         };
 
-        LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
+        LoginService.Util.getInstance().executeOperation(operationDTO, operationCallback);
 
     }
 

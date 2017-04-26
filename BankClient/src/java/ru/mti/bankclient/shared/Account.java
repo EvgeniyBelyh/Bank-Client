@@ -118,6 +118,23 @@ public class Account implements Serializable {
         this.blocked = blocked;
     }
 
+    public Account(AccountDTO accountDTO) {
+        this.accountName = accountDTO.getAccountName();
+        this.accountTypeId = new AccountType(accountDTO.getAccountTypeId());
+        this.balance = accountDTO.getBalance();
+        this.blocked = accountDTO.getBlocked();
+        this.cardNumber = accountDTO.getCardNumber();
+        this.clientId = new Client(accountDTO.getClientId());
+        this.currencyId = new Currency(accountDTO.getCurrencyId());
+        this.cvv = accountDTO.getCvv();
+        this.expirationDate = accountDTO.getExpirationDate();
+        this.id = accountDTO.getId();
+        this.interestRate = accountDTO.getInterestRate();
+        this.loanRate = accountDTO.getLoanRate();
+        this.number = accountDTO.getNumber();
+        this.overlimit = accountDTO.getOverlimit();
+    }
+    
     public Integer getId() {
         return id;
     }

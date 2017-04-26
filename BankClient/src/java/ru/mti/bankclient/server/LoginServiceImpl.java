@@ -255,6 +255,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         accountDTO.setCardNumber(account.getCardNumber());
         accountDTO.setExpirationDate(account.getExpirationDate());
         accountDTO.setCvv(account.getCvv());
+        accountDTO.setAccountName(account.getAccountName());
 
         if (account.getTemplateList() != null) {
             for (Template template : account.getTemplateList()) {
@@ -719,6 +720,21 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     public void saveTemplate(TemplateDTO templateDTO) {
 
         templateFacade.create(new Template(templateDTO));
+    }
+    
+    /**
+     * закрывает вклад
+     * @param accountDTO 
+     */
+    @Override
+    public void closeDeposit(AccountDTO accountDTO) {
+        Account account = new Account(accountDTO);
+        accountFacade.remove(account);
+        
+        ClientDTO user = getUserAlreadyFromSession();
+        user.getAccountList().remove(accountDTO);
+        
+        storeUserInSession(user);
     }
 
 }

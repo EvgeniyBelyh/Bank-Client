@@ -61,4 +61,7 @@ public interface LoginService extends RemoteService
     public PartnerBankDTO getPartnerBankByBik(String bik);
     
     public void saveTemplate(TemplateDTO templateDTO);
+    
+    public void closeDeposit(AccountDTO accountDTO);
+    
 }
