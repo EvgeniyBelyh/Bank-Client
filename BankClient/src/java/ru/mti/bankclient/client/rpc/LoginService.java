@@ -52,7 +52,7 @@ public interface LoginService extends RemoteService
     
     public List<DepositDTO> getDeposits();
     
-    public void openDeposit(DepositDTO depositDTO);
+    public String openDeposit(DepositDTO depositDTO);
     
     public List<ServiceProviderDTO> getServiceProviderByCategory(int categorieId);
     

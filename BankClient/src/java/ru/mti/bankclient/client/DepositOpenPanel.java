@@ -15,12 +15,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.i18n.client.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.shared.AccountDTO;
 import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.DepositDTO;
+import ru.mti.bankclient.shared.OperTypes;
+import ru.mti.bankclient.shared.OperationDTO;
+import ru.mti.bankclient.shared.PartnerBankDTO;
+import ru.mti.bankclient.shared.Statuses;
 
 /**
  * Отображает панель с вкладами для открытия
@@ -195,15 +200,47 @@ public class DepositOpenPanel implements IsWidget {
         @Override
         public void onClick(ClickEvent event) {
 
-            AsyncCallback<Void> openDepositCallback = new AsyncCallback<Void>() {
+            AsyncCallback<String> openDepositCallback = new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     Window.alert("Ошибка связи с сервером! Повторите попытку позднее");
+                    mainPage.centerBodyPanel.clear();
+                    mainPage.createCenterPanel();
                 }
 
                 @Override
-                public void onSuccess(Void result) {
-                    Window.alert("Документ отправлен на сервер!");
+                public void onSuccess(String result) {
+
+                    // создаем объект операции перевода
+                    OperationDTO operationDTO = new OperationDTO();
+                    operationDTO.setAccountId(Integer.parseInt(locAccount.getSelectedValue()));
+                    operationDTO.setAmount(Double.parseDouble(sumField.getValue()));
+                    operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
+                    operationDTO.setDescription("Открытие вклада");
+                    operationDTO.setDestinationAccount(result);
+                    operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
+                    operationDTO.setOperationTypeName(OperTypes.TRANSFER_IN.getName());
+                    operationDTO.setStatusId(Statuses.NEW.getId());
+                    operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));
+
+                    AsyncCallback<Void> operationCallback = new AsyncCallback<Void>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            Window.alert("Ошибка связи с сервером! Повторите попытку позднее");
+                            mainPage.centerBodyPanel.clear();
+                            mainPage.createCenterPanel();
+                        }
+
+                        @Override
+                        public void onSuccess(Void result) {
+                            Window.alert("Вклад успешно открыт");
+                            mainPage.centerBodyPanel.clear();
+                            mainPage.createCenterPanel();
+                        }
+                    };
+
+                    LoginService.Util.getInstance().executeOperation(operationDTO, operationCallback);
+
                 }
             };
 

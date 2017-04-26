@@ -21,10 +21,13 @@ import ru.mti.bankclient.session.ServiceProviderFacade;
 import ru.mti.bankclient.session.TemplateFacade;
 import ru.mti.bankclient.shared.Account;
 import ru.mti.bankclient.shared.AccountDTO;
+import ru.mti.bankclient.shared.AccountType;
+import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.BankMessage;
 import ru.mti.bankclient.shared.BankMessageDTO;
 import ru.mti.bankclient.shared.Client;
 import ru.mti.bankclient.shared.ClientDTO;
+import ru.mti.bankclient.shared.Currency;
 import ru.mti.bankclient.shared.Deposit;
 import ru.mti.bankclient.shared.DepositDTO;
 import ru.mti.bankclient.shared.OperTypes;
@@ -649,8 +652,33 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     }
 
     @Override
-    public void openDeposit(DepositDTO depositDTO) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String openDeposit(DepositDTO depositDTO) {
+        
+        // получаем объект пользователя из сессии
+        ClientDTO user = getUserAlreadyFromSession();
+        
+        // создаем объект счета
+        Account account = new Account();
+        account.setAccountName(depositDTO.getName());
+        account.setAccountTypeId(new AccountType(AccountTypes.DEPOSIT.getId(), AccountTypes.DEPOSIT.name()));
+        account.setBlocked(false);
+        account.setClientId(new Client(user.getId()));
+        account.setCurrencyId(new Currency(1, "RUR", "810"));
+        account.setInterestRate(depositDTO.getInterestRate());
+        
+        // получаем случайный номер 
+        String randomNumber = "4230181050000" + String.valueOf(1000000 + (int) (Math.random() * ((9999999 - 1000000) + 1)));
+        
+        account.setNumber(randomNumber);
+        
+        accountFacade.create(account);
+        
+        user.getAccountList().add(createAccountDTO(account));
+        
+        storeUserInSession(user);
+        
+        
+        return randomNumber;       
     }
 
     /**
