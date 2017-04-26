@@ -339,17 +339,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
         // получаем объект пользователя из сессии
         ClientDTO user = getUserAlreadyFromSession();
-        /*        List<OperationDTO> operationList = new ArrayList();
 
-        // выбираем все операции клиента, которые требуют исполнения
-        for (AccountDTO acc : user.getAccountList()) {
-            for (OperationDTO oper : acc.getOperationList()) {
-                if (oper.getStatusId() == Statuses.NEW.getId()) {
-                    operationList.add(oper);
-                }
-            }
-        }
-         */
         OperationDTO returnedOper = null;
 
         switch (oper.getOperationTypeId()) {
@@ -365,6 +355,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
             case VIRTUAL_CARD:
                 break;
             case SERVICE_PAY:
+                returnedOper = executeServicePay(oper);
                 break;
         }
 
@@ -511,6 +502,40 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         return simpleExecuteOperation(oper, comment, status);
     }
 
+    
+        /**
+     * Исполняет перевод из банка в другой банк
+     *
+     * @param oper - объект DTO операции
+     */
+    private OperationDTO executeServicePay(OperationDTO oper) {
+
+        // выбираем счет списания
+        Account transferAccount = accountFacade.find(oper.getAccountId());
+        // уменьшаем остаток на счете
+        transferAccount.setBalance(transferAccount.getBalance() - oper.getAmount());
+        // сохраняем значение в базе
+        accountFacade.edit(transferAccount);
+
+        // получаем объект пользователя из сессии
+        ClientDTO user = getUserAlreadyFromSession();
+
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == transferAccount.getId()) {
+                acc.setBalance(transferAccount.getBalance());
+            }
+        }
+
+        // устанавливаем статус исполнено
+        Statuses status = Statuses.EXECUTED;
+        // определяем комментарий
+        String comment = "Платеж завершен успешно";
+
+        // исполняем операцию
+        return simpleExecuteOperation(oper, comment, status);
+    }
+    
+    
     /**
      * Создает DTO для сущности Deposit - депозит
      *

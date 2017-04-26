@@ -196,6 +196,12 @@ public class ServicePayInternetPanel implements IsWidget {
             }
         }
 
+        // проверяем блокировку счета
+        if (account.getBlocked()) {
+            Window.alert("Счет списания блокирован. Операция невозможна");
+            return;
+        }
+        
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");
@@ -220,6 +226,7 @@ public class ServicePayInternetPanel implements IsWidget {
         operationDTO.setDescription("Оплата услуг Интернет. Номер договора " + agreementId.getText());
         operationDTO.setDestinationAccount(serviceProviderDTO.getAccountNumber());
         operationDTO.setOperationTypeId(OperTypes.SERVICE_PAY.getId());
+        operationDTO.setOperationTypeName(OperTypes.SERVICE_PAY.getName());
         operationDTO.setStatusId(Statuses.NEW.getId());
         operationDTO.setPartnerBankId(new PartnerBankDTO(serviceProviderDTO.getPartnerBankId()));
 
@@ -227,15 +234,19 @@ public class ServicePayInternetPanel implements IsWidget {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();
             }
 
             @Override
             public void onSuccess(Void result) {
-                Window.alert("Документ отправлен на обработку");
+                Window.alert("Платеж успешно завершен!");
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();
             }
         };
 
-        LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
+        LoginService.Util.getInstance().executeOperation(operationDTO, operationCallback);
 
     }
 
