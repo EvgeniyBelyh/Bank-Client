@@ -27,13 +27,16 @@ import ru.mti.bankclient.shared.Client;
 import ru.mti.bankclient.shared.ClientDTO;
 import ru.mti.bankclient.shared.Deposit;
 import ru.mti.bankclient.shared.DepositDTO;
+import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.Operation;
 import ru.mti.bankclient.shared.OperationDTO;
+import ru.mti.bankclient.shared.OperationType;
 import ru.mti.bankclient.shared.PartnerBank;
 import ru.mti.bankclient.shared.PartnerBankDTO;
 import ru.mti.bankclient.shared.ProviderCategory;
 import ru.mti.bankclient.shared.ServiceProvider;
 import ru.mti.bankclient.shared.ServiceProviderDTO;
+import ru.mti.bankclient.shared.Status;
 import ru.mti.bankclient.shared.Statuses;
 import ru.mti.bankclient.shared.Template;
 import ru.mti.bankclient.shared.TemplateDTO;
@@ -63,6 +66,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     @EJB
     private TemplateFacade templateFacade;
 
+    private static final int CURRENT_BANK = 1;
+
     private static final int IN_TRANSFER = 1;
     private static final int OUT_TRANSFER = 2;
     private static final int SERVICE_PAY = 3;
@@ -70,7 +75,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private static final int VIRTUAL_CARD = 5;
 
     private int tryCount = 5;
-    
+
     @Override
     public ClientDTO loginServer(String login, String pass) {
         Client client;
@@ -139,12 +144,12 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 clientDTO.getAccountList().add(createAccountDTO(acc));
             }
         }
-        
+
         if (client.getBankMessageList() != null) {
             for (BankMessage bankMessage : client.getBankMessageList()) {
                 clientDTO.getBankMessageList().add(createBankMessageDTO(bankMessage));
             }
-        }        
+        }
 
         return clientDTO;
     }
@@ -326,15 +331,15 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
         // получаем объект пользователя из сессии
         ClientDTO user = getUserAlreadyFromSession();
-        
+
     }
 
     @Override
     public void executeOperation(OperationDTO oper) {
-        
+
         // получаем объект пользователя из сессии
         ClientDTO user = getUserAlreadyFromSession();
-/*        List<OperationDTO> operationList = new ArrayList();
+        /*        List<OperationDTO> operationList = new ArrayList();
 
         // выбираем все операции клиента, которые требуют исполнения
         for (AccountDTO acc : user.getAccountList()) {
@@ -344,31 +349,32 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 }
             }
         }
-*/
-            OperationDTO returnedOper = null;
+         */
+        OperationDTO returnedOper = null;
 
-            switch (oper.getOperationTypeId()) {
-                case CARD_BLOCK:
-                    returnedOper = cardBlock(oper);
-                    break;
-                case IN_TRANSFER:
-                    returnedOper = executeInTransfer(oper);
-                    break;
-                case OUT_TRANSFER:
-                    break;
-                case VIRTUAL_CARD:
-                    break;
-                case SERVICE_PAY:
-                    break;
+        switch (oper.getOperationTypeId()) {
+            case CARD_BLOCK:
+                returnedOper = cardBlock(oper);
+                break;
+            case IN_TRANSFER:
+                returnedOper = executeInTransfer(oper);
+                break;
+            case OUT_TRANSFER:
+                returnedOper = executeOutTransfer(oper);
+                break;
+            case VIRTUAL_CARD:
+                break;
+            case SERVICE_PAY:
+                break;
+        }
+
+        // ставим операцию в список операций по счету
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == oper.getAccountId()) {
+                acc.getOperationList().add(returnedOper);
             }
-            
-            // ставим операцию в список операций по счету
-            for(AccountDTO acc : user.getAccountList()) {
-                if(acc.getId() == oper.getAccountId()) {
-                    acc.getOperationList().add(returnedOper);
-                }
-            }
-            
+        }
+
         // обновляем объект клиента в сессии
         storeUserInSession(user);
     }
@@ -377,9 +383,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      * Исполняет операцию без проверок
      *
      * @param oper - объект DTO операции
-     */    
+     */
     private OperationDTO simpleExecuteOperation(OperationDTO oper, String comment, Statuses status) {
-        
+
         oper.setComment(comment);
         oper.setExecutionDate(new Date(System.currentTimeMillis()));
         oper.setNumber(1 + (int) (Math.random() * ((100000 - 1) + 1)));
@@ -389,8 +395,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         operationFacade.edit(new Operation(oper));
         return oper;
     }
-    
-    
+
     /**
      * Блокирует карту клиента
      *
@@ -405,18 +410,21 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         return simpleExecuteOperation(oper, "Карта успешно заблокирована", Statuses.EXECUTED);
     }
 
-    
     /**
      * Исполняет перевод внутри банка
-     * @param oper - объект DTO операции 
+     *
+     * @param oper - объект DTO операции
      */
     private OperationDTO executeInTransfer(OperationDTO oper) {
-        
+
         Statuses status = Statuses.NOT_EXECUTED;
         String comment = "";
-        
+
+        // получаем объект пользователя из сессии
+        ClientDTO user = getUserAlreadyFromSession();
+
         Account destinationAccount = accountFacade.findByNumber(oper.getDestinationAccount());
-        
+
         if (destinationAccount != null) {
             // выбираем счет списания
             Account transferAccount = accountFacade.find(oper.getAccountId());
@@ -428,35 +436,81 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
             destinationAccount.setBalance(destinationAccount.getBalance() + oper.getAmount());
             // сохраняем значение в базе
             accountFacade.edit(destinationAccount);
-            
-            // получаем объект пользователя из сессии
-            ClientDTO user = getUserAlreadyFromSession();
-            
-            for(AccountDTO acc : user.getAccountList()) {
-                if(acc.getId() == transferAccount.getId()) {
+
+            // если перевод другому клиенту банка, то делаем приходную операцию у получателя
+            if (destinationAccount.getClientId().getId() != transferAccount.getClientId().getId()) {
+                // создаем объект операции
+                Operation operation = new Operation();
+                operation.setAccountId(destinationAccount);
+                operation.setAmount(oper.getAmount());
+                operation.setCreateDate(new Date(System.currentTimeMillis()));
+                operation.setDescription("Перевод от " + user.getName());
+                operation.setDestinationAccount(transferAccount.getNumber());
+                operation.setOperationTypeId(new OperationType(OperTypes.TRANSFER_IN.getId()));
+                operation.setStatusId(new Status(Statuses.EXECUTED.getId()));
+                operation.setPartnerBankId(new PartnerBank(CURRENT_BANK));
+                operation.setComment("Перевод завершен успешно");
+                operation.setExecutionDate(new Date(System.currentTimeMillis()));
+                operation.setNumber(1 + (int) (Math.random() * ((100000 - 1) + 1)));
+                operationFacade.create(operation);
+            }
+
+            for (AccountDTO acc : user.getAccountList()) {
+                if (acc.getId() == transferAccount.getId()) {
                     acc.setBalance(transferAccount.getBalance());
                 }
-                 if(acc.getId() == destinationAccount.getId()) {
+                if (acc.getId() == destinationAccount.getId()) {
                     acc.setBalance(destinationAccount.getBalance());
-                }               
+                }
             }
-            
+
             // устанавливаем статус исполнено
             status = Statuses.EXECUTED;
             // определяем комментарий
             comment = "Перевод завершен успешно";
         } else {
-             // устанавливаем статус не исполнено
+            // устанавливаем статус не исполнено
             status = Statuses.NOT_EXECUTED;
             // определяем комментарий
-            comment = "Неверно указан счет получателя";           
+            comment = "Неверно указан счет получателя";
         }
-     
+
         // исполняем операцию
-        return simpleExecuteOperation(oper, comment, status);       
+        return simpleExecuteOperation(oper, comment, status);
     }
-    
-    
+
+    /**
+     * Исполняет перевод из банка в другой банк
+     *
+     * @param oper - объект DTO операции
+     */
+    private OperationDTO executeOutTransfer(OperationDTO oper) {
+
+        // выбираем счет списания
+        Account transferAccount = accountFacade.find(oper.getAccountId());
+        // уменьшаем остаток на счете
+        transferAccount.setBalance(transferAccount.getBalance() - oper.getAmount());
+        // сохраняем значение в базе
+        accountFacade.edit(transferAccount);
+
+        // получаем объект пользователя из сессии
+        ClientDTO user = getUserAlreadyFromSession();
+
+        for (AccountDTO acc : user.getAccountList()) {
+            if (acc.getId() == transferAccount.getId()) {
+                acc.setBalance(transferAccount.getBalance());
+            }
+        }
+
+        // устанавливаем статус исполнено
+        Statuses status = Statuses.EXECUTED;
+        // определяем комментарий
+        String comment = "Перевод завершен успешно";
+
+        // исполняем операцию
+        return simpleExecuteOperation(oper, comment, status);
+    }
+
     /**
      * Создает DTO для сущности Deposit - депозит
      *
@@ -531,8 +585,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         return templateDTO;
     }
 
-    
-        /**
+    /**
      * Создает DTO для сущности BankMessage - сообщение от банка
      *
      * @param bankMessage - объект сообщения банка
@@ -548,10 +601,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
         return bankMessageDTO;
     }
-    
-    
-    
-    
+
     /**
      * Выбирает всех поставщиков услуг указанной категории
      *
@@ -577,9 +627,10 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     public void openDeposit(DepositDTO depositDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     /**
      * Находит поставщика услуг по ИНН
+     *
      * @param inn - ИНН
      * @return DTO поставщика услуг
      */
@@ -592,28 +643,29 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
     }
 
-     /**
+    /**
      * Находит банк-контрагент по БИК
+     *
      * @param inn - БИК
      * @return DTO банка-контрагента
      */
     @Override
     public PartnerBankDTO getPartnerBankByBik(String bik) {
-        
+
         PartnerBank bank = partnerBankFacade.findByBik(bik);
-        
+
         return createPartnerBankDTO(bank);
     }
 
     /**
      * сохраняет в базе объект шаблон
+     *
      * @param templateDTO - DTO шаблона
      */
     @Override
     public void saveTemplate(TemplateDTO templateDTO) {
-        
+
         templateFacade.create(new Template(templateDTO));
     }
 
-    
 }

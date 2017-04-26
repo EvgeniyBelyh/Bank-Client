@@ -212,7 +212,7 @@ public class TransfersInBank implements IsWidget {
             }
         };
 
-        LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
+        LoginService.Util.getInstance().executeOperation(operationDTO, operationCallback);
 
     }
 

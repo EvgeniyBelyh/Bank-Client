@@ -235,12 +235,9 @@ public class TransfersOutBank implements IsWidget {
         operationDTO.setDescription(descriptionField.getText());
         operationDTO.setDestinationAccount(this.destAccount.getText());
         operationDTO.setOperationTypeId(OperTypes.TRANSFER_OUT.getId());
+        operationDTO.setOperationTypeName("Внешний перевод");
         operationDTO.setStatusId(Statuses.NEW.getId());
-
-        PartnerBankDTO pBank = new PartnerBankDTO();
-        pBank.setBik(BIKField.getText());
-
-        operationDTO.setPartnerBankId(pBank);
+        operationDTO.setPartnerBankId(partnerBankDTO);
 
         AsyncCallback<Void> operationCallback = new AsyncCallback<Void>() {
             @Override
@@ -250,11 +247,11 @@ public class TransfersOutBank implements IsWidget {
 
             @Override
             public void onSuccess(Void result) {
-                Window.alert("Документ отправлен на обработку");
+                Window.alert("Перевод успешно завершен!");
             }
         };
 
-        LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
+        LoginService.Util.getInstance().executeOperation(operationDTO, operationCallback);
 
     }
 
