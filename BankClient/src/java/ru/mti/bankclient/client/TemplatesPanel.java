@@ -271,7 +271,7 @@ public class TemplatesPanel implements IsWidget {
             operationDTO.setPartnerBankId(new PartnerBankDTO(templateDTO.getPartnerBankId()));
 
             if (check()) {
-                LoginService.Util.getInstance().saveOperation(operationDTO, saveOperationCallback);
+                LoginService.Util.getInstance().executeOperation(operationDTO, saveOperationCallback);
             }
         }
 
@@ -295,11 +295,10 @@ public class TemplatesPanel implements IsWidget {
     class TemplateCreateClickHandler implements ClickHandler {
 
         private OperationDTO operationDTO;
-        private String templateName;
 
         public TemplateCreateClickHandler(OperationDTO operationDTO) {
             this.operationDTO = operationDTO;
-            this.templateName = templateNameTextBox.getText();
+            
         }
 
         @Override
@@ -316,8 +315,8 @@ public class TemplatesPanel implements IsWidget {
                     Window.alert("Документ отправлен на сервер!");
                 }
             };
-
-            if (templateName.length() > 0) {
+            
+            if (templateNameTextBox.getValue().length() > 0) {
 
                 TemplateDTO templateDTO = new TemplateDTO();
                 templateDTO.setAccountId(operationDTO.getAccountId());
@@ -325,7 +324,7 @@ public class TemplatesPanel implements IsWidget {
                 templateDTO.setDescription(operationDTO.getDescription());
                 templateDTO.setOperationTypeId(operationDTO.getOperationTypeId());
                 templateDTO.setPartnerBankId(operationDTO.getPartnerBankId().getId());
-                templateDTO.setName(templateName);
+                templateDTO.setName(templateNameTextBox.getValue());
 
                 LoginService.Util.getInstance().saveTemplate(templateDTO, saveTemplateCallback);
             } else {
