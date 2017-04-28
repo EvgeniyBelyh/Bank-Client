@@ -159,9 +159,9 @@ public class MainPage extends TemplatePage {
 
             @Override
             public void onSuccess(ClientDTO result) {
-                
+
                 user = result;
-                
+
                 // создаем заголовок 
                 HTML cardHeader = new HTML("<h2>Карты</h2>");
                 cardHeader.setStyleName("operations_container h2");
@@ -227,27 +227,29 @@ public class MainPage extends TemplatePage {
 
                 // выбираем только депозитные счета
                 for (AccountDTO account : user.getAccountList()) {
-
                     if (account.getAccountTypeId() == AccountTypes.DEPOSIT.getId()) {
-                        // тип счета и валюта счета
-                        depositTable.setText(i, 0, account.getAccountTypeName() + "(" + account.getCurrencyName() + ")");
-                        depositTable.getCellFormatter().addStyleName(i, 0, "simple_cell");
-                        // номер счета
-                        depositTable.setText(i, 1, account.getNumber());
-                        depositTable.getCellFormatter().addStyleName(i, 1, "simple_cell");
-                        // текущий баланс
-                        depositTable.setText(i, 2, String.valueOf(account.getBalance()) + " " + account.getCurrencyName());
-                        depositTable.getCellFormatter().addStyleName(i, 2, "simple_cell");
-                        i++;
+                        // отображаем только неблокированные счета
+                        if (account.getBlocked() == false) {
+                            // тип счета и валюта счета
+                            depositTable.setText(i, 0, account.getAccountTypeName() + "(" + account.getCurrencyName() + ")");
+                            depositTable.getCellFormatter().addStyleName(i, 0, "simple_cell");
+                            // номер счета
+                            depositTable.setText(i, 1, account.getNumber());
+                            depositTable.getCellFormatter().addStyleName(i, 1, "simple_cell");
+                            // текущий баланс
+                            depositTable.setText(i, 2, String.valueOf(account.getBalance()) + " " + account.getCurrencyName());
+                            depositTable.getCellFormatter().addStyleName(i, 2, "simple_cell");
+                            i++;
+                        }
                     }
                 }
 
                 centerBodyPanel.add(depositTable);
             }
         };
-        
+
         LoginService.Util.getInstance().loginFromSessionServer(clientAccountCallback);
-        
+
     }
 
     /**

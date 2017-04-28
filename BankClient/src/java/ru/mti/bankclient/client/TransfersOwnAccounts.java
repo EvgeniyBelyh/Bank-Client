@@ -52,7 +52,7 @@ public class TransfersOwnAccounts implements IsWidget {
 
             @Override
             public void onSuccess(ClientDTO result) {
-                
+
                 user = result;
 
                 createAccountList();
@@ -64,7 +64,7 @@ public class TransfersOwnAccounts implements IsWidget {
                 sumField.setStyleName("operation_fields");
             }
         };
-        
+
         LoginService.Util.getInstance().loginFromSessionServer(userCallback);
 
     }
@@ -185,10 +185,14 @@ public class TransfersOwnAccounts implements IsWidget {
 
         // выбираем объект счета списания        
         AccountDTO account = null;
+        AccountDTO destAccount = null;
 
         for (AccountDTO acc : user.getAccountList()) {
-            if (acc.getId() == destAccountValue) {
+            if (acc.getId() == locAccountValue) {
                 account = acc;
+            }
+            if (acc.getId() == destAccountValue) {
+                destAccount = acc;
             }
         }
 
@@ -197,7 +201,7 @@ public class TransfersOwnAccounts implements IsWidget {
             Window.alert("Счет списания блокирован. Операция невозможна");
             return;
         }
-        
+
         // проверяем остаток на счете
         if (account.getBalance() < summ) {
             Window.alert("Недостаточно средств для перевода");
@@ -211,7 +215,7 @@ public class TransfersOwnAccounts implements IsWidget {
         operationDTO.setAmount(summ);
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
         operationDTO.setDescription("Перевод между собственными счетами клиента " + user.getName());
-        operationDTO.setDestinationAccount(account.getNumber());
+        operationDTO.setDestinationAccount(destAccount.getNumber());
         operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
         operationDTO.setOperationTypeName("Внутренний перевод");
         operationDTO.setStatusId(Statuses.NEW.getId());

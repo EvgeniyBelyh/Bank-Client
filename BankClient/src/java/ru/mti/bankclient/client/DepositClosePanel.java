@@ -157,17 +157,21 @@ public class DepositClosePanel implements IsWidget {
 
         // выбираем объект счета списания
         AccountDTO account = null;
+        AccountDTO locAcc = null;
 
         for (AccountDTO acc : accountList) {
             if (acc.getId() == destAccountValue) {
                 account = acc;
             }
+            if (acc.getId() == locAccountValue) {
+                locAcc = acc;
+            }            
         }
 
         // создаем объект операции
         OperationDTO operationDTO = new OperationDTO();
         operationDTO.setAccountId(locAccountValue);
-        operationDTO.setAmount(account.getBalance());
+        operationDTO.setAmount(locAcc.getBalance());
         operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
         operationDTO.setDescription("Перевод между собственными счетами клиента " + user.getName());
         operationDTO.setDestinationAccount(account.getNumber());

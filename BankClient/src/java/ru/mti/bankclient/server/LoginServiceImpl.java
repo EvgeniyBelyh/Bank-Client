@@ -729,10 +729,16 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     @Override
     public void closeDeposit(AccountDTO accountDTO) {
         Account account = new Account(accountDTO);
-        accountFacade.remove(account);
+        account.setBlocked(true);
+        accountFacade.edit(account);
         
         ClientDTO user = getUserAlreadyFromSession();
-        user.getAccountList().remove(accountDTO);
+        
+        for(AccountDTO acc : user.getAccountList()) {
+            if(acc.getId() == account.getId()) {
+                acc.setBlocked(true);
+            }
+        }
         
         storeUserInSession(user);
     }
