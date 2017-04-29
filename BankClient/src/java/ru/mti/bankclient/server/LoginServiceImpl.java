@@ -718,8 +718,18 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      */
     @Override
     public void saveTemplate(TemplateDTO templateDTO) {
-
+        
+        ClientDTO user = loginFromSessionServer();
+        
         templateFacade.create(new Template(templateDTO));
+        
+        for(AccountDTO acc : user.getAccountList()) {
+            if(acc.getId() == templateDTO.getAccountId()) {
+                acc.getTemplateList().add(templateDTO);
+            }
+        }
+        
+        storeUserInSession(user);
     }
     
     /**

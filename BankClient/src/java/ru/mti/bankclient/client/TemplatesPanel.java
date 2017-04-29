@@ -256,7 +256,7 @@ public class TemplatesPanel implements IsWidget {
 
                 @Override
                 public void onSuccess(Void result) {
-                    Window.alert("Документ отправлен на сервер!");
+                    Window.alert("Операция проведена успешно!");
                 }
             };
 
@@ -312,7 +312,7 @@ public class TemplatesPanel implements IsWidget {
 
                 @Override
                 public void onSuccess(Void result) {
-                    Window.alert("Документ отправлен на сервер!");
+                    Window.alert("Шаблон успешно сохранен!");
                 }
             };
             
@@ -322,6 +322,7 @@ public class TemplatesPanel implements IsWidget {
                 templateDTO.setAccountId(operationDTO.getAccountId());
                 templateDTO.setAmount(operationDTO.getAmount());
                 templateDTO.setDescription(operationDTO.getDescription());
+                templateDTO.setDestinationAccount(operationDTO.getDestinationAccount());
                 templateDTO.setOperationTypeId(operationDTO.getOperationTypeId());
                 templateDTO.setPartnerBankId(operationDTO.getPartnerBankId().getId());
                 templateDTO.setName(templateNameTextBox.getValue());

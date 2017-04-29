@@ -51,6 +51,8 @@ public class Template implements Serializable {
     @Size(min = 1, max = 20)
     @Column(name = "destination_account")
     private String destinationAccount;
+    @Basic(optional = false)
+    @NotNull
     @Size(max = 150)
     @Column(name = "name")
     private String name;
