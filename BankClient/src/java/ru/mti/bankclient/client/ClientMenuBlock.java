@@ -32,6 +32,15 @@ public class ClientMenuBlock extends TransferMenuBlock {
     protected void createBody() {
         // панель тела блока меню
         VerticalPanel body = new VerticalPanel();
+        // ссылка на главную страницу
+        Hyperlink mainPageLink = new Hyperlink();
+        mainPageLink.setText("На главную");
+        mainPageLink.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();
+            }
+        });        
         // ссылка на страницу с шаблонами документов
         Hyperlink templates = new Hyperlink();
         templates.setText("Шаблоны");
@@ -66,6 +75,7 @@ public class ClientMenuBlock extends TransferMenuBlock {
         }); 
 
         // добавляем ссылки в тело блока
+        body.add(mainPageLink);
         body.add(templates);
         body.add(bankMessages);
         body.add(tarif);
