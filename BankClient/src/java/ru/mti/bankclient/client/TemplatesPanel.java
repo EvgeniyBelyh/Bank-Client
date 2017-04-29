@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -23,9 +22,7 @@ import java.util.Date;
 import java.util.List;
 import ru.mti.bankclient.client.rpc.LoginService;
 import ru.mti.bankclient.shared.AccountDTO;
-import ru.mti.bankclient.shared.AccountTypes;
 import ru.mti.bankclient.shared.ClientDTO;
-import ru.mti.bankclient.shared.DepositDTO;
 import ru.mti.bankclient.shared.OperTypes;
 import ru.mti.bankclient.shared.OperationDTO;
 import ru.mti.bankclient.shared.PartnerBankDTO;
@@ -109,7 +106,15 @@ public class TemplatesPanel implements IsWidget {
                 // кнопка применения шаблона
                 Button openButton = new Button("Применить");
                 openButton.addClickHandler(new TemplateClickHandler(templateDTO));
-                templateExecuteTable.setWidget(i, 3, openButton);
+                openButton.setWidth("90px");
+                Button deleteButton = new Button("Удалить");
+                deleteButton.addClickHandler(new TemplateDeleteClickHandler(templateDTO));
+                deleteButton.setWidth("90px");
+                VerticalPanel buttonsPanel = new VerticalPanel();
+                buttonsPanel.setSpacing(5);
+                buttonsPanel.add(openButton);
+                buttonsPanel.add(deleteButton);
+                templateExecuteTable.setWidget(i, 3, buttonsPanel);
                 templateExecuteTable.getCellFormatter().addStyleName(i, 3, "simple_cell");
 
                 i++;
@@ -335,5 +340,51 @@ public class TemplatesPanel implements IsWidget {
         }
 
     }
+    
+    
+    class TemplateDeleteClickHandler implements ClickHandler {
 
+        private TemplateDTO templateDTO;
+
+        public TemplateDeleteClickHandler(TemplateDTO templateDTO) {
+            this.templateDTO = templateDTO;
+        }
+
+        @Override
+        public void onClick(ClickEvent event) {
+
+            AsyncCallback<Void> deleteOperationCallback = new AsyncCallback<Void>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    Window.alert("Ошибка связи с сервером! Повторите попытку позднее");
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+                    Window.alert("Шаблон успешно удален");
+                }
+            };
+
+            //if (check()) {
+                LoginService.Util.getInstance().deleteTemplate(templateDTO, deleteOperationCallback);
+            //}
+        }
+
+        private boolean check() {
+
+            // проверяем наличие суммы на счете
+            for (AccountDTO account : user.getAccountList()) {
+                if (account.getId() == templateDTO.getAccountId()) {
+                    // проверяем остаток на счете
+                    if (account.getBalance() < templateDTO.getAmount()) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+    }
+    
 }

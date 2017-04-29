@@ -43,4 +43,6 @@ public interface LoginServiceAsync {
     public void saveTemplate(TemplateDTO templateDTO, AsyncCallback<Void> asyncCallback);
     
     public void closeDeposit(AccountDTO accountDTO, AsyncCallback<Void> asyncCallback);
+    
+    public void deleteTemplate(TemplateDTO templateDTO, AsyncCallback<Void> asyncCallback);
 }

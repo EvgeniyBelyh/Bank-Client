@@ -753,4 +753,24 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         storeUserInSession(user);
     }
 
+    /**
+     * Удаляет шаблон из базы данных
+     * @param templateDTO 
+     */
+    @Override
+    public void deleteTemplate(TemplateDTO templateDTO) {
+        
+        ClientDTO user = loginFromSessionServer();
+        
+        templateFacade.remove(new Template(templateDTO));
+        
+        for(AccountDTO acc : user.getAccountList()) {
+            if(acc.getId() == templateDTO.getAccountId()) {
+                acc.getTemplateList().remove(templateDTO);
+            }
+        }
+        
+        storeUserInSession(user);
+    }
+
 }

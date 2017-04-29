@@ -64,4 +64,6 @@ public interface LoginService extends RemoteService
     
     public void closeDeposit(AccountDTO accountDTO);
     
+    public void deleteTemplate(TemplateDTO templateDTO);
+    
 }
