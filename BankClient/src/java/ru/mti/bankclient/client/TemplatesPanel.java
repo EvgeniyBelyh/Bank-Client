@@ -121,7 +121,8 @@ public class TemplatesPanel implements IsWidget {
         HorizontalPanel templateNamePanel = new HorizontalPanel();
         VerticalPanel vPanel1 = new VerticalPanel();
         VerticalPanel vPanel2 = new VerticalPanel();
-        vPanel2.setStyleName("operations_container");
+        vPanel1.setStyleName("operations_container");
+        vPanel2.setSpacing(10);
         vPanel1.add(new HTML("<h3>Название шаблона</h3>"));
         templateNameTextBox.setStyleName("operation_fields");
         vPanel2.add(templateNameTextBox);
