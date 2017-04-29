@@ -442,7 +442,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 operation.setCreateDate(new Date(System.currentTimeMillis()));
                 operation.setDescription("Перевод от " + user.getName());
                 operation.setDestinationAccount(transferAccount.getNumber());
-                operation.setOperationTypeId(new OperationType(OperTypes.TRANSFER_IN.getId()));
+                operation.setOperationTypeId(new OperationType(OperTypes.TRANSFER_IN.getId(), "Внутренний перевод от " + user.getName()));
                 operation.setStatusId(new Status(Statuses.EXECUTED.getId()));
                 operation.setPartnerBankId(new PartnerBank(CURRENT_BANK));
                 operation.setComment("Перевод завершен успешно");
