@@ -62,7 +62,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
         issueVirtualCard.setText("Выпустить виртуальную карту");
         issueVirtualCard.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //TODO открывать форму ввода данных
+                createAccountOperation(VIRTUAL_CARD);
             }
         }); 
         // ссылка на страницу остории операций
@@ -112,7 +112,7 @@ public class AccountOperationsMenuBlock extends TransferMenuBlock {
                 this.mainPage.centerBodyPanel.add(new AccountOperCardBlock(mainPage));
                 break;
             case VIRTUAL_CARD:
-                this.mainPage.centerBodyPanel.add(new TransfersOutBank(mainPage));
+                this.mainPage.centerBodyPanel.add(new VirtualCardPanel(mainPage));
                 break; 
             case OPER_HISTORY:
                 this.mainPage.centerBodyPanel.add(new OperationsPanel());

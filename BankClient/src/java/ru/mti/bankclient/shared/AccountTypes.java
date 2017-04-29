@@ -7,18 +7,24 @@ package ru.mti.bankclient.shared;
  */
 public enum AccountTypes {
 
-    CREDIT_CARD(1),
-    DEBIT_CARD(2),
-    DEPOSIT(3);
+    CREDIT_CARD(1, "Кредитная карта"),
+    DEBIT_CARD(2, "Дебетовая карта"),
+    DEPOSIT(3, "Вклад");
     
     private int id;
+    private String name;
     
-    private AccountTypes(int id) {
+    private AccountTypes(int id, String name) {
         this.id = id;
+        this.name = name;
     }
     
     public int getId() {
         return this.id;
+    }
+    
+    public String getName() {
+        return this.name;
     }
     
     public static AccountTypes getById(int id) {

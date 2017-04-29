@@ -32,7 +32,7 @@ import ru.mti.bankclient.shared.Statuses;
  *
  * @author Евгений Белых
  */
-public class DepositOpenPanel implements IsWidget {
+public class VirtualCardPanel implements IsWidget {
 
     private VerticalPanel vPanel = new VerticalPanel();
     private List<DepositDTO> depositList = new ArrayList();
@@ -41,14 +41,17 @@ public class DepositOpenPanel implements IsWidget {
     private ListBox locAccount = new ListBox();
     private TextBox sumField = new TextBox();
 
-    public DepositOpenPanel(MainPage mainPage) {
+    private static final int MASTER_CARD = 1;
+    private static final int VISA = 2;
+    
+    public VirtualCardPanel(MainPage mainPage) {
 
         this.mainPage = mainPage;
 
         // создаем заголовок 
-        HTML depositHeader = new HTML("<h2>Открытие вклада</h2><br>");
-        depositHeader.setStyleName("operations_container h2");
-        vPanel.add(depositHeader);
+        HTML header = new HTML("<h2>Выпуск виртуальной карты</h2><br>");
+        header.setStyleName("operations_container h2");
+        vPanel.add(header);
 
         sumField.setStyleName("operation_fields");
         locAccount.setStyleName("operation_fields");
@@ -90,71 +93,56 @@ public class DepositOpenPanel implements IsWidget {
                                 + " " + account.getCurrencyName(), account.getId().toString());
                     }
                 }
+
+                createTable();
+                createCancelButton();
             }
         };
 
         LoginService.Util.getInstance().loginFromSessionServer(userCallback);
 
-        AsyncCallback<List<DepositDTO>> depositCallback = new AsyncCallback<List<DepositDTO>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Ошибка связи с сервером! Повторите попытку позднее");
-            }
-
-            @Override
-            public void onSuccess(List<DepositDTO> result) {
-
-                depositList = result;
-                createTable();
-                createCancelButton();
-            }
-        };
-        LoginService.Util.getInstance().getDeposits(depositCallback);
-
     }
 
     private void createTable() {
 
-        // добавляем таблицу с информацией о вкладах
+        // добавляем таблицу с информацией о виртуальных картах
         FlexTable depositTable = new FlexTable();
         depositTable.addStyleName("simple-little-table");
         // заголовок таблицы
         depositTable.setText(0, 0, "Наименование");
-        depositTable.setText(0, 1, "Срок вклада, дни");
-        depositTable.setText(0, 2, "Ставка, %");
-        depositTable.setText(0, 3, " ");
+        depositTable.setText(0, 1, "Срок действия, дни");
+        depositTable.setText(0, 2, " ");
         // форматируем заголовок
-        for (int m = 0; m < 4; m++) {
+        for (int m = 0; m < 3; m++) {
             depositTable.getCellFormatter().addStyleName(0, m, "table_header");
         }
+        
+        // выпуск карт Visa
+        // наименование
+        depositTable.setText(1, 0, "Visa Classic(RUR)");
+        depositTable.getCellFormatter().addStyleName(1, 0, "simple_cell");
+        // срок
+        depositTable.setText(1, 1, String.valueOf(180));
+        depositTable.getCellFormatter().addStyleName(1, 1, "simple_cell");
+        // кнопка открытия
+        Button openVisaButton = new Button("Выпустить");
+        openVisaButton.addClickHandler(new VirtualCardClickHandler(VISA));
+        depositTable.setWidget(1, 2, openVisaButton);
+        depositTable.getCellFormatter().addStyleName(1, 2, "simple_cell");
 
-        int i = 1; // индекс строки в таблице
-
-        // форматирование процентной ставки
-        NumberFormat nFormat = NumberFormat.getFormat("#0.00");
-
-        // выбираем только карточные счета
-        for (DepositDTO deposit : depositList) {
-
-            // наименование депозита
-            depositTable.setText(i, 0, deposit.getName());
-            depositTable.getCellFormatter().addStyleName(i, 0, "simple_cell");
-            // срок
-            depositTable.setText(i, 1, String.valueOf(deposit.getDuration()));
-            depositTable.getCellFormatter().addStyleName(i, 1, "simple_cell");
-            // ставка
-            depositTable.setText(i, 2, String.valueOf(nFormat.format(deposit.getInterestRate())));
-            depositTable.getCellFormatter().addStyleName(i, 2, "simple_cell");
-            // кнопка открытия
-            Button openButton = new Button("Открыть");
-            openButton.addClickHandler(new DepositClickHandler(deposit));
-            depositTable.setWidget(i, 3, openButton);
-            depositTable.getCellFormatter().addStyleName(i, 3, "simple_cell");
-
-            i++;
-
-        }
-
+        // выпуск карт MasterCard
+        // наименование
+        depositTable.setText(2, 0, "Mastercard Standard(RUR)");
+        depositTable.getCellFormatter().addStyleName(2, 0, "simple_cell");
+        // срок
+        depositTable.setText(2, 1, String.valueOf(180));
+        depositTable.getCellFormatter().addStyleName(2, 1, "simple_cell");
+        // кнопка открытия
+        Button openMasterButton = new Button("Выпустить");
+        openMasterButton.addClickHandler(new VirtualCardClickHandler(MASTER_CARD));
+        depositTable.setWidget(2, 2, openMasterButton);
+        depositTable.getCellFormatter().addStyleName(2, 2, "simple_cell");        
+        
         vPanel.add(depositTable);
 
     }
@@ -188,18 +176,18 @@ public class DepositOpenPanel implements IsWidget {
         return vPanel;
     }
 
-    class DepositClickHandler implements ClickHandler {
+    class VirtualCardClickHandler implements ClickHandler {
 
-        private DepositDTO deposit;
+        private int cardType;
 
-        public DepositClickHandler(DepositDTO deposit) {
-            this.deposit = deposit;
+        public VirtualCardClickHandler(int cardType) {
+            this.cardType = cardType;
         }
 
         @Override
         public void onClick(ClickEvent event) {
 
-            AsyncCallback<String> openDepositCallback = new AsyncCallback<String>() {
+            AsyncCallback<String> openVirtualCardCallback = new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     Window.alert("Ошибка связи с сервером! Повторите попытку позднее");
@@ -215,7 +203,7 @@ public class DepositOpenPanel implements IsWidget {
                     operationDTO.setAccountId(Integer.parseInt(locAccount.getSelectedValue()));
                     operationDTO.setAmount(Double.parseDouble(sumField.getValue()));
                     operationDTO.setCreateDate(new Date(System.currentTimeMillis()));
-                    operationDTO.setDescription("Открытие вклада");
+                    operationDTO.setDescription("Выпуск виртуальной карты");
                     operationDTO.setDestinationAccount(result);
                     operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
                     operationDTO.setOperationTypeName(OperTypes.TRANSFER_IN.getName());
@@ -232,7 +220,7 @@ public class DepositOpenPanel implements IsWidget {
 
                         @Override
                         public void onSuccess(Void result) {
-                            Window.alert("Вклад успешно открыт");
+                            Window.alert("Карта выпущена успешно");
                             mainPage.centerBodyPanel.clear();
                             mainPage.createCenterPanel();
                         }
@@ -244,7 +232,7 @@ public class DepositOpenPanel implements IsWidget {
             };
 
             if (check()) {
-                LoginService.Util.getInstance().openDeposit(deposit, openDepositCallback);
+                LoginService.Util.getInstance().openVirtualCard(cardType, openVirtualCardCallback);
             }
         }
 

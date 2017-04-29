@@ -45,4 +45,6 @@ public interface LoginServiceAsync {
     public void closeDeposit(AccountDTO accountDTO, AsyncCallback<Void> asyncCallback);
     
     public void deleteTemplate(TemplateDTO templateDTO, AsyncCallback<Void> asyncCallback);
+    
+    public void openVirtualCard(int cardType, AsyncCallback<String> asyncCallback);
 }

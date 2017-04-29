@@ -3,6 +3,7 @@ package ru.mti.bankclient.server;
 import java.util.Timer;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
@@ -661,7 +662,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         // создаем объект счета
         Account account = new Account();
         account.setAccountName(depositDTO.getName());
-        account.setAccountTypeId(new AccountType(AccountTypes.DEPOSIT.getId(), AccountTypes.DEPOSIT.name()));
+        account.setAccountTypeId(new AccountType(AccountTypes.DEPOSIT.getId(), AccountTypes.DEPOSIT.getName()));
         account.setBlocked(false);
         account.setClientId(new Client(user.getId()));
         account.setCurrencyId(new Currency(1, "RUR", "810"));
@@ -771,6 +772,51 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         }
         
         storeUserInSession(user);
+    }
+
+    /**
+     * Выпускает виртуальную карту
+     * @param cardType - тип карты
+     */
+    @Override
+    public String openVirtualCard(int cardType) {
+         // получаем объект пользователя из сессии
+        ClientDTO user = getUserAlreadyFromSession();
+        
+        // создаем объект счета
+        Account account = new Account();
+        account.setAccountName("Виртуальная карта " + (cardType == 1 ? "Mastercard" : "Visa"));
+        account.setAccountTypeId(new AccountType(AccountTypes.DEBIT_CARD.getId(), AccountTypes.DEBIT_CARD.getName()));
+        account.setBlocked(false);
+        account.setClientId(new Client(user.getId()));
+        account.setCurrencyId(new Currency(1, "RUR", "810"));
+        account.setInterestRate(0);
+        account.setCvv(String.valueOf(100 + (int) (Math.random() * ((999 - 100) + 1))));
+        
+        // получаем случайный номер банковского счета
+        String randomNumber = "4081781050000" + String.valueOf(1000000 + (int) (Math.random() * ((9999999 - 1000000) + 1)));    
+        account.setNumber(randomNumber);
+        
+        // генерируем случайный номер карты
+        String cardNumber = (cardType == 1 ? "5055" : "4044");
+        for(int i = 0; i < 2; i++) {
+            cardNumber = cardNumber + String.valueOf(100000 + (int) (Math.random() * ((999999 - 100000) + 1)));
+        }
+        account.setCardNumber(cardNumber);
+        
+        // определяем дату истечения срока карты
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 180);
+        Date cardDate = calendar.getTime();
+        account.setExpirationDate(cardDate);
+        
+        accountFacade.create(account);
+        
+        user.getAccountList().add(createAccountDTO(account));
+        
+        storeUserInSession(user);
+        
+        return randomNumber;
     }
 
 }
