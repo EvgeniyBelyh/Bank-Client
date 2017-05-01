@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ru.mti.bankclient.session;
 
 import javax.ejb.Stateless;
@@ -13,7 +9,7 @@ import ru.mti.bankclient.shared.Deposit;
 
 /**
  *
- * @author Жека
+ * @author Евгений Белых
  */
 @Stateless
 public class DepositFacade extends AbstractFacade<Deposit> {
