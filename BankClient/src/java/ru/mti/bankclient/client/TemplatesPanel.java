@@ -263,6 +263,8 @@ public class TemplatesPanel implements IsWidget {
                 @Override
                 public void onSuccess(Void result) {
                     Window.alert("Операция проведена успешно!");
+                    mainPage.centerBodyPanel.clear();
+                    mainPage.centerBodyPanel.add(new TemplatesPanel(mainPage));
                 }
             };
 

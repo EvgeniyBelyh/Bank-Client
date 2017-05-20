@@ -67,4 +67,6 @@ public interface LoginService extends RemoteService
     public void deleteTemplate(TemplateDTO templateDTO);
     
     public String openVirtualCard(int cardType);
+    
+    public List<ClientDTO> getClients();
 }

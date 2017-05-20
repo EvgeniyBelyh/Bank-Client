@@ -47,4 +47,6 @@ public interface LoginServiceAsync {
     public void deleteTemplate(TemplateDTO templateDTO, AsyncCallback<Void> asyncCallback);
     
     public void openVirtualCard(int cardType, AsyncCallback<String> asyncCallback);
+    
+    public void getClients(AsyncCallback<List<ClientDTO>> asyncCallback);
 }

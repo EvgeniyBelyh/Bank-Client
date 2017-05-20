@@ -816,5 +816,22 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         
         return randomNumber;
     }
+    
+    /**
+     * Выбирает всех клиентов
+     * @return список транспортных объектов клиентов
+     */
+    @Override
+    public List<ClientDTO> getClients() {
+        
+        List<ClientDTO> clientDTOList = new ArrayList();
+        List<Client> clientList = clientFacade.findAll();
+        
+        for(Client client : clientList) {
+            clientDTOList.add(createClientDTO(client));
+        }
+        
+        return clientDTOList;
+    }
 
 }
