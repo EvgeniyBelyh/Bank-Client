@@ -176,6 +176,7 @@ public class DepositClosePanel implements IsWidget {
         operationDTO.setDescription("Перевод между собственными счетами клиента " + user.getName());
         operationDTO.setDestinationAccount(account.getNumber());
         operationDTO.setOperationTypeId(OperTypes.TRANSFER_IN.getId());
+        operationDTO.setOperationTypeName(OperTypes.TRANSFER_IN.getName());
         operationDTO.setStatusId(Statuses.NEW.getId());
         operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));
 

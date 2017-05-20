@@ -135,10 +135,6 @@ public class ServicePayInternetPanel implements IsWidget {
 
         LoginService.Util.getInstance().loginFromSessionServer(userCallback);
 
-        
-        // отправляем запрос на сервер
-        LoginService.Util.getInstance().getServiceProviderByCategory(ProviderCategories.INTERNET.getId(), serviceProviderCallback);
-
     }
 
     /**
