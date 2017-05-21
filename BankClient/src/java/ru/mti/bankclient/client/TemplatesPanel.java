@@ -275,6 +275,7 @@ public class TemplatesPanel implements IsWidget {
             operationDTO.setDescription(templateDTO.getDescription());
             operationDTO.setDestinationAccount(templateDTO.getDestinationAccount());
             operationDTO.setOperationTypeId(templateDTO.getOperationTypeId());
+            operationDTO.setOperationTypeName(OperTypes.getNameById(templateDTO.getOperationTypeId()).getName());
             operationDTO.setStatusId(Statuses.NEW.getId());
             operationDTO.setPartnerBankId(new PartnerBankDTO(templateDTO.getPartnerBankId()));
 
