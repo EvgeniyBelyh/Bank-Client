@@ -90,6 +90,15 @@ public class Client implements Serializable {
         this.admin = admin;
     }
 
+    public Client(ClientDTO clientDTO) {
+        this.id = clientDTO.getId();
+        this.name = clientDTO.getName();
+        this.login = clientDTO.getLogin();
+        this.password = clientDTO.getPassword();
+        this.blocked = clientDTO.isBlocked();
+        this.admin = clientDTO.isAdmin();
+    }
+    
     public Integer getId() {
         return id;
     }

@@ -834,4 +834,11 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         return clientDTOList;
     }
 
+    @Override
+    public void updateClient(ClientDTO clientDTO) {
+        
+        Client client = new Client(clientDTO);
+        clientFacade.edit(client);
+    }
+
 }

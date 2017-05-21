@@ -49,4 +49,6 @@ public interface LoginServiceAsync {
     public void openVirtualCard(int cardType, AsyncCallback<String> asyncCallback);
     
     public void getClients(AsyncCallback<List<ClientDTO>> asyncCallback);
+    
+    public void updateClient(ClientDTO clientDTO, AsyncCallback<Void> asyncCallback);
 }

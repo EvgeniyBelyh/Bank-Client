@@ -115,7 +115,7 @@ public class ClientMenuBlock extends TransferMenuBlock {
                 break;
             case HELP:
                 //this.mainPage.centerBodyPanel.add(new ClientMenuHelpPanel());
-                this.mainPage.centerBodyPanel.add(new AdminPanel(mainPage));
+                this.mainPage.centerBodyPanel.add(new AdminPanel());
                 
                 break;                 
         }

@@ -38,11 +38,11 @@ public interface LoginService extends RemoteService
         }
     }
  
-    ClientDTO loginServer(String name, String password);
+    public ClientDTO loginServer(String name, String password);
  
-    ClientDTO loginFromSessionServer();
+    public ClientDTO loginFromSessionServer();
  
-    void logout();
+    public void logout();
     
     public List<AccountDTO> getAccounts(int clientId);
     
@@ -69,4 +69,6 @@ public interface LoginService extends RemoteService
     public String openVirtualCard(int cardType);
     
     public List<ClientDTO> getClients();
+    
+    public void updateClient(ClientDTO clientDTO);
 }
