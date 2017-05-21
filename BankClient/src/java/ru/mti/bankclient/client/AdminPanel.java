@@ -53,7 +53,8 @@ public class AdminPanel implements IsWidget {
                 }
                 
                 suggestBox = new SuggestBox(oracle);
-
+                suggestBox.setWidth("300px");
+                
                 HTML header = new HTML("<h2>Панель администратора</h2><br>");
                 header.setStyleName("operations_container h2");
                 verticalPanel.add(header);
@@ -65,7 +66,7 @@ public class AdminPanel implements IsWidget {
                 fields.setSpacing(10);
                 headers.setStyleName("operations_container");
 
-                headers.add(new HTML("<h3>ФИО клиента</h3>"));
+                headers.add(new HTML("<h3>ФИО или логин клиента</h3>"));
                 fields.add(suggestBox);
                 headers.add(new HTML("<br>"));
 
