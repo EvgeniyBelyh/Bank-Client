@@ -27,7 +27,8 @@ public abstract class AbstractFacade<T> {
         manager.persist(entity);
         manager.flush();
         trans.commit();
-        
+        manager.clear();
+        manager.close();
     }
 
     public void edit(T entity) {
@@ -37,7 +38,8 @@ public abstract class AbstractFacade<T> {
         manager.merge(entity);
         manager.flush();
         trans.commit();
-       
+        manager.clear();
+        manager.close();       
 
     }
 
@@ -48,6 +50,8 @@ public abstract class AbstractFacade<T> {
         manager.remove(manager.merge(entity));
         manager.flush();
         trans.commit();
+        manager.clear();
+        manager.close();        
     }
 
     public T find(Object id) {

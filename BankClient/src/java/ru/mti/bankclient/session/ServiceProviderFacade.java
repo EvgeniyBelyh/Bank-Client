@@ -45,6 +45,8 @@ public class ServiceProviderFacade extends AbstractFacade<ServiceProvider> {
             throw ex;
         }
         trans.commit();
+        em.clear();
+        em.close();
         return serviceProvider;
     }
 }

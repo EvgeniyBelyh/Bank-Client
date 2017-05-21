@@ -51,6 +51,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
     private static final long serialVersionUID = 4456105400553118785L;
 
+    
     @EJB
     private ClientFacade clientFacade;
     @EJB
@@ -67,7 +68,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     private PartnerBankFacade partnerBankFacade;
     @EJB
     private TemplateFacade templateFacade;
-
+    
     private static final int CURRENT_BANK = 1;
 
     private static final int IN_TRANSFER = 1;

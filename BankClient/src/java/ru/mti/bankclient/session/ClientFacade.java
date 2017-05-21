@@ -46,6 +46,8 @@ public class ClientFacade extends AbstractFacade<Client> {
             throw ex;
         }              
         trans.commit();
+        em.clear();
+        em.close();
         return client;
     }   
     

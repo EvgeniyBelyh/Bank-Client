@@ -46,6 +46,8 @@ public class AccountFacade extends AbstractFacade<Account> {
             throw ex;
         }              
         trans.commit();
+        em.clear();
+        em.close();
         return account;
     }
     

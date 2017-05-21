@@ -46,6 +46,8 @@ public class PartnerBankFacade extends AbstractFacade<PartnerBank> {
             throw ex;
         }              
         trans.commit();
+        em.clear();
+        em.close();
         return pBank;
     }   
     
