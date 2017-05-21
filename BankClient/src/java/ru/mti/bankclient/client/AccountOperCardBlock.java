@@ -155,11 +155,15 @@ public class AccountOperCardBlock implements IsWidget {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Ошибка связи с сервером. Повторите попытку позднее");
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();                
             }
 
             @Override
             public void onSuccess(Void result) {
-                Window.alert("Документ отправлен на обработку");
+                Window.alert("Карта блокирована успешно");
+                mainPage.centerBodyPanel.clear();
+                mainPage.createCenterPanel();                
             }
         };
 

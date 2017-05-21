@@ -401,6 +401,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         Account blockedCard = accountFacade.find(oper.getAccountId());
         blockedCard.setBlocked(true);
         accountFacade.edit(blockedCard);
+        
         // исполняем операцию
         return simpleExecuteOperation(oper, "Карта успешно заблокирована", Statuses.EXECUTED);
     }

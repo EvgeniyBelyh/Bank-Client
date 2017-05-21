@@ -316,11 +316,15 @@ public class TemplatesPanel implements IsWidget {
                 @Override
                 public void onFailure(Throwable caught) {
                     Window.alert("Ошибка связи с сервером! Повторите попытку позднее");
+                    mainPage.centerBodyPanel.clear();
+                    mainPage.createCenterPanel();                      
                 }
 
                 @Override
                 public void onSuccess(Void result) {
                     Window.alert("Шаблон успешно сохранен!");
+                    mainPage.centerBodyPanel.clear();
+                    mainPage.createCenterPanel();                      
                 }
             };
             
@@ -359,11 +363,15 @@ public class TemplatesPanel implements IsWidget {
                 @Override
                 public void onFailure(Throwable caught) {
                     Window.alert("Ошибка связи с сервером! Повторите попытку позднее");
+                    mainPage.centerBodyPanel.clear();
+                    mainPage.createCenterPanel();                       
                 }
 
                 @Override
                 public void onSuccess(Void result) {
                     Window.alert("Шаблон успешно удален");
+                    mainPage.centerBodyPanel.clear();
+                    mainPage.createCenterPanel();                       
                 }
             };
 
