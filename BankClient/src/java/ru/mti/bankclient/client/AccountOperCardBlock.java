@@ -148,6 +148,7 @@ public class AccountOperCardBlock implements IsWidget {
         operationDTO.setDescription("Блокировка карты");
         operationDTO.setDestinationAccount("0");
         operationDTO.setOperationTypeId(OperTypes.CARD_BLOCK.getId());
+        operationDTO.setOperationTypeName(OperTypes.CARD_BLOCK.getName());
         operationDTO.setStatusId(Statuses.NEW.getId());
         operationDTO.setPartnerBankId(new PartnerBankDTO(MainPage.CURRENT_BANK));
 
@@ -167,7 +168,7 @@ public class AccountOperCardBlock implements IsWidget {
             }
         };
 
-        LoginService.Util.getInstance().saveOperation(operationDTO, operationCallback);
+        LoginService.Util.getInstance().executeOperation(operationDTO, operationCallback);
 
     }
 

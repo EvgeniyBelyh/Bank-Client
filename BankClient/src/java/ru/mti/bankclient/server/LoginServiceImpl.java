@@ -341,9 +341,6 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     @Override
     public void executeOperation(OperationDTO oper) {
 
-        // получаем объект пользователя из сессии
-        ClientDTO user = getUserAlreadyFromSession();
-
         OperationDTO returnedOper = null;
 
         switch (oper.getOperationTypeId()) {
@@ -363,6 +360,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
                 break;
         }
 
+        // получаем объект пользователя из сессии
+        ClientDTO user = getUserAlreadyFromSession();
+        
         // ставим операцию в список операций по счету
         for (AccountDTO acc : user.getAccountList()) {
             if (acc.getId() == oper.getAccountId()) {
@@ -401,6 +401,18 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         Account blockedCard = accountFacade.find(oper.getAccountId());
         blockedCard.setBlocked(true);
         accountFacade.edit(blockedCard);
+        
+        // получаем объект пользователя из сессии
+        ClientDTO user = getUserAlreadyFromSession();
+        
+        for(AccountDTO account : user.getAccountList()) {
+            if(account.getId() == oper.getAccountId()) {
+                account.setBlocked(true);
+            }
+        }
+        
+        // обновляем объект клиента в сессии
+        storeUserInSession(user);
         
         // исполняем операцию
         return simpleExecuteOperation(oper, "Карта успешно заблокирована", Statuses.EXECUTED);
