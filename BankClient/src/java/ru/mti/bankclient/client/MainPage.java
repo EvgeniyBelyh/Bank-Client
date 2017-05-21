@@ -47,9 +47,13 @@ public class MainPage extends TemplatePage {
                     user = result;
                     centerBodyPanel.clear();
                     createWelcomePanel();
-                    createMenuBlocks();
-                    createCenterPanel();
-
+                    
+                    if(user.isAdmin()) {
+                        centerBodyPanel.add(new AdminPanel());
+                    } else {                       
+                        createMenuBlocks();
+                        createCenterPanel();                        
+                    }
                 }
             }
 
